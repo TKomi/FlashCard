@@ -2,6 +2,12 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  // 起動時処理
+  // data_toeic_service_list.jsonを読み込む
+  fetch('./data/toeic_service_list.json')
+    .then(response => response.json())
+    .then(data => console.log(data));
+
   return (
     <div className="App">
       <header className="App-header">
