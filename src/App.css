@@ -17,3 +17,36 @@
   background-color: #88f;
   border-color: #22a;
 }
+
+ul {
+  padding-inline-start: 0;
+}
+
+.result-row {
+  display: flex;
+  justify-content: space-between;
+  margin: 0.5em 0;
+}
+
+.result-index {
+  display: block;
+  width: 10%;
+}
+
+.result-spelling {
+  display: block;
+  font-weight: bold;
+  width: 40%;
+}
+
+.result-answer {
+  display: block;
+  font-weight: bold;
+  width: 40%;
+}
+
+.result-isCorrect {
+  display: block;
+  font-weight: bold;
+  width: 10%;
+}

@@ -44,7 +44,7 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
     let nextSkipStyle = "default";
 
     // 正誤判定し、スタイルを変更する
-    if(quiz.answer === userAnswer){
+    if(quiz.answerIndex === userAnswer){
       // 正解の場合。
       // 選んでおらず、不正解: defaultのまま
       // 選んでおり、正解
@@ -60,7 +60,7 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
       // スキップ以外の不正解の場合。
       // 選んでおらず、不正解: defaultのまま
       // 選んでおらず、正解
-      nextStyle[quiz.answer] = "actual";
+      nextStyle[quiz.answerIndex] = "actual";
       // 選んでおり、不正解
       nextStyle[userAnswer] = "incorrect";
     }

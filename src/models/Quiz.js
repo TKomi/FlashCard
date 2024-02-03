@@ -25,7 +25,7 @@ export class Quiz {
 
   constructor(question, answer, options) {
     this.question = question;
-    this.answer = answer;
+    this.answerIndex = answer;
     this.options = options;
   }
 

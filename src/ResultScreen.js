@@ -21,11 +21,11 @@ function ResultScreen({ words, quizzes, userAnswers }) {
 
   useEffect(() => {
     const newEntries = quizzes.map((quiz, index) => {
-      const word = words[quiz.wordIndex];
-      const correctAnswer = word.meaning;
-      const userAnswer = userAnswers[index];
-      const isCorrect = userAnswer === quiz.correctAnswer;
-      return { index, word, correctAnswer, userAnswer, isCorrect };
+      const word = words[index];
+      const spelling = word.word;
+      const correctAnswer = word.quiz.answer; // string
+      const isCorrect = quiz.answerIndex === userAnswers[index];
+      return { index, spelling, correctAnswer, isCorrect };
     });
     setEntries(newEntries);
   }, [words, quizzes, userAnswers]);
@@ -34,11 +34,11 @@ function ResultScreen({ words, quizzes, userAnswers }) {
     <div>
       <ul>
         {entries.map(entry => (
-          <li key={entry.index}>
-            <div>{entry.index + 1}.</div>
-            <div>{entry.word.word}</div>
-            <div>{entry.correctAnswer}</div>
-            <div>{entry.isCorrect ? '○' : '×'}</div>
+          <li key={entry.index} className="result-row">
+            <div className="result-index">{entry.index + 1}.</div>
+            <div className="result-spelling">{entry.spelling}</div>
+            <div className="result-answer">{entry.correctAnswer}</div>
+            <div className="result-isCorrect">{entry.isCorrect ? '○' : '×'}</div>
           </li>
         ))}
       </ul>

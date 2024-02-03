@@ -14,7 +14,7 @@ import OptionButtons from './OptionButtons';
  * このコンポーネントでやらないこと
  * - 単語に含まれる解答および選択肢を使ってクイズを作る: 正しくは親コンポーネントから受け取る
  * 
- * @param {{quizzes: Quiz[], onEndQuiz: () => void}} wordSet 画面で扱う単語セット
+ * @param {{quizzes: Quiz[], onEndQuiz: (userAnswers: number[]) => void}} wordSet 画面で扱う単語セット
  */
 function StudyScreen({ quizzes, onEndQuiz }) {
   // ステート
@@ -23,6 +23,10 @@ function StudyScreen({ quizzes, onEndQuiz }) {
 
   // ユーザーの回答: number[] Quizのインデックスに対応する選択肢のインデックス。0から始まる。-1は「スキップ」
   const [userAnswers, setUserAnswers] = useState([]);
+
+  // NOTE: setUserAnswers -> setEnd -> onEndQuiz の順番に連鎖する
+  // 完了フラグ: boolean
+  const [end, setEnd] = useState(false);
 
   // メモ化
   // 現在の問題: Quiz
@@ -36,6 +40,13 @@ function StudyScreen({ quizzes, onEndQuiz }) {
     }
   }, [currentQuestionIndex, quizzes.length]);
 
+  // setUserAnswers -> setEnd でendが変化したら、onEndQuizを呼び出す
+  useEffect(() => {
+    if (end && onEndQuiz) {
+      onEndQuiz(userAnswers);
+    }
+  }, [end, userAnswers, onEndQuiz]);
+
   /**
    * ユーザーの回答を受け取った時の処理
    * 
@@ -45,16 +56,12 @@ function StudyScreen({ quizzes, onEndQuiz }) {
    */
   const recordAndNextQuiz = (userAnswer) => {
     setUserAnswers([...userAnswers, userAnswer]);
-    if (currentQuestionIndex + 1 < quizzes.length) {
+    if (currentQuestionIndex< quizzes.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
-      if (onEndQuiz) {
-        onEndQuiz(userAnswers);
-      }
-      console.log('クイズ終了');
+      setEnd(true);
     }
   };
-
   return (
     <div>
       {
@@ -62,7 +69,7 @@ function StudyScreen({ quizzes, onEndQuiz }) {
         <div>
           <p>通常学習 {currentQuestionIndex + 1} / {quizzes.length} Words</p>
           <p>{currentQuiz.question}</p>
-          <OptionButtons quiz={currentQuiz} onAnswer={() => {}} onNextQuiz={recordAndNextQuiz} />
+          <OptionButtons quiz={currentQuiz} onNextQuiz={recordAndNextQuiz} />
         </div>
       }
     </div>

@@ -22,6 +22,8 @@ function App() {
   useEffect(() => {
     fetch('./data/toeic_service_list.json')
       .then(response => response.json())
+      .then(getShuffledArray)
+      .then(data => data.slice(0, 5)) // for debugging
       .then(data => {
         const wl = data.map(Word.fromObject);
         setWordList(wl);
@@ -35,7 +37,8 @@ function App() {
       <h1>TOEIC単語帳</h1>
       {
         currentScreen === 'study' ? (
-          <StudyScreen quizzes={quizzes} onEndQuiz={() => {
+          <StudyScreen quizzes={quizzes} onEndQuiz={(userAnswers) => {
+            setUserAnswers(userAnswers);
             setCurrentScreen('result');
           }} />
         ) : currentScreen === 'result' ? (
@@ -50,6 +53,18 @@ function App() {
   );
 }
 
-
+/**
+ * 配列をシャッフルする
+ * @param {*} array シャッフル対象の配列 副作用はありません。
+ * @returns シャッフルされた配列
+ */
+function getShuffledArray(array) {
+  const result = [...array];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
 
 export default App;
