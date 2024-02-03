@@ -1,3 +1,4 @@
+import './App.css';
 import { useEffect, useState } from 'react';
 import StudyScreen from './StudyScreen/StudyScreen';
 import { Word } from './models/Word';

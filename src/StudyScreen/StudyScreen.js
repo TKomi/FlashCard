@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 // eslint-disable-next-line no-unused-vars
 import { Word } from '../models/Word';
 import { createQuiz4 } from './CreateQuiz';
+import OptionButtons from './OptionButtons';
 
 /**
  * wordSetに入っている単語を、ランダムな順番でクイズとして表示する画面コンポーネント
@@ -15,7 +16,7 @@ import { createQuiz4 } from './CreateQuiz';
  * このコンポーネントでやらないこと
  * - 単語セットに入っているものは全て表示する。つまり、一部のみを抜き出すということはやらない
  * 
- * @param {Word[]} wordSet 画面で扱う単語セット
+ * @param {{wordSet: Word[], onEndQuiz: () => void}} wordSet 画面で扱う単語セット
  */
 function StudyScreen({ wordSet, onEndQuiz }) {
   // ステート
@@ -51,10 +52,10 @@ function StudyScreen({ wordSet, onEndQuiz }) {
    * 
    * - 回答を記録する
    * - 次の問題があれば、次の問題に進む
-   * @param {number} optionIndex ユーザーの解答。Quizのインデックスに対応する選択肢のインデックス。0から始まる。-1は「スキップ」
+   * @param {number} userAnswer ユーザーの解答。Quizのインデックスに対応する選択肢のインデックス。0から始まる。-1は「スキップ」
    */
-  const onClickOption = (optionIndex) => {
-    setUserAnswers([...userAnswers, optionIndex]);
+  const recordAndNextQuiz = (userAnswer) => {
+    setUserAnswers([...userAnswers, userAnswer]);
     if (currentQuestionIndex + 1 < quizzes.length) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
@@ -72,22 +73,7 @@ function StudyScreen({ wordSet, onEndQuiz }) {
         <div>
           <p>通常学習 {currentQuestionIndex + 1} / {quizzes.length} Words</p>
           <p>{currentQuiz.question}</p>
-          <ul>
-            {
-              currentQuiz.options.map((option, i) => (
-                <li key={i}>
-                  <button onClick={() => onClickOption(i)}>
-                    {option}
-                  </button>
-                </li>
-              ))
-            }
-            <li>
-              <button onClick={() => onClickOption(-1)}>
-                スキップ
-              </button>
-            </li>
-          </ul>
+          <OptionButtons quiz={currentQuiz} onAnswer={() => {}} onNextQuiz={recordAndNextQuiz} />
         </div>
       }
     </div>

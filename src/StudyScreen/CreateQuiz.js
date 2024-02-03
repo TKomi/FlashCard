@@ -1,11 +1,13 @@
 // eslint-disable-next-line no-unused-vars
+import { Quiz } from '../models/Quiz';
+// eslint-disable-next-line no-unused-vars
 import { Word } from '../models/Word';
 
 /**
  * 単語を使って、4択クイズを作成する
  * 
  * @param {Word[]} word 単語
- * @returns 作成されたクイズ
+ * @returns {Quiz}作成されたクイズ
  */
 export function createQuiz4(word) {
     // 解答の順番はOrders4の中からランダムに選ぶ
@@ -27,13 +29,7 @@ export function createQuiz4(word) {
     options[dummy2_index] = word.quiz.options[1];
     options[dummy3_index] = word.quiz.options[2];
 
-    const quiz = {
-      question: word.word,
-      options,
-      answer: ans_index
-    };
-
-  return quiz;
+  return new Quiz(word.word, ans_index, options);
 }
 
 // 4択なので、選択肢の順列は4! = 24通り
