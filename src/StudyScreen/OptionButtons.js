@@ -30,10 +30,6 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
     setSkipButtonStyle("default");
   }, [quiz])
 
-  useEffect(() => {
-    console.log(skipButtonStyle);
-  }, [skipButtonStyle])
-
   // ユーザーが回答した後の処理
   const onAnswerInner = (userAnswer) => {
     // 1. ボタンをロックする
