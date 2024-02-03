@@ -1,5 +1,3 @@
-import { Quiz } from './Quiz';
-
 /**
  * 単語を表すクラス
  */
@@ -13,7 +11,7 @@ export class Word {
   /**
    * クイズ
    * 答えと選択肢が入っている
-   * @type {Quiz}
+   * @type {{answer: string, options: string[]}}
    */
   quiz;
 
@@ -23,6 +21,6 @@ export class Word {
   }
 
   static fromObject(object) {
-    return new Word(object.word, new Quiz(object.quiz.answer, object.quiz.options));
+    return new Word(object.word, object.quiz);
   }
 }
