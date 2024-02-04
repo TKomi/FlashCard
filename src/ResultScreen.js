@@ -60,7 +60,11 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
           </li>
         ))}
       </ul>
-      <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick}/>
+      <div class="uk-flex">
+        <button className = 'result-action-btn' > 復習する < /button>
+        <button className='result-action-btn'>ホームへ戻る</button>
+        <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick}/>
+      </div>
     </div>
   );
 }
@@ -88,7 +92,7 @@ function NextButton({ countOfNext, onUserButtonClick }) {
   if (countOfNext === 0) return null;
   else {
     return (
-      <button onClick={() => onUserButtonClick("next")}>次の{countOfNext}個</button>
+      <button onClick={() => onUserButtonClick("next")} className='result-action-btn'>次の{countOfNext}個</button>
     );
   }
 }

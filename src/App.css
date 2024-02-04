@@ -30,7 +30,7 @@
 }
 
 .option-btn.default {
-  background-color: #ddd;
+  background-color: #eee;
   border-color: #777;
 }
 .option-btn.correct {
@@ -64,7 +64,7 @@
 }
 
 .quit-btn {
-  background-color: #fdd;
+  background-color: #fee;
   border-color: #e88;
   height: 3em;
   width: 80%;
@@ -151,4 +151,13 @@
 
 .result-status-3 {
   background-color: #cfc;
+}
+
+.result-action-btn {
+  width: 30%;
+  background-color: #ddd;
+  border-color: #777;
+  height: 3em;
+  margin: 2em auto;
+  border-radius: 0.5em;
 }
