@@ -135,7 +135,7 @@ function updateWordStatuses(wordList, quizzes, userAnswers, saveData) {
     const updated = saveData.wordStatus[word.word] || new WordStatus(word.word, new Date().toISOString(), [], 0);
 
     // dateを更新
-    updated.lastStudied = new Date().toISOString();
+    updated.lastLearnedDate = new Date().toISOString();
 
     // answerHistoryに最後の問題の正誤を追加
     const quizCorrectness = getQuizCorrectness(word.word, quizzes, userAnswers);
