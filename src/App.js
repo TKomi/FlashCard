@@ -8,6 +8,7 @@ import { LearningSession } from './models/LearningSession';
 import { v4 as uuidv4 } from 'uuid';
 import { WordStatus } from './models/WordStatus';
 import { LS } from './store/LS';
+import { extractFromWordList, loadFromWordJson } from './store/WordListUtils';
 
 function App() {
   const [currentScreen, setCurrentScreen] = useState('study');
@@ -30,21 +31,18 @@ function App() {
 
   // 起動時処理
   useEffect(() => {
-    // JSONファイルから単語データの読み込み
-    fetch('./data/toeic_service_list.json')
-      .then(response => response.json())
-      .then(getShuffledArray)
-      .then(data => data.slice(0, 5)) // for debugging
-      .then(data => {
-        const wl = data.map(Word.fromObject);
-        setWordList(wl);
-        setQuizzes(wl.map(createQuiz4));
-      })
-      .catch(console.error);
-
     // LocalStorageからデータの読み込み
     const data = LS.loadOrDefault();
     setStorageData(data);
+
+    // 単語データの読み込み
+    loadFromWordJson('./data/toeic_service_list.json')
+      .then(wordList => extractFromWordList(
+        wordList, 20, data.wordStatus)
+      ).then(wl => {
+        setWordList(wl);
+        setQuizzes(wl.map(createQuiz4));
+      }).catch(console.error);
   }, []);
 
   // クイズ終了時処理
@@ -188,21 +186,6 @@ function getUpdatedStatus(oldStatus, ansIsCorrect, checked = false){
     default:
       return 0;
   }
-}
-
-
-/**
- * 配列をシャッフルする
- * @param {any[]} array シャッフル対象の配列 副作用はありません。
- * @returns シャッフルされた配列
- */
-function getShuffledArray(array) {
-  const result = [...array];
-  for (let i = result.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [result[i], result[j]] = [result[j], result[i]];
-  }
-  return result;
 }
 
 export default App;
