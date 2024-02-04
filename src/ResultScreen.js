@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 /**
  * リザルト画面を表す画面コンポーネント
@@ -34,21 +34,27 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
       const correctAnswer = word.quiz.answer; // string
       const isCorrect = quiz.answerIndex === userAnswers[index];
       const status = wordStatus[index].status;
-      return { index, spelling, correctAnswer, isCorrect, status };
+      const isSkipped = userAnswers[index] === -1;
+      return { index, spelling, correctAnswer, isCorrect, status, isSkipped };
     });
     setEntries(newEntries);
   }, [words, quizzes, userAnswers, wordStatus]);
+
+  const countOfCorrect = useMemo(() => entries.filter(entry => entry.isCorrect).length , [entries]);
+  const countOfSkip = useMemo(() => userAnswers.filter(answer => answer === -1).length , [userAnswers]);
+  const countOfIncorrect = useMemo(() => entries.length - countOfCorrect - countOfSkip , [entries, countOfCorrect, countOfSkip]);
 
   return (
     <div>
       <h1 className = 'result-screen-title' > TOEIC Service List - Part1 </h1>
       <div className="result-screen-subtitle">通常学習 {entries.length}Words</div>
+      <div className='result-screen-subtitle'>○{countOfCorrect} / ×{countOfIncorrect} / -{countOfSkip}</div>
       <ul className='ul-result'>
         {entries.map(entry => (
           <li key={entry.index} className="result-row">
             <div className="result-index">{entry.index + 1}.</div>
             <div className="result-spelling">{entry.spelling}</div>
-            <div className="result-isCorrect">{entry.isCorrect ? '○' : '×'}</div>
+            <div className="result-isCorrect">{entry.isCorrect ? '○' : entry.isSkipped ? '-' : '×'}</div>
             <div className="result-answer">{entry.correctAnswer}</div>
             <ResultStatus wordStatus={entry.status} />
           </li>
