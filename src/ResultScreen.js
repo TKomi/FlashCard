@@ -41,13 +41,15 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
 
   return (
     <div>
-      <ul>
+      <h1 className = 'result-screen-title' > TOEIC Service List - Part1 </h1>
+      <div className="result-screen-subtitle">通常学習 {entries.length}Words</div>
+      <ul className='ul-result'>
         {entries.map(entry => (
           <li key={entry.index} className="result-row">
             <div className="result-index">{entry.index + 1}.</div>
             <div className="result-spelling">{entry.spelling}</div>
-            <div className="result-answer">{entry.correctAnswer}</div>
             <div className="result-isCorrect">{entry.isCorrect ? '○' : '×'}</div>
+            <div className="result-answer">{entry.correctAnswer}</div>
             <ResultStatus wordStatus={entry.status} />
           </li>
         ))}
@@ -65,14 +67,14 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
 function ResultStatus({ wordStatus }) {
   switch(wordStatus) {
     case 3:
-      return (<div className="result-status-3">覚えた</div>);
+      return (<div className="result-status result-status-3">覚えた</div>);
     case 2:
-      return (<div className="result-status-2">うろ覚え</div>);
+      return (<div className="result-status result-status-2">うろ覚え</div>);
     case 1:
-      return (<div className="result-status-1">苦手</div>);
+      return (<div className="result-status result-status-1">苦手</div>);
     case 0:
     default:
-      return (<div className="result-status-0">未学習</div>);
+      return (<div className="result-status result-status-0">未学習</div>);
   }
 }
 
