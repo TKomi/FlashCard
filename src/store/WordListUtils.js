@@ -25,7 +25,7 @@ export async function loadFromWordJson(jsonFilePath) {
  * - 過去の単語の学習状況を示すオブジェクト
  * - キーは単語、値はWordStatusオブジェクト
  * - ストレージから取り出したものを渡される想定
- * @return {Promise<Word[]>} 抽出された単語の配列
+ * @return {Word[]} 抽出された単語の配列
  */
 export function extractFromWordList(wordList, num, allWordStatus) {
   const group0 = []; // 未学習の単語リスト
