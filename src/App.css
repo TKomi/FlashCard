@@ -36,17 +36,49 @@ ul {
 .result-spelling {
   display: block;
   font-weight: bold;
-  width: 40%;
+  width: 35%;
 }
 
 .result-answer {
   display: block;
   font-weight: bold;
-  width: 40%;
+  width: 35%;
 }
 
 .result-isCorrect {
   display: block;
   font-weight: bold;
   width: 10%;
+}
+
+.result-status-0 {
+  background-color: #ccc;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  width: 10%;
+  text-align: center;
+}
+  
+.result-status-1 {
+  background-color: #fcc;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  width: 10%;
+  text-align: center;
+}
+
+.result-status-2 {
+  background-color: #ccf;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  width: 10%;
+  text-align: center;
+}
+
+.result-status-3 {
+  background-color: #cfc;
+  padding: 0.25em 0.5em;
+  border-radius: 0.25em;
+  width: 10%;
+  text-align: center;
 }
