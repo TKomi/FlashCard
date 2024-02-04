@@ -23,7 +23,7 @@ function App() {
   const [userAnswers, setUserAnswers] = useState([]);
 
   // クイズの一覧の順番に対応する、単語の学習状況の一覧(更新後)
-  const [quizWordStatuses, setQuizWordStatuses] = useState([]);
+  const [wordStatus, setWordStatus] = useState([]);
 
   // 起動時処理
   useEffect(() => {
@@ -49,7 +49,7 @@ function App() {
 
     setUserAnswers(ua);
     const updatedWordsStatuses = updateWordStatuses(wordList, quizzes, ua, storageData);
-    setQuizWordStatuses(updatedWordsStatuses);
+    setWordStatus(updatedWordsStatuses);
     save(wordList, quizzes, ua, storageData, updatedWordsStatuses);
     setCurrentScreen('result');
   };
@@ -61,7 +61,7 @@ function App() {
         currentScreen === 'study' ? (
           <StudyScreen quizzes={quizzes} onEndQuiz={onEndQuiz} />
         ) : currentScreen === 'result' ? (
-          <ResultScreen words={wordList} quizzes={quizzes} userAnswers={userAnswers} />
+          <ResultScreen words={wordList} quizzes={quizzes} userAnswers={userAnswers} wordStatus={wordStatus} />
         ) : (
           <div>
             <p>エラー</p>
