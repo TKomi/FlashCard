@@ -1,5 +1,5 @@
 import './App.css';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import StudyScreen from './StudyScreen/StudyScreen';
 import ResultScreen from './ResultScreen';
 import { Word } from './models/Word';
@@ -11,23 +11,29 @@ import { LS } from './store/LS';
 import { extractFromWordList, loadFromWordJson } from './store/WordListUtils';
 
 function App() {
+  // 現在表示している画面: 'study' or 'result'
   const [currentScreen, setCurrentScreen] = useState('study');
-
-  // 以下、アプリの現在の状態(読み込んだ単語の一覧、クイズの一覧、ユーザーの回答の一覧)
-  // 読み込んだ単語データの一覧
-  const [wordList, setWordList] = useState([]);
-
+  
   // LocalStorage上のデータ
   const [storageData, setStorageData] = useState({});
 
-  // クイズの一覧
+  // 現在の学習セットで扱っている単語の一覧
+  const [studySet, setStudySet] = useState([]);
+
+  // 現在の学習セットで扱っているクイズの一覧
   const [quizzes, setQuizzes] = useState([]);
+
+  // 現在の単語セットで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
+  const [remaining, setRemaining] = useState([]);
 
   // ユーザーの回答の一覧
   const [userAnswers, setUserAnswers] = useState([]);
 
   // クイズの一覧の順番に対応する、単語の学習状況の一覧(更新後)
   const [wordStatus, setWordStatus] = useState([]);
+
+  // 次のn個へ進むボタンの表示に使用する、次のセッションで学習する単語の数
+  const countOfNext = useMemo(() => remaining.length <= 20 ? remaining.length : 20, [remaining]);
 
   // 起動時処理
   useEffect(() => {
@@ -37,22 +43,37 @@ function App() {
 
     // 単語データの読み込み
     loadFromWordJson('./data/toeic_service_list.json')
-      .then(wordList => extractFromWordList(
-        wordList, 20, data.wordStatus)
-      ).then(wl => {
-        setWordList(wl);
+      .then(wordList => {
+        const wl = extractFromWordList(wordList, 20, data.wordStatus);
+        setStudySet(wl);
         setQuizzes(wl.map(createQuiz4));
+        setRemaining(wordList.filter(w => !wl.includes(w)));
       }).catch(console.error);
   }, []);
 
   // クイズ終了時処理
   const onEndQuiz = (ua) => {
-    // wordList, quizzes, userAnswersの内容を追記
+    // studySet, quizzes, userAnswersの内容を追記
     setUserAnswers(ua);
-    const updatedWordsStatuses = updateWordStatuses(wordList, quizzes, ua, storageData);
+    const updatedWordsStatuses = updateWordStatuses(studySet, quizzes, ua, storageData);
     setWordStatus(updatedWordsStatuses);
-    save(wordList, quizzes, ua, storageData, updatedWordsStatuses);
+    save(studySet, quizzes, ua, storageData, updatedWordsStatuses);
     setCurrentScreen('result');
+  };
+
+  // ユーザーが画面上のボタンを押したときの処理
+  const onUserButtonClick = (buttonName) => {
+    switch(buttonName) {
+      case 'next':
+        const extracted = extractFromWordList(remaining, 20, wordStatus);
+        setStudySet(extracted);
+        setQuizzes(extracted.map(createQuiz4));
+        setRemaining(remaining.filter(w => !extracted.includes(w)));
+        setCurrentScreen('study');
+        break;
+      default: 
+        break;
+    }
   };
 
   return (
@@ -62,7 +83,14 @@ function App() {
         currentScreen === 'study' ? (
           <StudyScreen quizzes={quizzes} onEndQuiz={onEndQuiz} />
         ) : currentScreen === 'result' ? (
-          <ResultScreen words={wordList} quizzes={quizzes} userAnswers={userAnswers} wordStatus={wordStatus} />
+          <ResultScreen
+            words={studySet}
+            quizzes={quizzes}
+            userAnswers={userAnswers}
+            wordStatus={wordStatus}
+            countOfNext={countOfNext}
+            onUserButtonClick={onUserButtonClick}
+          />
         ) : (
           <div>
             <p>エラー</p>
@@ -114,9 +142,9 @@ function save(wordList, quizzes, userAnswers, oldLearningSession, updatedWordsSt
 }
 
 /**
- * 学習セッション1件の終了後の各単語の学習状況(単語ステータス)を取得する
+ * 学習セット1件の終了後の各単語の学習状況(単語ステータス)を取得する
  * 
- * @param {Word[]} wordList 単語の一覧
+ * @param {Word[]} studySet 単語の一覧
  * @param {Quiz[]} quizzes クイズの一覧
  * - 順番は単語の一覧と同じ
  * @param {number[]} userAnswers ユーザーの回答の一覧
@@ -125,10 +153,10 @@ function save(wordList, quizzes, userAnswers, oldLearningSession, updatedWordsSt
  * @returns {WordStatus[]} 単語の学習状況の一覧
  * - 単語(クイズ, 回答)の一覧と同じ順番で、各単語の学習状況を格納した配列
  */
-function updateWordStatuses(wordList, quizzes, userAnswers, saveData) {
+function updateWordStatuses(studySet, quizzes, userAnswers, saveData) {
   const result = [];
 
-  for (const word of wordList) {
+  for (const word of studySet) {
     // 対応するwordStatusを取得, なければ新規作成
     const updated = saveData.wordStatus[word.word] || new WordStatus(word.word, new Date().toISOString(), [], 0);
 
