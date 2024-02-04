@@ -1,0 +1,39 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "学習セッション",
+  "properties": {
+    "sessionId": {
+      "type": "string",
+      "description": "学習セッションID"
+    },
+    "wordSetId": {
+      "type": "string",
+      "description": "単語セットID"
+    },
+    "completionDate": {
+      "type": "string",
+      "format": "date-time",
+      "description": "学習完了日時"
+    },
+    "answerHistory": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "w": {
+            "type": "string",
+            "description": "単語"
+          },
+          "c": {
+            "type": "boolean",
+            "description": "正解ならtrue、不正解ならfalse"
+          }
+        },
+        "required": ["w", "c"]
+      },
+      "description": "回答履歴"
+    }
+  },
+  "required": ["sessionId", "wordSetId", "completionDate", "answerHistory"]
+}
