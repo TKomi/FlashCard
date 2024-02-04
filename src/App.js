@@ -137,11 +137,11 @@ function getUpdatedStatus(oldStatus, ansIsCorrect, checked = false){
     case 0:
       return ansIsCorrect ? 3 : 2;
     case 1:
-      return ansIsCorrect ? 3 : 2;
+      return ansIsCorrect ? 2 : 1;
     case 2:
       return ansIsCorrect ? 3 : 1;
     case 3:
-      return ansIsCorrect ? 2 : 1;
+      return ansIsCorrect ? 3 : 2;
     default:
       return 0;
   }
