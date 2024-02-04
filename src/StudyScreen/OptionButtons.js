@@ -79,11 +79,30 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
 
   return (
     <div>
-      {quiz.options.map((option, index) => (
-        <button key={index} onClick={() => onAnswerInner(index)} disabled={isLocked} className={`option-button ${buttonStyle[index]}`}>{option}</button>
-      ))}
-      <button onClick={() => onAnswerInner(-1)} disabled={isLocked} className={`option-button ${skipButtonStyle}`}>スキップ</button>
+      <div className="uk-flex uk-flex-center uk-flex-column uk-width-1-1" >
+        {quiz.options.map((option, index) => (
+          <button key={index} onClick={() => onAnswerInner(index)} disabled={isLocked} className={`uk-width-4-5 option-btn ${buttonStyle[index]}`}>{option}</button>
+        ))}
+        < div className = 'uk-flex uk-width-1-1 uk-margin-top' >
+          < div className = 'uk-width-1-2' >
+            < label className = 'study-checkbox' > < input type = "checkbox"
+            className = "uk-checkbox" / > チェック < /label>
+          </div>
+          <div className='uk-width-1-2'>
+            < button onClick = {
+              () => onAnswerInner(-1)
+            }
+            disabled = {
+              isLocked
+            }
+            className = {
+              `skip-btn ${skipButtonStyle}`
+            } > スキップ </button>
+          </div>
+        </div>
+        <button className='quit-btn'>やめる</button>
     </div>
+  </div>  
   );
 }
 

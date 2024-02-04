@@ -1,22 +1,76 @@
+.study-screen-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 1em 0;
+  text-align: center;
+}
 
-.option-button.default {
+.study-screen-subtitle {
+  margin: 0.5em 0;
+  text-align: center;
+}
+
+.study-screen-word {
+  font-size: 3em;
+  font-weight: bold;
+  margin: 1em 0;
+  text-align: center;
+}
+
+.option-btn {
+  height: 3em;
+  width: 80%;
+  margin: 0.3em auto;
+  border-radius: 0.5em;
+}
+
+.option-btn:disabled {
+  color: #444;
+}
+
+.option-btn.default {
   background-color: #ddd;
   border-color: #777;
 }
-.option-button.correct {
+.option-btn.correct {
   background-color: #8f8;
   border-color: #2a2;
 }
 
-.option-button.incorrect {
+.option-btn.incorrect, .skip-btn.incorrect {
   background-color: #f88;
   border-color: #a22;
 }
 
-.option-button.actual {
+.option-btn.actual {
   background-color: #88f;
   border-color: #22a;
 }
+
+.skip-btn {
+  height: 3em;
+  width: 80%;
+  margin: 0.3em auto;
+  border-radius: 0.5em;
+  position: relative;
+  right: 0;
+}
+
+.study-checkbox {
+  display: block;
+  margin: 0.75em 0;
+  text-align: center;
+}
+
+.quit-btn {
+  background-color: #fdd;
+  border-color: #e88;
+  height: 3em;
+  width: 80%;
+  margin: 2em auto;
+  border-radius: 0.5em;
+}
+
 
 ul {
   padding-inline-start: 0;
