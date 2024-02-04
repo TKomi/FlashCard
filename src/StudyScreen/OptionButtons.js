@@ -55,7 +55,7 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
       // スキップボタン: 不正解
       nextSkipStyle = "incorrect";
       // 選んでおらず、正解
-      nextStyle[quiz.answer] = "actual";
+      nextStyle[quiz.answerIndex] = "actual";
     } else {
       // スキップ以外の不正解の場合。
       // 選んでおらず、不正解: defaultのまま
