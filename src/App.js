@@ -16,6 +16,9 @@ function App() {
   // 読み込んだ単語データの一覧
   const [wordList, setWordList] = useState([]);
 
+  // LocalStorage上のデータ
+  const [storageData, setStorageData] = useState({});
+
   // クイズの一覧
   const [quizzes, setQuizzes] = useState([]);
 
@@ -27,6 +30,7 @@ function App() {
 
   // 起動時処理
   useEffect(() => {
+    // JSONファイルから単語データの読み込み
     fetch('./data/toeic_service_list.json')
       .then(response => response.json())
       .then(getShuffledArray)
@@ -37,16 +41,15 @@ function App() {
         setQuizzes(wl.map(createQuiz4));
       })
       .catch(console.error);
+
+    // LocalStorageからデータの読み込み
+    const data = LS.loadOrDefault();
+    setStorageData(data);
   }, []);
 
   // クイズ終了時処理
   const onEndQuiz = (ua) => {
     // wordList, quizzes, userAnswersの内容を追記
-    const storageData = {
-      learningSession: [],
-      wordStatus: {},
-    }; // 仮実装
-
     setUserAnswers(ua);
     const updatedWordsStatuses = updateWordStatuses(wordList, quizzes, ua, storageData);
     setWordStatus(updatedWordsStatuses);
