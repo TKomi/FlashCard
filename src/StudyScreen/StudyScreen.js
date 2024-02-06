@@ -69,6 +69,9 @@ function StudyScreen({ quizzes, onEndQuiz }) {
         quizzes.length > 0 && currentQuestionIndex < quizzes.length &&
         <div>
           <div className='study-screen-subtitle'>通常学習 {currentQuestionIndex + 1} / {quizzes.length} Words</div>
+          <div className='study-screen-progress'>
+            <progress value={currentQuestionIndex} max={quizzes.length} className="uk-progress study-screen-progress"/>
+          </div>
           <div className='study-screen-word'>{currentQuiz.question}</div>
           <OptionButtons quiz={currentQuiz} onNextQuiz={recordAndNextQuiz} />
         </div>

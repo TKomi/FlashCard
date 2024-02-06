@@ -2,7 +2,7 @@
 .study-screen-title {
   font-size: 1.5em;
   font-weight: bold;
-  margin: 1em 0;
+  margin: 1em 0 0.4em 0;
   text-align: center;
 }
 
@@ -11,10 +11,15 @@
   text-align: center;
 }
 
+.study-screen-progress {
+  margin: 0em auto;
+  width: 80%;
+}
+
 .study-screen-word {
   font-size: 3em;
   font-weight: bold;
-  margin: 1em 0;
+  margin: 0.7em 0;
   text-align: center;
 }
 
