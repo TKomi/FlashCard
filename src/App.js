@@ -105,7 +105,7 @@ function App() {
  * 
  * @param {Word[]} wordList 出題された単語の一覧
  * @param {Quiz[]} quizzes 出題された問題の一覧。wordListと順番が同じである
- * @param {number[]} userAnswers ユーザーの回答の一覧。quizzesと順番が同じである
+ * @param {{option: number, checked: boolean}[]} userAnswers ユーザーの回答の一覧。quizzesと順番が同じ。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
  * @param {import("./models/LearningSession").LearningSession} oldLearningSession LSから読み込んだ、既存の学習セッションデータ
  * - delete-insert方式のため、古いデータも必要となる
  * @param {WordStatus[]} updatedWordsStatuses 更新後の単語の学習状況の一覧
@@ -122,7 +122,7 @@ function save(wordList, quizzes, userAnswers, oldLearningSession, updatedWordsSt
     answerHistory: userAnswers.map((answer, index) => {
       return {
         w: wordList[index].word,
-        c: quizzes[index].answerIndex === answer,
+        c: quizzes[index].answerIndex === answer.option,
       };
     }),
   }));
@@ -146,7 +146,7 @@ function save(wordList, quizzes, userAnswers, oldLearningSession, updatedWordsSt
  * @param {Word[]} studySet 単語の一覧
  * @param {Quiz[]} quizzes クイズの一覧
  * - 順番は単語の一覧と同じ
- * @param {number[]} userAnswers ユーザーの回答の一覧
+ * @param {{option: number, checked: boolean}[]} userAnswers ユーザーの回答の一覧
  * - 順番は単語の一覧と同じ
  * @param {import("./store/LS").FlashCardData} saveData LSから読み込んだ、既存のデータ
  * @returns {WordStatus[]} 単語の学習状況の一覧
@@ -180,13 +180,13 @@ function updateWordStatuses(studySet, quizzes, userAnswers, saveData) {
  * 
  * @param {string} word 単語
  * @param {Quiz[]} quizzes クイズの一覧
- * @param {number[]} userAnswers ユーザーの回答の一覧
+ * @param {{option: number, checked: boolean}[]} userAnswers ユーザーの回答の一覧。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
  * @returns {boolean} 正解ならtrue, 不正解ならfalse
  */
 function getQuizCorrectness(word, quizzes, userAnswers) {
   const index = quizzes.findIndex(quiz => quiz.question === word);
   if (index !== -1) {
-    return quizzes[index].answerIndex === userAnswers[index];
+    return quizzes[index].answerIndex === userAnswers[index].option;
   }
   return false;
 }

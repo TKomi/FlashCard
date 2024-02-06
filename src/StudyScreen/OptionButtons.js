@@ -9,7 +9,10 @@ import React, { useEffect, useState } from 'react';
  *   正誤表示する時間は1秒とする
  *   すべての選択肢ボタンはロックされ、クリックできない状態にする
  * 正誤表示が終わったらonNextQuizを呼び出す
- * @param {{quiz: Quiz, onAnswer: (userAnswer: number) => void, onNextQuiz: (userAnswer: number) => void}} param0 
+ * @param {{quiz: Quiz, onAnswer: (userAnswer: {option: number, checked: boolean}) => void, onNextQuiz: (userAnswer: {option: number, checked: boolean}) => void}} param0 
+ * - quiz: 表示するクイズ
+ * - onAnswer: ユーザーが回答した後の処理。userAnswerのoptionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
+ * - onNextQuiz: 次の問題に進む直前に呼び出される処理。userAnswerのoptionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
  */
 function OptionButtons({quiz, onAnswer, onNextQuiz}) {
   // ステート
@@ -35,7 +38,7 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
     // 1. ボタンをロックする
     setIsLocked(true);
     if (onAnswer) {
-      onAnswer(userAnswer);
+      onAnswer({option: userAnswer});
     }
 
     // 2.ユーザーの回答にあわせてスタイルを変更する
@@ -71,7 +74,7 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
     setTimeout(() => {
       setIsLocked(false);
       if (onNextQuiz){
-        onNextQuiz(userAnswer);
+        onNextQuiz({option: userAnswer});
       }
     }, 1000);
   

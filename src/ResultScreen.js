@@ -14,7 +14,7 @@ import React, { useEffect, useState, useMemo } from 'react';
  * - ユーザーの回答の記録
  * - 単語、問題のリスト、ユーザーの回答リストは受け取るだけで、自分で作成しない
  * 
- * @param {{words: Word[], quizzes: Quiz[], userAnswers: number[], wordStatus: import("./models/WordStatus").WordStatus, countOfNext: number, onUserButtonClick: (name: string) => void}} props 
+ * @param {{words: Word[], quizzes: Quiz[], userAnswers: {option: number, checked: boolean}[], wordStatus: import("./models/WordStatus").WordStatus, countOfNext: number, onUserButtonClick: (name: string) => void}} props 
  * - words: 画面で扱う単語リスト
  * - quizzes: クイズの一覧
  * - userAnswers: ユーザーの回答
@@ -32,16 +32,16 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
       const word = words[index];
       const spelling = word.word;
       const correctAnswer = word.quiz.answer; // string
-      const isCorrect = quiz.answerIndex === userAnswers[index];
+      const isCorrect = quiz.answerIndex === userAnswers[index].option;
       const status = wordStatus[index].status;
-      const isSkipped = userAnswers[index] === -1;
+      const isSkipped = userAnswers[index].option === -1;
       return { index, spelling, correctAnswer, isCorrect, status, isSkipped };
     });
     setEntries(newEntries);
   }, [words, quizzes, userAnswers, wordStatus]);
 
   const countOfCorrect = useMemo(() => entries.filter(entry => entry.isCorrect).length , [entries]);
-  const countOfSkip = useMemo(() => userAnswers.filter(answer => answer === -1).length , [userAnswers]);
+  const countOfSkip = useMemo(() => userAnswers.filter(answer => answer.option === -1).length , [userAnswers]);
   const countOfIncorrect = useMemo(() => entries.length - countOfCorrect - countOfSkip , [entries, countOfCorrect, countOfSkip]);
 
   return (
@@ -60,7 +60,7 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
           </li>
         ))}
       </ul>
-      <div class="uk-flex">
+      <div className="uk-flex">
         <button className = 'result-action-btn' > 復習する < /button>
         <button className='result-action-btn'>ホームへ戻る</button>
         <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick}/>
