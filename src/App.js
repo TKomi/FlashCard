@@ -6,7 +6,7 @@ import ResultScreen from './ResultScreen';
 import { createQuiz4 } from './StudyScreen/CreateQuiz';
 import { LearningSession } from './models/LearningSession';
 import { v4 as uuidv4 } from 'uuid';
-import { WordStatus } from './models/WordStatus';
+import { updateWordStatuses } from './models/WordStatusUtils';
 import { LS } from './store/LS';
 import { extractFromWordList, loadFromWordJson } from './store/WordListUtils';
 
@@ -138,81 +138,6 @@ function save(wordList, quizzes, userAnswers, oldLearningSession, updatedWordsSt
     learningSession: learningSessionClone,
     wordStatus: wordStatusClone,
   });
-}
-
-/**
- * 学習セット1件の終了後の各単語の学習状況(単語ステータス)を取得する
- * 
- * @param {Word[]} studySet 単語の一覧
- * @param {Quiz[]} quizzes クイズの一覧
- * - 順番は単語の一覧と同じ
- * @param {{option: number, checked: boolean}[]} userAnswers ユーザーの回答の一覧
- * - 順番は単語の一覧と同じ
- * @param {import("./store/LS").FlashCardData} saveData LSから読み込んだ、既存のデータ
- * @returns {WordStatus[]} 単語の学習状況の一覧
- * - 単語(クイズ, 回答)の一覧と同じ順番で、各単語の学習状況を格納した配列
- */
-function updateWordStatuses(studySet, quizzes, userAnswers, saveData) {
-  const result = [];
-
-  for (const word of studySet) {
-    // 対応するwordStatusを取得, なければ新規作成
-    const updated = saveData.wordStatus[word.word] || new WordStatus(word.word, new Date().toISOString(), [], 0);
-
-    // dateを更新
-    updated.lastLearnedDate = new Date().toISOString();
-
-    // answerHistoryに最後の問題の正誤を追加
-    const quizCorrectness = getQuizCorrectness(word.word, quizzes, userAnswers);
-    updated.answerHistory.push(quizCorrectness);
-
-    // statusを更新
-    updated.status = getUpdatedStatus(updated.status, quizCorrectness);
-
-    // wordStatusを更新
-    result.push(updated);
-  }
-
-  return result;
-}
-
-/** クイズの一覧およびユーザーの回答の一覧を提供し、指定した単語に関するクイズ1問の正誤を取得する
- * 
- * @param {string} word 単語
- * @param {Quiz[]} quizzes クイズの一覧
- * @param {{option: number, checked: boolean}[]} userAnswers ユーザーの回答の一覧。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
- * @returns {boolean} 正解ならtrue, 不正解ならfalse
- */
-function getQuizCorrectness(word, quizzes, userAnswers) {
-  const index = quizzes.findIndex(quiz => quiz.question === word);
-  if (index !== -1) {
-    return quizzes[index].answerIndex === userAnswers[index].option;
-  }
-  return false;
-}
-
-/**
- * 単語の現在の状態(未回答0、苦手1、うろ覚え2、覚えた3), 今回の回答が正解かどうか, チェックボックスの状態から、更新後のステータスを返す
- * 
- * @param {number} oldStatus 現在のステータス
- * @param {boolean} ansIsCorrect 今回の回答が正解かどうか
- * @param {boolean} checked チェックボックスの状態 // 未実装
- * @returns {0|1|2|3} 更新後のステータス
- */
-function getUpdatedStatus(oldStatus, ansIsCorrect, checked = false){
-  // 現在の状態はcheckedが反映されていない仮のもの
-  switch(oldStatus) {
-    case 0:
-      return ansIsCorrect ? 3 : 2;
-    case 1:
-      return ansIsCorrect ? 2 : 1;
-    case 2:
-      return ansIsCorrect ? 3 : 1;
-    case 3:
-      return ansIsCorrect ? 3 : 2;
-    default:
-      return 0;
-  }
 }
 
 export default App;

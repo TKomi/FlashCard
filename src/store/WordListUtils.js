@@ -37,12 +37,15 @@ export function extractFromWordList(wordList, num, allWordStatus) {
     const status = allWordStatus[word.word];
     switch (status?.status) {
       case 1:
+      case 2:
         group1.push(word);
         break;
-      case 2:
+      case 3:
+      case 4:
         group2.push(word);
         break;
-      case 3:
+      case 5:
+      case 6:
         group3.push(word);
         break;
       case undefined:
