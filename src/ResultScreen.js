@@ -89,7 +89,7 @@ function ResultStatus({ wordStatus }) {
 }
 
 function NextButton({ countOfNext, onUserButtonClick }) {
-  if (countOfNext === 0) return null;
+  if (countOfNext === 0) return <div className='result-action-spacer'></div>;
   else {
     return (
       <button onClick={() => onUserButtonClick("next")} className='result-action-btn'>次の{countOfNext}個</button>

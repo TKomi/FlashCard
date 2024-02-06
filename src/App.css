@@ -166,3 +166,8 @@
   margin: 2em auto;
   border-radius: 0.5em;
 }
+
+.result-action-spacer {
+  width: 30%;
+  margin: 2em auto;
+}
