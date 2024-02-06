@@ -1,0 +1,18 @@
+{
+  "dataSet": [
+    {
+      "seriesNo": 1,
+      "seriesName": "TOEIC Service List", 
+      "seriesDescription": "TOEIC Service List 1250語からの出題です。",
+      "size": 1250,
+      "wordSets": [
+        {
+          "wordSetNo": 1,
+          "wordSetName": "Part1",
+          "filePath": "tsl/part1.json",
+          "size": 50
+        }
+      ]
+    }
+  ]
+}

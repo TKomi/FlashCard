@@ -1,21 +1,26 @@
 import './App.css';
 import 'uikit/dist/css/uikit.min.css';
 import { useEffect, useState, useMemo } from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import { LS } from './store/LS';
+import { extractFromWordList, loadFromWordJson } from './store/WordListUtils';
+import HomeScreen from './HomeScreen';
 import StudyScreen from './StudyScreen/StudyScreen';
 import ResultScreen from './ResultScreen';
 import { createQuiz4 } from './StudyScreen/CreateQuiz';
 import { LearningSession } from './models/LearningSession';
-import { v4 as uuidv4 } from 'uuid';
 import { updateWordStatuses } from './models/WordStatusUtils';
-import { LS } from './store/LS';
-import { extractFromWordList, loadFromWordJson } from './store/WordListUtils';
+import { WordSetIndex } from './models/WordSetIndex';
 
 function App() {
-  // 現在表示している画面: 'study' or 'result'
-  const [currentScreen, setCurrentScreen] = useState('study');
+  // 現在表示している画面: 'home' or 'study' or 'result'
+  const [currentScreen, setCurrentScreen] = useState('home');
   
   // LocalStorage上のデータ
   const [storageData, setStorageData] = useState({});
+
+  // 学習シリーズの一覧
+  const [seriesSet, setSeriesSet] = useState([]);
 
   // 現在の学習セットで扱っている単語の一覧
   const [studySet, setStudySet] = useState([]);
@@ -41,14 +46,12 @@ function App() {
     const data = LS.loadOrDefault();
     setStorageData(data);
 
-    // 単語データの読み込み
-    loadFromWordJson('./data/toeic_service_list.json')
-      .then(wordList => {
-        const wl = extractFromWordList(wordList, 20, data.wordStatus);
-        setStudySet(wl);
-        setQuizzes(wl.map(createQuiz4));
-        setRemaining(wordList.filter(w => !wl.includes(w)));
-      }).catch(console.error);
+    // 学習シリーズの一覧の読み込み
+    WordSetIndex.loadFromIndexJson('./data/index.json')
+    .then(seriesSet => {
+      setSeriesSet(seriesSet);
+    }).catch(console.error);
+
   }, []);
 
   // クイズ終了時処理
@@ -61,7 +64,7 @@ function App() {
     setCurrentScreen('result');
   };
 
-  // ユーザーが画面上のボタンを押したときの処理
+  // ユーザーが画面上のボタンを押したときの処理(ここで扱うボタンは画面を横断する物に限る)
   const onUserButtonClick = (buttonName) => {
     switch(buttonName) {
       case 'next':
@@ -71,9 +74,28 @@ function App() {
         setRemaining(remaining.filter(w => !extracted.includes(w)));
         setCurrentScreen('study');
         break;
+      case 'home':
+        setCurrentScreen('home');
+        break;
       default: 
         break;
     }
+  };
+
+/* HomeScreenで単語セットが選択されたときの処理
+ * - 受け取った単語セットのファイルパスに該当する単語データを読み込む
+ * - その単語データを元に、学習セット、クイズ、残りの単語を設定する。最後に、学習画面に遷移する
+ */
+  const onSelectedWordSet = (filePath) => {
+    // 単語データの読み込み
+    loadFromWordJson(filePath)
+      .then(wordList => {
+        const wl = extractFromWordList(wordList, 20, storageData.wordStatus);
+        setStudySet(wl);
+        setQuizzes(wl.map(createQuiz4));
+        setRemaining(wordList.filter(w => !wl.includes(w)));
+        setCurrentScreen('study');
+      }).catch(console.error);
   };
 
   return (
@@ -90,7 +112,9 @@ function App() {
             countOfNext={countOfNext}
             onUserButtonClick={onUserButtonClick}
           />
-        ) : (
+          ) : currentScreen === 'home' ? (
+            <HomeScreen seriesSet={seriesSet} onSelectedWordSet={onSelectedWordSet}/>
+          ) : (
           <div>
             <p>エラー</p>
           </div>
