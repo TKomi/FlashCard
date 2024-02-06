@@ -110,28 +110,35 @@
 .result-index {
   display: block;
   width: 10%;
-  font-size: 0.9em;
+  font-size: 0.8em;
 }
 
 .result-spelling {
   display: block;
   font-weight: bold;
-  font-size: 0.9em;
-  width: 35%;
+  font-size: 0.8em;
+  width: 32%;
 }
 
 .result-answer {
   display: block;
   font-weight: bold;
-  font-size: 0.9em;
-  width: 35%;
+  font-size: 0.8em;
+  width: 32%;
 }
 
 .result-isCorrect {
   display: block;
   font-weight: bold;
-  font-size: 0.9em;
+  font-size: 0.8em;
   width: 5%;
+}
+
+.result-checked {
+  display: block;
+  font-weight: bold;
+  font-size: 0.8em;
+  width: 6%;
 }
 
 .result-status{

@@ -33,9 +33,10 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
       const spelling = word.word;
       const correctAnswer = word.quiz.answer; // string
       const isCorrect = quiz.answerIndex === userAnswers[index].option;
+      const isChecked = userAnswers[index].checked;
       const status = wordStatus[index].status;
       const isSkipped = userAnswers[index].option === -1;
-      return { index, spelling, correctAnswer, isCorrect, status, isSkipped };
+      return { index, spelling, correctAnswer, isCorrect, status, isSkipped, isChecked };
     });
     setEntries(newEntries);
   }, [words, quizzes, userAnswers, wordStatus]);
@@ -55,6 +56,7 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
             <div className="result-index">{entry.index + 1}.</div>
             <div className="result-spelling">{entry.spelling}</div>
             <div className="result-isCorrect">{entry.isCorrect ? '○' : entry.isSkipped ? '-' : '×'}</div>
+            <div className='result-checked'>{entry.isChecked ? '✔' : ''}</div>
             <div className="result-answer">{entry.correctAnswer}</div>
             <ResultStatus wordStatus={entry.status} />
           </li>

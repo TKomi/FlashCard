@@ -19,6 +19,9 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
   // ロック状態: boolean デフォルトはfalse(ロックされていない)
   const [isLocked, setIsLocked] = useState(false);
 
+  // チェックボックスの状態: boolean デフォルトはfalse(未チェック)
+  const [checked, setChecked] = useState(false);
+
   // 回答ボタンのスタイル(クラス): string[]
   // スタイルの選択肢はdefault(未回答), correct(正解), incorrect(不正解), actual(本当の正解)
   const [buttonStyle, setButtonStyle] = useState(["default", "default", "default", "default"]);
@@ -31,6 +34,9 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
     // スタイルの初期化
     setButtonStyle(["default", "default", "default", "default"]);
     setSkipButtonStyle("default");
+
+    // チェックボックスはクリア
+    setChecked(false);
   }, [quiz])
 
   // ユーザーが回答した後の処理
@@ -38,7 +44,7 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
     // 1. ボタンをロックする
     setIsLocked(true);
     if (onAnswer) {
-      onAnswer({option: userAnswer});
+      onAnswer({option: userAnswer, checked: checked});
     }
 
     // 2.ユーザーの回答にあわせてスタイルを変更する
@@ -74,7 +80,7 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
     setTimeout(() => {
       setIsLocked(false);
       if (onNextQuiz){
-        onNextQuiz({option: userAnswer});
+        onNextQuiz({option: userAnswer, checked: checked});
       }
     }, 1000);
   
@@ -89,7 +95,7 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
         < div className = 'uk-flex uk-width-1-1 uk-margin-top' >
           < div className = 'uk-width-1-2' >
             < label className = 'study-checkbox' > < input type = "checkbox"
-            className = "uk-checkbox" / > チェック < /label>
+            className = "uk-checkbox" checked={checked} onChange={() => setChecked(!checked)} / > チェック < /label>
           </div>
           <div className='uk-width-1-2'>
             < button onClick = {
