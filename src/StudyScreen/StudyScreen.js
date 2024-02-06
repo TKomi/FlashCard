@@ -14,14 +14,14 @@ import OptionButtons from './OptionButtons';
  * このコンポーネントでやらないこと
  * - 単語に含まれる解答および選択肢を使ってクイズを作る: 正しくは親コンポーネントから受け取る
  * 
- * @param {{quizzes: Quiz[], onEndQuiz: (userAnswers: number[]) => void}} wordSet 画面で扱う単語セット
+ * @param {{quizzes: Quiz[], onEndQuiz: (userAnswers: {option: number, checked: boolean}[]) => void}} wordSet 画面で扱う単語セット
  */
 function StudyScreen({ quizzes, onEndQuiz }) {
   // ステート
   // 現在の問題番号: number (0から始まる)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
 
-  // ユーザーの回答: number[] Quizのインデックスに対応する選択肢のインデックス。0から始まる。-1は「スキップ」
+  // ユーザーの回答: {option: number, checked: boolean}[] Quizのインデックスに対応する選択肢のインデックスとチェック状態。optionは0から始まる。-1は「スキップ」
   const [userAnswers, setUserAnswers] = useState([]);
 
   // NOTE: setUserAnswers -> setEnd -> onEndQuiz の順番に連鎖する
@@ -79,7 +79,5 @@ function StudyScreen({ quizzes, onEndQuiz }) {
     </div>
   );
 }
-
-
 
 export default StudyScreen;
