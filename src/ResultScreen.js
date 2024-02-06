@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 
 /**
  * リザルト画面を表す画面コンポーネント
@@ -34,25 +34,37 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
       const correctAnswer = word.quiz.answer; // string
       const isCorrect = quiz.answerIndex === userAnswers[index];
       const status = wordStatus[index].status;
-      return { index, spelling, correctAnswer, isCorrect, status };
+      const isSkipped = userAnswers[index] === -1;
+      return { index, spelling, correctAnswer, isCorrect, status, isSkipped };
     });
     setEntries(newEntries);
   }, [words, quizzes, userAnswers, wordStatus]);
 
+  const countOfCorrect = useMemo(() => entries.filter(entry => entry.isCorrect).length , [entries]);
+  const countOfSkip = useMemo(() => userAnswers.filter(answer => answer === -1).length , [userAnswers]);
+  const countOfIncorrect = useMemo(() => entries.length - countOfCorrect - countOfSkip , [entries, countOfCorrect, countOfSkip]);
+
   return (
     <div>
-      <ul>
+      <h1 className = 'result-screen-title' > TOEIC Service List - Part1 </h1>
+      <div className="result-screen-subtitle">通常学習 {entries.length}Words</div>
+      <div className='result-screen-subtitle'>○{countOfCorrect} / ×{countOfIncorrect} / -{countOfSkip}</div>
+      <ul className='ul-result'>
         {entries.map(entry => (
           <li key={entry.index} className="result-row">
             <div className="result-index">{entry.index + 1}.</div>
             <div className="result-spelling">{entry.spelling}</div>
+            <div className="result-isCorrect">{entry.isCorrect ? '○' : entry.isSkipped ? '-' : '×'}</div>
             <div className="result-answer">{entry.correctAnswer}</div>
-            <div className="result-isCorrect">{entry.isCorrect ? '○' : '×'}</div>
             <ResultStatus wordStatus={entry.status} />
           </li>
         ))}
       </ul>
-      <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick}/>
+      <div class="uk-flex">
+        <button className = 'result-action-btn' > 復習する < /button>
+        <button className='result-action-btn'>ホームへ戻る</button>
+        <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick}/>
+      </div>
     </div>
   );
 }
@@ -65,22 +77,22 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
 function ResultStatus({ wordStatus }) {
   switch(wordStatus) {
     case 3:
-      return (<div className="result-status-3">覚えた</div>);
+      return (<div className="result-status result-status-3">覚えた</div>);
     case 2:
-      return (<div className="result-status-2">うろ覚え</div>);
+      return (<div className="result-status result-status-2">うろ覚え</div>);
     case 1:
-      return (<div className="result-status-1">苦手</div>);
+      return (<div className="result-status result-status-1">苦手</div>);
     case 0:
     default:
-      return (<div className="result-status-0">未学習</div>);
+      return (<div className="result-status result-status-0">未学習</div>);
   }
 }
 
 function NextButton({ countOfNext, onUserButtonClick }) {
-  if (countOfNext === 0) return null;
+  if (countOfNext === 0) return <div className='result-action-spacer'></div>;
   else {
     return (
-      <button onClick={() => onUserButtonClick("next")}>次の{countOfNext}個</button>
+      <button onClick={() => onUserButtonClick("next")} className='result-action-btn'>次の{countOfNext}個</button>
     );
   }
 }

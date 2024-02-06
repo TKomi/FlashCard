@@ -64,11 +64,15 @@ function StudyScreen({ quizzes, onEndQuiz }) {
   };
   return (
     <div>
+      <h1 className='study-screen-title'>TOEIC Service List - Part1</h1>
       {
         quizzes.length > 0 && currentQuestionIndex < quizzes.length &&
         <div>
-          <p>通常学習 {currentQuestionIndex + 1} / {quizzes.length} Words</p>
-          <p>{currentQuiz.question}</p>
+          <div className='study-screen-subtitle'>通常学習 {currentQuestionIndex + 1} / {quizzes.length} Words</div>
+          <div className='study-screen-progress'>
+            <progress value={currentQuestionIndex} max={quizzes.length} className="uk-progress study-screen-progress"/>
+          </div>
+          <div className='study-screen-word'>{currentQuiz.question}</div>
           <OptionButtons quiz={currentQuiz} onNextQuiz={recordAndNextQuiz} />
         </div>
       }

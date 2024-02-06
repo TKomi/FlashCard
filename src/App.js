@@ -1,8 +1,8 @@
 import './App.css';
+import 'uikit/dist/css/uikit.min.css';
 import { useEffect, useState, useMemo } from 'react';
 import StudyScreen from './StudyScreen/StudyScreen';
 import ResultScreen from './ResultScreen';
-import { Word } from './models/Word';
 import { createQuiz4 } from './StudyScreen/CreateQuiz';
 import { LearningSession } from './models/LearningSession';
 import { v4 as uuidv4 } from 'uuid';
@@ -78,7 +78,6 @@ function App() {
 
   return (
     <div>
-      <h1>TOEIC単語帳</h1>
       {
         currentScreen === 'study' ? (
           <StudyScreen quizzes={quizzes} onEndQuiz={onEndQuiz} />
