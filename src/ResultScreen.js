@@ -73,15 +73,18 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
 
 /**
  * 「覚えた」「うろ覚え」などの学習状況を表示するコンポーネント
- * @param {{wordStatus: 0|1|2|3}}
+ * @param {{wordStatus: 0|1|2|3|4|5|6}}
  * @returns JSX.Element
  */
 function ResultStatus({ wordStatus }) {
   switch(wordStatus) {
-    case 3:
+    case 6:
+    case 5:
       return (<div className="result-status result-status-3">覚えた</div>);
-    case 2:
+    case 4:
+    case 3:
       return (<div className="result-status result-status-2">うろ覚え</div>);
+    case 2:
     case 1:
       return (<div className="result-status result-status-1">苦手</div>);
     case 0:
