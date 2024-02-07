@@ -65,11 +65,24 @@ function App() {
 
   // クイズ終了時処理
   const onEndQuiz = (ua) => {
-    // studySet, quizzes, userAnswersの内容を追記
+    // 1問も解いていない場合には保存せず、ホーム画面に戻る
+    if (ua.length === 0) {
+      setCurrentScreen('home');
+      return;
+    }
+    
+    // 「やめる」を選んでいた場合には ua.length < quizzes.length となる
+    // どのケースにも対応するため、studySet, quizzesはuaの長さに切り詰める
+    const studySetInner = studySet.slice(0, ua.length);
+    const quizzesInner = quizzes.slice(0, ua.length);
+
+    const updatedWordsStatuses = updateWordStatuses(studySetInner, quizzesInner, ua, storageData);
+    
     setUserAnswers(ua);
-    const updatedWordsStatuses = updateWordStatuses(studySet, quizzes, ua, storageData);
+    setStudySet(studySetInner);
+    setQuizzes(quizzesInner);
     setWordStatus(updatedWordsStatuses);
-    save(studySet, quizzes, ua, storageData, updatedWordsStatuses);
+    save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
     setCurrentScreen('result');
   };
 

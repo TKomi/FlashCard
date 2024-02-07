@@ -14,7 +14,7 @@ import OptionButtons from './OptionButtons';
  * このコンポーネントでやらないこと
  * - 単語に含まれる解答および選択肢を使ってクイズを作る: 正しくは親コンポーネントから受け取る
  * 
- * @param {{quizzes: Quiz[], onEndQuiz: (userAnswers: {option: number, checked: boolean}[]) => void}} wordSet 画面で扱う単語セット
+ * @param {{quizzes: Quiz[], onEndQuiz: (userAnswers: {option: number, checked: boolean}[]) => void}}} wordSet 画面で扱う単語セット
  */
 function StudyScreen({ quizzes, onEndQuiz }) {
   // ステート
@@ -62,6 +62,12 @@ function StudyScreen({ quizzes, onEndQuiz }) {
       setEnd(true);
     }
   };
+
+  const onQuitInner = () => {
+    setUserAnswers([...userAnswers]);
+    setEnd(true);
+  };
+
   return (
     <div>
       <h1 className='study-screen-title'>TOEIC Service List - Part1</h1>
@@ -73,7 +79,7 @@ function StudyScreen({ quizzes, onEndQuiz }) {
             <progress value={currentQuestionIndex} max={quizzes.length} className="uk-progress study-screen-progress"/>
           </div>
           <div className='study-screen-word'>{currentQuiz.question}</div>
-          <OptionButtons quiz={currentQuiz} onNextQuiz={recordAndNextQuiz} />
+          <OptionButtons quiz={currentQuiz} onNextQuiz={recordAndNextQuiz} onQuit={onQuitInner}/>
         </div>
       }
     </div>

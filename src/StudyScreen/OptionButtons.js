@@ -9,12 +9,13 @@ import React, { useEffect, useState } from 'react';
  *   正誤表示する時間は1秒とする
  *   すべての選択肢ボタンはロックされ、クリックできない状態にする
  * 正誤表示が終わったらonNextQuizを呼び出す
- * @param {{quiz: Quiz, onAnswer: (userAnswer: {option: number, checked: boolean}) => void, onNextQuiz: (userAnswer: {option: number, checked: boolean}) => void}} param0 
+ * @param {{quiz: Quiz, onAnswer: (userAnswer: {option: number, checked: boolean}) => void, onNextQuiz: (userAnswer: {option: number, checked: boolean}) => void, onQuit: () => void}} param0 
  * - quiz: 表示するクイズ
  * - onAnswer: ユーザーが回答した後の処理。userAnswerのoptionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
  * - onNextQuiz: 次の問題に進む直前に呼び出される処理。userAnswerのoptionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
+ * - onQuit: やめるボタンが押された時の処理
  */
-function OptionButtons({quiz, onAnswer, onNextQuiz}) {
+function OptionButtons({quiz, onAnswer, onNextQuiz, onQuit}) {
   // ステート
   // ロック状態: boolean デフォルトはfalse(ロックされていない)
   const [isLocked, setIsLocked] = useState(false);
@@ -109,7 +110,7 @@ function OptionButtons({quiz, onAnswer, onNextQuiz}) {
             } > スキップ </button>
           </div>
         </div>
-        <button className='quit-btn'>やめる</button>
+        <button className='quit-btn' onClick={onQuit}>やめる</button>
     </div>
   </div>  
   );
