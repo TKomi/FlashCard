@@ -9,7 +9,7 @@
 
 /**
  * @typedef {Object} WordSetIndex 単語セット(目次)
- * @property {number} wordSetNo 単語セット番号
+ * @property {string} wordSetNo 単語セットNo
  * @property {string} wordSetName 単語セット名
  * @property {string} filePath 単語セットのファイルパス
  * @property {number} size 単語セットのサイズ(単語数)
