@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "単語セット目録",
+  "properties": {
+    "dataSet": {
+      "type": "array",
+      "description": "データセット",
+      "items": {
+        "type": "object",
+        "description": "シリーズ情報",
+        "properties": {
+          "seriesNo": {
+            "type": "number",
+            "description": "シリーズ番号"
+          },
+          "seriesName": {
+            "type": "string",
+            "description": "シリーズ名"
+          },
+          "seriesDescription": {
+            "type": "string",
+            "description": "シリーズの説明"
+          },
+          "wordSets": {
+            "type": "object",
+            "description": "単語の状態 (0:未学習, 1:苦手, 2:うろ覚え, 3:覚えた)",
+            "properties": {
+              "wordSetNo": {
+                "type": "number",
+                "description": "単語セット番号"
+              },
+              "wordSetName": {
+                "type": "string",
+                "description": "単語セット名"
+              },
+              "wordSetfilePath": {
+                "type": "string",
+                "description": "ファイルパス"
+              },
+              "size": {
+                "type": "number",
+                "description": "単語数"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["dataSet"]
+}

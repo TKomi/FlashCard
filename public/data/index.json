@@ -1,0 +1,42 @@
+{
+  "dataSet": [
+    {
+      "seriesNo": 1,
+      "seriesName": "TOEIC Service List", 
+      "seriesDescription": "TOEIC Service List 1250語からの出題です。",
+      "size": 1250,
+      "wordSets": [
+        {
+          "wordSetNo": 1,
+          "wordSetName": "Part1",
+          "filePath": "tsl/part1.json",
+          "size": 50
+        },
+        {
+          "wordSetNo": 2,
+          "wordSetName": "Part2",
+          "filePath": "tsl/part2.json",
+          "size": 50
+        },
+        {
+          "wordSetNo": 3,
+          "wordSetName": "Part3",
+          "filePath": "tsl/part3.json",
+          "size": 50
+        },
+        {
+          "wordSetNo": 4,
+          "wordSetName": "Part4",
+          "filePath": "tsl/part4.json",
+          "size": 50
+        },
+        {
+          "wordSetNo": 5,
+          "wordSetName": "Part5",
+          "filePath": "tsl/part5.json",
+          "size": 50
+        }
+      ]
+    }
+  ]
+}

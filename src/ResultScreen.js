@@ -64,7 +64,7 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
       </ul>
       <div className="uk-flex">
         <button className = 'result-action-btn' > 復習する < /button>
-        <button className='result-action-btn'>ホームへ戻る</button>
+        <button onClick={() => onUserButtonClick("home")} className='result-action-btn'>ホームへ戻る</button>
         <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick}/>
       </div>
     </div>

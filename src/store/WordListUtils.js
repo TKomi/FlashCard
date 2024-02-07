@@ -5,7 +5,7 @@ import { Word } from '../models/Word';
  * @return {Promise<Word[]>} 単語の配列
  */
 export async function loadFromWordJson(jsonFilePath) {
-    return  await fetch('./data/toeic_service_list.json')
+    return  await fetch('data/'+jsonFilePath)
       .then(response => response.json())
       .then(data => data.map(Word.fromObject));
 }
