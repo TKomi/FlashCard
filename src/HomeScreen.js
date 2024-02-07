@@ -16,19 +16,19 @@ function HomeScreen({seriesSet, onSelectedWordSet}) {
 
   return (
     <div>
-      <h1 className='home-screen-title'>単語帳</h1>
+      <h1 className='homescreen-title'>単語帳</h1>
       {
         seriesSet.map((series, index1) => (
-          <div key={index1}>
-            <h2>{series.seriesName}</h2>
-            <p>{series.seriesDescription}</p>
-            <ul>
+          <div key={index1} className='series-box'>
+            <h2 className='homescreen-series-title'>{series.seriesName}</h2>
+            <p className='homescreen-series-description'>{series.seriesDescription}</p>
+            <ul className='ul-homescreen'>
               {
                 series.wordSets.map((wordSet, index2) => (
-                  <li key={index2}>
-                    <div>{wordSet.wordSetName}</div>
-                    <div>{wordSet.size} Words</div>
-                    <button onClick={() => onClickGoButton(wordSet.filePath)}>GO!</button>
+                  <li key={index2} className='li-wordset'>
+                    <div className='wordset-name'>{wordSet.wordSetName}</div>
+                    <div className='wordset-size'>{wordSet.size} Words</div>
+                    <button onClick={() => onClickGoButton(wordSet.filePath)} className='wordset-button'>GO!</button>
                   </li>
                 ))
               }

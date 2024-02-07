@@ -90,6 +90,7 @@ function App() {
     // 単語データの読み込み
     loadFromWordJson(filePath)
       .then(wordList => {
+        console.log(filePath);
         const wl = extractFromWordList(wordList, 20, storageData.wordStatus);
         setStudySet(wl);
         setQuizzes(wl.map(createQuiz4));

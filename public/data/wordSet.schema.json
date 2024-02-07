@@ -1,0 +1,33 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "title": "単語セット目録",
+  "items": {
+    "type": "object",
+    "description": "単語",
+    "properties": {
+      "word": {
+        "type": "string",
+        "description": "スペル"
+      },
+      "quiz": {
+        "type": "object", 
+        "description": "問題(和訳問題)",
+        "properties": {
+          "answer": {
+            "type": "string",
+            "description": "答え(和訳)"
+          },
+          "options": {
+            "type": "array",
+            "description": "ダミー選択肢",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  },
+  "required": ["word", "quiz"]
+}
