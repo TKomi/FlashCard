@@ -67,9 +67,17 @@ function App() {
   const onEndQuiz = (ua) => {
     // studySet, quizzes, userAnswersの内容を追記
     setUserAnswers(ua);
-    const updatedWordsStatuses = updateWordStatuses(studySet, quizzes, ua, storageData);
+
+    // 「やめる」を選んでいた場合には ua.length < quizzes.length となる
+    // どのケースにも対応するため、studySet, quizzesはuaの長さに切り詰める
+    const studySetInner = studySet.slice(0, ua.length);
+    const quizzesInner = quizzes.slice(0, ua.length);
+
+    const updatedWordsStatuses = updateWordStatuses(studySetInner, quizzesInner, ua, storageData);
+    setStudySet(studySetInner);
+    setQuizzes(quizzesInner);
     setWordStatus(updatedWordsStatuses);
-    save(studySet, quizzes, ua, storageData, updatedWordsStatuses);
+    save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
     setCurrentScreen('result');
   };
 
