@@ -1,6 +1,5 @@
 /**
  * 単語学習状況を表すクラス
- * wordStatus.schema.jsonに準拠
  */
 export class WordStatus {
   /**

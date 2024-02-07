@@ -1,0 +1,121 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "title": "Flash Card App Local Storage Data Schema",
+  "description": "0.1.0",
+  "properties": {
+    "databaseVersion": {
+      "type": "string",
+      "description": "データベースのバージョン"
+    },
+    "learningSession":{
+      "type": "array",
+      "title": "学習セッション 履歴情報",
+      "items": {
+        "type": "object",
+        "properties": {
+          "sessionId": {
+            "type": "string",
+            "description": "学習セッションID"
+          },
+          "wordSetNo": {
+            "type": "number",
+            "description": "単語セットNo"
+          },
+          "completionDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "学習完了日時"
+          },
+          "answerHistory": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "w": {
+                  "type": "string",
+                  "description": "単語"
+                },
+                "c": {
+                  "type": "boolean",
+                  "description": "正解ならtrue、不正解ならfalse"
+                }
+              },
+              "required": ["w", "c"]
+            },
+            "description": "回答履歴"
+          }
+        },
+        "required": ["sessionId", "wordSetNo", "completionDate", "answerHistory"]
+      }
+    },
+    "wordStatus": {
+      "type": "object",
+      "title": "単語学習状況",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "word": {
+            "type": "string",
+            "description": "英単語スペル"
+          },
+          "lastLearnedDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "最後に学習した日時"
+          },
+          "answerHistory": {
+            "type": "array",
+            "items": {
+              "type": "boolean"
+            },
+            "description": "過去の回答履歴 (正解:true, 不正解:false)"
+          },
+          "status": {
+            "type": "number",
+            "description": "単語の状態 (0:未学習, 1:苦手, 2:うろ覚え, 3:覚えた)"
+          }
+        },
+        "required": ["word", "lastLearnedDate", "answerHistory", "status"]
+      }
+    },
+    "wordsetStatus": {
+      "type": "array",
+      "title": "単語セット学習状況",
+      "items": {
+        "type": "object",
+        "properties": {
+          "wordSetNo":{
+            "type": "number",
+            "description": "単語セットNo"
+          },
+          "learningInfo": {
+            "type": "object",
+            "properties": {
+              "group0": {
+                "type": "number",
+                "description": "未学習単語数"
+              },
+              "group1": {
+                "type": "number",
+                "description": "苦手単語数"
+              },
+              "group2": {
+                "type": "number",
+                "description": "うろ覚え単語数"
+              },
+              "group3": {
+                "type": "number",
+                "description": "覚えた単語数"
+              }
+            }
+          },
+          "learningCount": {
+            "type": "number",
+            "description": "学習回数(学習セッション数=リザルト画面を表示した回数)"
+          }
+        }
+      }
+    }
+  }
+}
