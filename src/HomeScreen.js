@@ -1,12 +1,39 @@
+// import { useMemo } from 'react';
 
 /**
  * 
- * @param {{seriesSet: import("./models/WordSetIndex").Series[], onSelectedWordSet: (filePath: string) => void}} param0 args
+ * @param {{seriesSet: import("./models/WordSetIndex").Series[], wordSetStatus: import("./store/LS").LearningInfo[], onSelectedWordSet: (filePath: string) => void}} param0 args
  * - seriesSet: シリーズの配列
+ * - wordSetStatus: 単語セット学習状況の配列
  * - onSelectedWordSet: 単語セットが選択された時の処理
  * @returns HomeScreenコンポーネント
  */
-function HomeScreen({seriesSet, onSelectedWordSet}) {
+function HomeScreen({seriesSet, wordSetStatus, onSelectedWordSet}) {
+  // seriesSetの順番、シリーズ内の単語セットの順番に対応する、単語セットの学習状況の配列
+  // 将来のための実装をコメントアウト
+  // const wordSetStatusOrdered = useMemo(() => {
+  //   const wordSetStatusOrdered = [];
+  //   for (const series of seriesSet) {
+  //     const s = [];
+  //     for (const wordSet of series.wordSets) {
+  //       const status = (wordSetStatus?? []).find(status => status.filePath === wordSet.filePath);
+  //       if (status) {
+  //         s.push(status);
+  //       } else {
+  //         s.push({
+  //           wordSetNo: wordSet.wordSetNo,
+  //           group0: wordSet.size,
+  //           group1: 0,
+  //           group2: 0,
+  //           group3: 0,
+  //         });
+  //       }
+  //     }
+  //     wordSetStatusOrdered.push(s);
+  //   }
+  //   return wordSetStatusOrdered;
+  // }, [seriesSet, wordSetStatus]);
+
   function onClickGoButton(filePath) {
     if (onSelectedWordSet) {
       console.log('wordset selected', filePath);

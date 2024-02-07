@@ -13,8 +13,8 @@ import { updateWordStatuses } from './models/WordStatusUtils';
 import { WordSetIndex } from './models/WordSetIndex';
 
 function App() {
-  // 現在表示している画面: 'home' or 'study' or 'result'
-  const [currentScreen, setCurrentScreen] = useState('home');
+  // 現在表示している画面: 'home' or 'study' or 'result' or 'loading'
+  const [currentScreen, setCurrentScreen] = useState('loading');
   
   // LocalStorage上のデータ
   const [storageData, setStorageData] = useState({});
@@ -43,9 +43,9 @@ function App() {
   // 起動時処理
   useEffect(() => {
     // LocalStorageからデータの読み込み
-    const data = LS.loadOrDefault();
-    setStorageData(data);
-
+    // -> HomeScreenに戻ってきた時の処理で読み込む
+    setCurrentScreen('home');
+  
     // 学習シリーズの一覧の読み込み
     WordSetIndex.loadFromIndexJson('./data/index.json')
     .then(seriesSet => {
@@ -53,6 +53,15 @@ function App() {
     }).catch(console.error);
 
   }, []);
+
+  // HomeScreenに戻ってきた時の処理(初回含む)
+  useEffect(() => {
+    if (currentScreen === 'home') {
+      // LocalStorageからデータの読み込み
+      const data = LS.loadOrDefault();
+      setStorageData(data);
+    }
+  }, [currentScreen]);
 
   // クイズ終了時処理
   const onEndQuiz = (ua) => {
@@ -90,7 +99,6 @@ function App() {
     // 単語データの読み込み
     loadFromWordJson(filePath)
       .then(wordList => {
-        console.log(filePath);
         const wl = extractFromWordList(wordList, 20, storageData.wordStatus);
         setStudySet(wl);
         setQuizzes(wl.map(createQuiz4));
@@ -114,10 +122,10 @@ function App() {
             onUserButtonClick={onUserButtonClick}
           />
           ) : currentScreen === 'home' ? (
-            <HomeScreen seriesSet={seriesSet} onSelectedWordSet={onSelectedWordSet}/>
+            <HomeScreen seriesSet={seriesSet} wordSetStatus={storageData.learningInfo} onSelectedWordSet={onSelectedWordSet}/>
           ) : (
           <div>
-            <p>エラー</p>
+            <p>Loading...</p>
           </div>
         )
       }
@@ -131,18 +139,18 @@ function App() {
  * @param {Word[]} wordList 出題された単語の一覧
  * @param {Quiz[]} quizzes 出題された問題の一覧。wordListと順番が同じである
  * @param {{option: number, checked: boolean}[]} userAnswers ユーザーの回答の一覧。quizzesと順番が同じ。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
- * @param {import("./models/LearningSession").LearningSession} oldLearningSession LSから読み込んだ、既存の学習セッションデータ
+ * @param {import('./store/LS').FlashCardData} oldFlashCardData LSから読み込んだ、既存の学習セッションデータ
  * - delete-insert方式のため、古いデータも必要となる
  * @param {WordStatus[]} updatedWordsStatuses 更新後の単語の学習状況の一覧
  * - updateWordStatusesで作成したものをわたすこと
  * - updateWordStatuses関数の結果は他の箇所でも使いたかったため関数は分離した
  */
-function save(wordList, quizzes, userAnswers, oldLearningSession, updatedWordsStatuses) {
+function save(wordList, quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses) {
 // 学習セッションの状況
-  const learningSessionClone = [...oldLearningSession.learningSession];
+  const learningSessionClone = [...oldFlashCardData.learningSession];
   learningSessionClone.push(new LearningSession({
     sessionId: uuidv4(),
-    wordSetId: 'sample', // 仮実装
+    wordSetNo: 1, // 仮実装
     completionDate: new Date().toISOString(),
     answerHistory: userAnswers.map((answer, index) => {
       return {
@@ -153,15 +161,46 @@ function save(wordList, quizzes, userAnswers, oldLearningSession, updatedWordsSt
   }));
 
   // updatedWordStatusesを詰め直す
-  const wordStatusClone = { ...oldLearningSession.wordStatus };
+  const wordStatusClone = { ...oldFlashCardData.wordStatus };
   for(const st of updatedWordsStatuses){
     wordStatusClone[st.word] = st;
+  }
+
+  // WordSetStatus更新処理
+  const wordSetStatusClone = [ ...oldFlashCardData.wordSetStatus];
+  {
+    let target = wordSetStatusClone.find(wss => wss.wordSetNo === 1);
+    if(!target){
+      target = target || {
+          wordSetNo: 1, // 仮実装
+          groupsAndCounts: {
+              group0: 0,
+              group1: 0,
+              group2: 0,
+              group3: 0,
+          },
+          learningCount: 0,
+      }; // 初期化
+      wordSetStatusClone.push(target);
+  } 
+    const group0 = updatedWordsStatuses.filter(st => st.status === 0).length;
+    const group1 = updatedWordsStatuses.filter(st => st.status === 1 || st.status === 2).length;
+    const group2 = updatedWordsStatuses.filter(st => st.status === 3 || st.status === 4).length;
+    const group3 = updatedWordsStatuses.filter(st => st.status === 5 || st.status === 6).length;
+    target.groupsAndCounts = {
+        group0: target.groupsAndCounts.group0 + group0,
+        group1: target.groupsAndCounts.group1 + group1,
+        group2: target.groupsAndCounts.group2 + group2,
+        group3: target.groupsAndCounts.group3 + group3,
+    };
+    target.learningCount = target.learningCount + 1;
   }
 
   // LocalStorageに保存する
   LS.save({
     learningSession: learningSessionClone,
     wordStatus: wordStatusClone,
+    wordSetStatus: wordSetStatusClone,
   });
 }
 
