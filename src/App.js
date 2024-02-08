@@ -196,15 +196,11 @@ function save(wordList, quizzes, userAnswers, oldFlashCardData, updatedWordsStat
       }; // 初期化
       wordSetStatusClone.push(target);
   } 
-    const group0 = updatedWordsStatuses.filter(st => st.status === 0).length;
-    const group1 = updatedWordsStatuses.filter(st => st.status === 1 || st.status === 2).length;
-    const group2 = updatedWordsStatuses.filter(st => st.status === 3 || st.status === 4).length;
-    const group3 = updatedWordsStatuses.filter(st => st.status === 5 || st.status === 6).length;
     target.groupsAndCounts = {
-        group0: target.groupsAndCounts.group0 + group0,
-        group1: target.groupsAndCounts.group1 + group1,
-        group2: target.groupsAndCounts.group2 + group2,
-        group3: target.groupsAndCounts.group3 + group3,
+      group0: Object.values(wordStatusClone).filter(st => st.status === 0).length,
+      group1: Object.values(wordStatusClone).filter(st => st.status === 1 || st.status === 2).length,
+      group2: Object.values(wordStatusClone).filter(st => st.status === 3 || st.status === 4).length,
+      group3: Object.values(wordStatusClone).filter(st => st.status === 5 || st.status === 6).length,
     };
     target.learningCount = target.learningCount + 1;
   }
