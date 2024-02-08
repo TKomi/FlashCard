@@ -15,9 +15,9 @@ import React, { useEffect, useState, useMemo } from 'react';
  * - 単語、問題のリスト、ユーザーの回答リストは受け取るだけで、自分で作成しない
  * 
  * @param {{words: Word[], quizzes: Quiz[], userAnswers: {option: number, checked: boolean}[], wordStatus: import("./models/WordStatus").WordStatus, countOfNext: number, onUserButtonClick: (name: string) => void}} props 
- * - words: 画面で扱う単語リスト
- * - quizzes: クイズの一覧
- * - userAnswers: ユーザーの回答
+ * - words: 画面で扱う単語リスト。出題される予定だったものも含む。
+ * - quizzes: クイズの一覧。出題されたものに限り、「やめる」を選んだ移行の物は含まない。配列の順序はwordsと対応。
+ * - userAnswers: ユーザーの回答。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
  * - wordStatus: 各単語の学習状況
  * - countOfNext: 「次のn個へ進む」ボタンの表示に使用する、次のセッションで学習する単語の数
  * - onUserButtonClick: ユーザーが画面上のボタンを押したときの処理。イベント引数でクリックされたボタン名を識別。
@@ -44,6 +44,7 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
   const countOfCorrect = useMemo(() => entries.filter(entry => entry.isCorrect).length , [entries]);
   const countOfSkip = useMemo(() => userAnswers.filter(answer => answer.option === -1).length , [userAnswers]);
   const countOfIncorrect = useMemo(() => entries.length - countOfCorrect - countOfSkip , [entries, countOfCorrect, countOfSkip]);
+  const quitted = useMemo(() => words.length !== quizzes.length, [words, quizzes]); // 「やめる」ボタンで途中で終了したかどうか
 
   return (
     <div>
@@ -65,7 +66,7 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
       <div className="uk-flex">
         <button className = 'result-action-btn' > 復習する < /button>
         <button onClick={() => onUserButtonClick("home")} className='result-action-btn'>ホームへ戻る</button>
-        <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick}/>
+        <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick} quitted={quitted}/>
       </div>
     </div>
   );
@@ -93,8 +94,8 @@ function ResultStatus({ wordStatus }) {
   }
 }
 
-function NextButton({ countOfNext, onUserButtonClick }) {
-  if (countOfNext === 0) return <div className='result-action-spacer'></div>;
+function NextButton({ countOfNext, onUserButtonClick, quitted }) {
+  if (countOfNext === 0 || quitted) return <div className='result-action-spacer'></div>;
   else {
     return (
       <button onClick={() => onUserButtonClick("next")} className='result-action-btn'>次の{countOfNext}個</button>

@@ -79,7 +79,7 @@ function App() {
     const updatedWordsStatuses = updateWordStatuses(studySetInner, quizzesInner, ua, storageData);
     
     setUserAnswers(ua);
-    setStudySet(studySetInner);
+    // setStudySet(studySetInner); // studySetの数がquizzesの数が異なる = 「やめる」を選んだ場合 になるので、ここでの更新は不要
     setQuizzes(quizzesInner);
     setWordStatus(updatedWordsStatuses);
     save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
