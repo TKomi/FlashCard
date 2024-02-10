@@ -20,10 +20,11 @@ import React, { useEffect, useState, useMemo } from 'react';
  * - userAnswers: ユーザーの回答。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
  * - wordStatus: 各単語の学習状況
  * - countOfNext: 「次のn個へ進む」ボタンの表示に使用する、次のセッションで学習する単語の数
+ * - reason: 終了理由。"finish"か"quit"のいずれか
  * - onUserButtonClick: ユーザーが画面上のボタンを押したときの処理。イベント引数でクリックされたボタン名を識別。
  *    - "next": 次のn個へ進むボタンが押された
  */
-function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, onUserButtonClick}) {
+function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, reason = "finish", onUserButtonClick}) {
 
   const [entries, setEntries] = useState([]);
 
@@ -44,7 +45,7 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
   const countOfCorrect = useMemo(() => entries.filter(entry => entry.isCorrect).length , [entries]);
   const countOfSkip = useMemo(() => userAnswers.filter(answer => answer.option === -1).length , [userAnswers]);
   const countOfIncorrect = useMemo(() => entries.length - countOfCorrect - countOfSkip , [entries, countOfCorrect, countOfSkip]);
-  const quitted = useMemo(() => words.length !== quizzes.length, [words, quizzes]); // 「やめる」ボタンで途中で終了したかどうか
+  const countOfRetry = useMemo(() => userAnswers.filter((answer, index) => answer.checked || answer.option !== quizzes[index].answerIndex).length, [quizzes, userAnswers]);
 
   return (
     <div>
@@ -64,9 +65,9 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, on
         ))}
       </ul>
       <div className="uk-flex">
-        <button className = 'result-action-btn' > 復習する < /button>
+        <RetryButton countOfRetry={countOfRetry} onUserButtonClick={onUserButtonClick} />
         <button onClick={() => onUserButtonClick("home")} className='result-action-btn'>ホームへ戻る</button>
-        <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick} quitted={quitted}/>
+        <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick} quitted={reason === 'quit'}/>
       </div>
     </div>
   );
@@ -92,6 +93,13 @@ function ResultStatus({ wordStatus }) {
     default:
       return (<div className="result-status result-status-0">未学習</div>);
   }
+}
+
+function RetryButton({countOfRetry, onUserButtonClick }) {
+  if (countOfRetry === 0) return <div className='result-action-spacer'></div>;
+  else return (
+    <button onClick={() => onUserButtonClick("retry")} className='result-action-btn'>復習する</button>
+  );
 }
 
 function NextButton({ countOfNext, onUserButtonClick, quitted }) {

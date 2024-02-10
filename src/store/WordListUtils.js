@@ -81,7 +81,7 @@ export function extractFromWordList(wordList, num, allWordStatus) {
  * @param {any[]} array シャッフル対象の配列 副作用はありません。
  * @returns シャッフルされた配列
  */
-function getShuffledArray(array) {
+export function getShuffledArray(array) {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

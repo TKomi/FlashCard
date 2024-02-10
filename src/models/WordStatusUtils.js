@@ -37,11 +37,10 @@ function getUpdatedStatus(oldStatus, ansIsCorrect, checked = false){
 /**
  * 学習セット1件の終了後の各単語の学習状況(単語ステータス)を取得する
  * 
- * @param {Word[]} studySet 単語の一覧
+ * @param {Word[]} studySet 単語の一覧(順番は不定)
  * @param {Quiz[]} quizzes クイズの一覧
- * - 順番は単語の一覧と同じ
  * @param {{option: number, checked: boolean}[]} userAnswers ユーザーの回答の一覧
- * - 順番は単語の一覧と同じ
+ * - 順番はクイズの一覧と同じ
  * @param {import("./store/LS").FlashCardData} saveData LSから読み込んだ、既存のデータ
  * @returns {WordStatus[]} 単語の学習状況の一覧
  * - 単語(クイズ, 回答)の一覧と同じ順番で、各単語の学習状況を格納した配列
@@ -49,7 +48,13 @@ function getUpdatedStatus(oldStatus, ansIsCorrect, checked = false){
 export function updateWordStatuses(studySet, quizzes, userAnswers, saveData) {
   const result = [];
 
+  // FIXME: studySetじゃなくてquizzesを回せばよくない？
   for (const word of studySet) {
+    // 対応するquizを取得
+    const quizIndex = quizzes.findIndex(quiz => quiz.question === word.word);
+    // 見つからなければこの単語は出題されていないので次のループへ
+    if (quizIndex === -1) continue;
+
     // 対応するwordStatusを取得, なければ新規作成
     const updated = saveData.wordStatus[word.word] || new WordStatus(word.word, new Date().toISOString(), [], 0);
 
@@ -57,12 +62,11 @@ export function updateWordStatuses(studySet, quizzes, userAnswers, saveData) {
     updated.lastLearnedDate = new Date().toISOString();
 
     // answerHistoryに最後の問題の正誤を追加
-    const index = quizzes.findIndex(quiz => quiz.question === word.word);
-    const quizCorrectness = getQuizCorrectness(quizzes, userAnswers, index);
+    const quizCorrectness = getQuizCorrectness(quizzes, userAnswers, quizIndex);
     updated.answerHistory.push(quizCorrectness);
 
     // statusを更新
-    updated.status = getUpdatedStatus(updated.status, quizCorrectness, userAnswers[index].checked);
+    updated.status = getUpdatedStatus(updated.status, quizCorrectness, userAnswers[quizIndex].checked);
 
     // wordStatusを更新
     result.push(updated);
