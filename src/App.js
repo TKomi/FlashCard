@@ -3,7 +3,7 @@ import 'uikit/dist/css/uikit.min.css';
 import { useEffect, useState, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { LS } from './store/LS';
-import { extractFromWordList, loadFromWordJson } from './store/WordListUtils';
+import { extractFromWordList, loadFromWordJson, getShuffledArray } from './store/WordListUtils';
 import HomeScreen from './HomeScreen';
 import StudyScreen from './StudyScreen/StudyScreen';
 import ResultScreen from './ResultScreen';
@@ -25,6 +25,9 @@ function App() {
   // 現在の学習セットで扱っている単語の一覧
   const [studySet, setStudySet] = useState([]);
 
+  // 学習モード: 'normal' or 'retry'
+  const [studyMode, setStudyMode] = useState('normal');
+
   // 現在の学習セットで扱っているクイズの一覧
   const [quizzes, setQuizzes] = useState([]);
 
@@ -36,6 +39,10 @@ function App() {
 
   // クイズの一覧の順番に対応する、単語の学習状況の一覧(更新後)
   const [wordStatus, setWordStatus] = useState([]);
+
+  // 終了理由
+  // string: "finish" or "quit"
+  const [endOfReason, setEndOfReason] = useState('finish');
 
   // 次のn個へ進むボタンの表示に使用する、次のセッションで学習する単語の数
   const countOfNext = useMemo(() => remaining.length <= 20 ? remaining.length : 20, [remaining]);
@@ -73,13 +80,18 @@ function App() {
     
     // 「やめる」を選んでいた場合には ua.length < quizzes.length となる
     // どのケースにも対応するため、studySet, quizzesはuaの長さに切り詰める
+    if (ua.length < quizzes.length) {
+      setEndOfReason('quit');
+    } else {
+      setEndOfReason('finish');
+    }
     const studySetInner = studySet.slice(0, ua.length);
     const quizzesInner = quizzes.slice(0, ua.length);
 
-    const updatedWordsStatuses = updateWordStatuses(studySetInner, quizzesInner, ua, storageData);
+    const updatedWordsStatuses = updateWordStatuses(studySet, quizzesInner, ua, storageData);
     
     setUserAnswers(ua);
-    // setStudySet(studySetInner); // studySetの数がquizzesの数が異なる = 「やめる」を選んだ場合 になるので、ここでの更新は不要
+    // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
     setQuizzes(quizzesInner);
     setWordStatus(updatedWordsStatuses);
     save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
@@ -94,10 +106,28 @@ function App() {
         setStudySet(extracted);
         setQuizzes(extracted.map(createQuiz4));
         setRemaining(remaining.filter(w => !extracted.includes(w)));
+        setStudyMode('normal')
         setCurrentScreen('study');
         break;
       case 'home':
+        setStudyMode('normal'); 
         setCurrentScreen('home');
+        break;
+      case 'retry':
+        // 間違えた問題またはチェックをつけた問題のみを再度出題する
+        // retryTarget: 間違えた問題またはチェックをつけた問題のindexの一覧
+        const retryTarget = quizzes.reduce((acc, quiz, index) => {
+          if (quiz.answerIndex !== userAnswers[index].option || userAnswers[index].checked) {
+            acc.push(index);
+          }
+          return acc;
+        }, []);
+        const retryWords = getShuffledArray(retryTarget.map(index => studySet[index]));
+        // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
+        setQuizzes(retryWords.map(createQuiz4));
+        // setRemaining // そのまま
+        setStudyMode('retry');
+        setCurrentScreen('study');
         break;
       default: 
         break;
@@ -124,7 +154,7 @@ function App() {
     <div>
       {
         currentScreen === 'study' ? (
-          <StudyScreen quizzes={quizzes} onEndQuiz={onEndQuiz} />
+          <StudyScreen quizzes={quizzes} onEndQuiz={onEndQuiz} studyMode={studyMode}/>
         ) : currentScreen === 'result' ? (
           <ResultScreen
             words={studySet}
@@ -132,6 +162,8 @@ function App() {
             userAnswers={userAnswers}
             wordStatus={wordStatus}
             countOfNext={countOfNext}
+            reason={endOfReason}
+            studyMode={studyMode}
             onUserButtonClick={onUserButtonClick}
           />
           ) : currentScreen === 'home' ? (
@@ -167,6 +199,7 @@ function save(wordList, quizzes, userAnswers, oldFlashCardData, updatedWordsStat
     completionDate: new Date().toISOString(),
     answerHistory: userAnswers.map((answer, index) => {
       return {
+        // FIXME: わざわざwordListを使っているが、quizzesの方が適切では？引数も減らせるし
         w: wordList[index].word,
         c: quizzes[index].answerIndex === answer.option,
       };
