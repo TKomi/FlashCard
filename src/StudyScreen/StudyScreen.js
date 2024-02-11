@@ -14,9 +14,14 @@ import OptionButtons from './OptionButtons';
  * このコンポーネントでやらないこと
  * - 単語に含まれる解答および選択肢を使ってクイズを作る: 正しくは親コンポーネントから受け取る
  * 
- * @param {{quizzes: Quiz[], onEndQuiz: (userAnswers: {option: number, checked: boolean}[]) => void}}} wordSet 画面で扱う単語セット
+ * @param {{quizzes: Quiz[], studyMode: string, onEndQuiz: (userAnswers: {option: number, checked: boolean}[]) => void}}} wordSet 画面で扱う単語セット
+ * - quizzes: クイズの一覧
+ * - studyMode: 学習モード。"normal"か"retry"のいずれか。「通常学習」か「復習」のラベルの制御に使用
+ * - onEndQuiz: クイズが終了したときの処理。引数はユーザーの回答の一覧
+ *  - option: ユーザーの回答。Quizのインデックスに対応する選択肢のインデックス。0から始まる。-1は「スキップ」
+ *  - checked: チェックボックスの状態
  */
-function StudyScreen({ quizzes, onEndQuiz }) {
+function StudyScreen({ quizzes, studyMode, onEndQuiz }) {
   // ステート
   // 現在の問題番号: number (0から始まる)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -74,7 +79,9 @@ function StudyScreen({ quizzes, onEndQuiz }) {
       {
         quizzes.length > 0 && currentQuestionIndex < quizzes.length &&
         <div>
-          <div className='study-screen-subtitle'>通常学習 {currentQuestionIndex + 1} / {quizzes.length} Words</div>
+          <div className='study-screen-subtitle'>{studyMode === 'retry' ? '復習 ': '通常学習 '}
+            {currentQuestionIndex + 1} / {quizzes.length} Words
+          </div>
           <div className='study-screen-progress'>
             <progress value={currentQuestionIndex} max={quizzes.length} className="uk-progress study-screen-progress"/>
           </div>

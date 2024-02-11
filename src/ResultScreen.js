@@ -14,17 +14,18 @@ import React, { useEffect, useState, useMemo } from 'react';
  * - ユーザーの回答の記録
  * - 単語、問題のリスト、ユーザーの回答リストは受け取るだけで、自分で作成しない
  * 
- * @param {{words: Word[], quizzes: Quiz[], userAnswers: {option: number, checked: boolean}[], wordStatus: import("./models/WordStatus").WordStatus, countOfNext: number, onUserButtonClick: (name: string) => void}} props 
+ * @param {{words: Word[], quizzes: Quiz[], userAnswers: {option: number, checked: boolean}[], wordStatus: import("./models/WordStatus").WordStatus, countOfNext: number, reason: string, studyMode: string, onUserButtonClick: (name: string) => void}} props 
  * - words: 画面で扱う単語リスト。出題される予定だったものも含む。
  * - quizzes: クイズの一覧。出題されたものに限り、「やめる」を選んだ移行の物は含まない。配列の順序はwordsと対応。
  * - userAnswers: ユーザーの回答。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
  * - wordStatus: 各単語の学習状況
  * - countOfNext: 「次のn個へ進む」ボタンの表示に使用する、次のセッションで学習する単語の数
  * - reason: 終了理由。"finish"か"quit"のいずれか
+ * - studyMode: 学習モード。"normal"か"retry"のいずれか。「通常学習」か「復習」のラベルの制御に使用
  * - onUserButtonClick: ユーザーが画面上のボタンを押したときの処理。イベント引数でクリックされたボタン名を識別。
  *    - "next": 次のn個へ進むボタンが押された
  */
-function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, reason = "finish", onUserButtonClick}) {
+function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, reason = "finish", studyMode = "normal", onUserButtonClick}) {
 
   const [entries, setEntries] = useState([]);
 
@@ -50,7 +51,7 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, re
   return (
     <div>
       <h1 className = 'result-screen-title' > TOEIC Service List - Part1 </h1>
-      <div className="result-screen-subtitle">通常学習 {entries.length}Words</div>
+      <div className="result-screen-subtitle">{studyMode === 'retry' ? '復習 ': '通常学習 '} {entries.length}Words</div>
       <div className='result-screen-subtitle'>○{countOfCorrect} / ×{countOfIncorrect} / -{countOfSkip}</div>
       <ul className='ul-result'>
         {entries.map(entry => (

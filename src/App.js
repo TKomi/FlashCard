@@ -25,6 +25,9 @@ function App() {
   // 現在の学習セットで扱っている単語の一覧
   const [studySet, setStudySet] = useState([]);
 
+  // 学習モード: 'normal' or 'retry'
+  const [studyMode, setStudyMode] = useState('normal');
+
   // 現在の学習セットで扱っているクイズの一覧
   const [quizzes, setQuizzes] = useState([]);
 
@@ -103,9 +106,11 @@ function App() {
         setStudySet(extracted);
         setQuizzes(extracted.map(createQuiz4));
         setRemaining(remaining.filter(w => !extracted.includes(w)));
+        setStudyMode('normal')
         setCurrentScreen('study');
         break;
       case 'home':
+        setStudyMode('normal'); 
         setCurrentScreen('home');
         break;
       case 'retry':
@@ -121,6 +126,7 @@ function App() {
         // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
         setQuizzes(retryWords.map(createQuiz4));
         // setRemaining // そのまま
+        setStudyMode('retry');
         setCurrentScreen('study');
         break;
       default: 
@@ -148,7 +154,7 @@ function App() {
     <div>
       {
         currentScreen === 'study' ? (
-          <StudyScreen quizzes={quizzes} onEndQuiz={onEndQuiz} />
+          <StudyScreen quizzes={quizzes} onEndQuiz={onEndQuiz} studyMode={studyMode}/>
         ) : currentScreen === 'result' ? (
           <ResultScreen
             words={studySet}
@@ -157,6 +163,7 @@ function App() {
             wordStatus={wordStatus}
             countOfNext={countOfNext}
             reason={endOfReason}
+            studyMode={studyMode}
             onUserButtonClick={onUserButtonClick}
           />
           ) : currentScreen === 'home' ? (
