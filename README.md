@@ -1,6 +1,8 @@
 # FlashCard(仮)
 
-FlashCardはWebブラウザ上で動作する、登録不要で軽量な単語帳アプリです。ReactとJavaScriptを使って開発され、[別リポジトリ](https://github.com/TKomi/FlashCard-Data)で管理されている単語データを使用しています。
+FlashCardはWebブラウザ上で動作する、登録不要で軽量な単語帳アプリです。
+ReactとJavaScriptを使って開発されています。
+[別リポジトリ](https://github.com/TKomi/FlashCard-Data)で管理されている単語データを参照しながら動作します。
 
 ## インストール方法
 
@@ -20,7 +22,7 @@ npm start
 
 起動後、表示されるURLにお好みのウェブブラウザからアクセスします。
 
-デモサイトのURLは現在設定中です。
+デモサイトは[こちら](https://flash-card.sumomo.ne.jp/)です。
 
 ## 主な機能
 
@@ -35,12 +37,13 @@ npm start
 
 ## ライセンス
 
-本プロジェクトはAll Rights Reservedであり、ソースコードはGitHubで公開されていますが、著者の許可なく商用利用や再配布を行うことは禁止されています。
+本プロジェクトはAll Rights Reservedであり、ソースコードはGitHubで公開されていますが、著者の許可なく商用利用や再配布を行うことは禁止されています。 (→ [LICENSE](./LICENSE.md))
+
 [別リポジトリ](https://github.com/TKomi/FlashCard-Data)で管理している単語データベースのライセンスは、当該リポジトリのページをご確認ください。
 
 ## 著者
 
-- TomK (t.komi2580○gmail.com)
+- TomK
 
 ## 依存関係
 
@@ -63,5 +66,5 @@ npm start
 
 何かご不明な点がありましたら、以下の連絡先までお問い合わせください。
 
-- Author(TomK): [メールアドレス]
+- Author(TomK): (t.komi2580○gmail.com)
 
