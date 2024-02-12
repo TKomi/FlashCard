@@ -46,8 +46,10 @@ npm start
 
 このプロジェクトは以下のオープンソースソフトウェアを使用しています。
 
-- React: ^18.2 - [MIT License](https://opensource.org/licenses/MIT)
-- UIKit: ^3.18 - [MIT License](https://opensource.org/licenses/MIT)
+| ライブラリ名 | バージョン | ライセンス                                             |
+|--------------|------------|--------------------------------------------------------|
+| React        | ^18.2      | Copyright (c) Meta Platforms, Inc. and affiliates. <br> [MIT License](https://opensource.org/license/mit/)      |
+| UIKit        | ^3.18      | Copyright (c) 2013-2020 YOOtheme GmbH, getuikit.com <br> [MIT License](https://opensource.org/license/mit/)      |
 
 各ライブラリの著作権者に感謝します。
 
