@@ -1,70 +1,70 @@
-# Getting Started with Create React App
+# FlashCard(仮)
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+FlashCardはWebブラウザ上で動作する、登録不要で軽量な単語帳アプリです。
+ReactとJavaScriptを使って開発されています。
+[別リポジトリ](https://github.com/TKomi/FlashCard-Data)で管理されている単語データを参照しながら動作します。
 
-## Available Scripts
+## インストール方法
 
-In the project directory, you can run:
+FlashCardをセットアップするには、以下のステップに従ってください。
 
-### `npm start`
+1. 事前にNode.jsとnpmをインストールします。
+2. このリポジトリをクローンします。
+3. `npm install` コマンドを実行して依存パッケージをインストールします。
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## 利用方法
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+ローカルでFlashCardを起動するには、以下のコマンドを実行してください。
 
-### `npm test`
+```bash
+npm start
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+起動後、表示されるURLにお好みのウェブブラウザからアクセスします。
 
-### `npm run build`
+デモサイトは[こちら](https://flash-card.sumomo.ne.jp/)です。
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 主な機能
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- **問題セットの一覧表示**: 複数の問題セットから選択し、学習を開始できます。
+- **学習画面**: 単語と4つの選択肢を提示し、正しい和訳を選びます。進捗はバーで表示されます。
+- **リザルト画面**: 学習結果の確認と、間違えた単語やチェックした単語の復習が可能です。
+- **データ管理**: 学習の進捗はLocalStorageに保存され、単語はユーザーの学習履歴に基づいてステータスが更新されます。
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## コントリビュート
 
-### `npm run eject`
+バグや機能改善のためのフィードバックを歓迎します。デモサイトでの体験をもとにイシュー報告をしていただければ幸いです。
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## ライセンス
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+本プロジェクトはAll Rights Reservedであり、ソースコードはGitHubで公開されていますが、著者の許可なく商用利用や再配布を行うことは禁止されています。 (→ [LICENSE](./LICENSE.md))
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+[別リポジトリ](https://github.com/TKomi/FlashCard-Data)で管理している単語データベースのライセンスは、当該リポジトリのページをご確認ください。
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## 著者
 
-## Learn More
+- TomK
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## 依存関係
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+このプロジェクトは以下のオープンソースソフトウェアを使用しています。
 
-### Code Splitting
+| ライブラリ名 | バージョン | ライセンス                                             |
+|--------------|------------|--------------------------------------------------------|
+| React        | ^18.2      | Copyright (c) Meta Platforms, Inc. and affiliates. <br> [MIT License](https://opensource.org/license/mit/)      |
+| UIKit        | ^3.18      | Copyright (c) 2013-2020 YOOtheme GmbH, getuikit.com <br> [MIT License](https://opensource.org/license/mit/)      |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+各ライブラリの著作権者に感謝します。
 
-### Analyzing the Bundle Size
+## バージョン情報
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+| 日付       | バージョン | 備考                                                         |
+|------------|------------|--------------------------------------------------------------|
+| 2023-02-13 | v1.0.0     | 初期バージョンリリース。基本的な学習機能と復習機能を追加。 |
 
-### Making a Progressive Web App
+## お問い合わせ
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+何かご不明な点がありましたら、以下の連絡先までお問い合わせください。
 
-### Advanced Configuration
+- Author(TomK): (t.komi2580○gmail.com)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
