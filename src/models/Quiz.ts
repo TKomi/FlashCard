@@ -4,32 +4,28 @@
  * Wordクラスの中に含まれている問題とは別物(このクラスはそこから作成される)
  */
 export class Quiz {
-
   /**
    * 問題
-   * @type {string} 問題文
    */
-  question;
+  question: string;
 
   /**
    * 解答
-   * @type {number} 回答の選択肢のインデックス 0から始まる
    */
-  answerIndex;
+  answerIndex: number;
 
   /**
    * 回答選択肢
-   * @type {string[]}
    */
-  options;
+  options: string[];
 
-  constructor(question, answer, options) {
+  constructor(question: string, answer: number, options: string[]) {
     this.question = question;
     this.answerIndex = answer;
     this.options = options;
   }
 
-  fromObject(object) {
+  fromObject(object: { question: string, answer: number, options: string[] }): Quiz {
     return new Quiz(object.question, object.answer, object.options);
   }
 }

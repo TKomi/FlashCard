@@ -10,7 +10,7 @@ import ResultScreen from './ResultScreen';
 import { createQuiz4 } from './StudyScreen/CreateQuiz';
 import { LearningSession } from './models/LearningSession';
 import { updateWordStatuses } from './models/WordStatusUtils';
-import { WordSetIndex } from './models/WordSetIndex';
+import { WordSetIndexUtil } from './models/WordSetIndex';
 
 function App() {
   // 現在表示している画面: 'home' or 'study' or 'result' or 'loading'
@@ -54,7 +54,7 @@ function App() {
     setCurrentScreen('home');
   
     // 学習シリーズの一覧の読み込み
-    WordSetIndex.loadFromIndexJson('./data/index.json')
+    WordSetIndexUtil.loadFromIndexJson('./data/index.json')
     .then(seriesSet => {
       setSeriesSet(seriesSet);
     }).catch(console.error);

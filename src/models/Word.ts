@@ -4,23 +4,21 @@
 export class Word {
   /**
    * 英語スペル
-   * @type {string}
    */
-  word;
+  word: string;
 
   /**
    * クイズ
    * 答えと選択肢が入っている
-   * @type {{answer: string, options: string[]}}
    */
-  quiz;
+  quiz: { answer: string, options: string[] };
 
-  constructor(word, quiz) {
+  constructor(word: string, quiz: { answer: string, options: string[] }) {
     this.word = word;
     this.quiz = quiz;
   }
 
-  static fromObject(object) {
+  static fromObject(object: { word: string, quiz: { answer: string, options: string[] } }) {
     return new Word(object.word, object.quiz);
   }
 }

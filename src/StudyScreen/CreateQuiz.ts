@@ -1,15 +1,13 @@
-// eslint-disable-next-line no-unused-vars
 import { Quiz } from '../models/Quiz';
-// eslint-disable-next-line no-unused-vars
 import { Word } from '../models/Word';
 
 /**
  * 単語を使って、4択クイズを作成する
  * 
- * @param {Word[]} word 単語
- * @returns {Quiz}作成されたクイズ
+ * @param word 単語
+ * @returns 作成されたクイズ
  */
-export function createQuiz4(word) {
+export function createQuiz4(word: Word): Quiz {
     // 解答の順番はOrders4の中からランダムに選ぶ
     const order = Orders4[Math.floor(Math.random() * Orders4.length)];
 
@@ -23,7 +21,7 @@ export function createQuiz4(word) {
     const dummy3_index = order[3];
 
     // 問題選択肢の作成
-    const options = [];
+    const options: string[] = [];
     options[ans_index] = word.quiz.answer;
     options[dummy1_index] = word.quiz.options[0];
     options[dummy2_index] = word.quiz.options[1];
