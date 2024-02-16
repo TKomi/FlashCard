@@ -1,7 +1,7 @@
-import { WordStatus } from "./WordStatus";
-import { Word } from "./Word";
-import { Quiz } from "./Quiz";
-import { FlashCardData } from "../store/LS";
+import { WordStatus } from "./WordStatus.ts";
+import { Word } from "./Word.ts";
+import { Quiz } from "./Quiz.ts";
+import { FlashCardData } from "../store/LS.ts";
 /**
  * 単語の現在の状態(未回答0、苦手12、うろ覚え34、覚えた56), 今回の回答が正解かどうかとチェックボックスの状態から、更新後のステータスを返す
  * 

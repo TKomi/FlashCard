@@ -2,15 +2,15 @@ import './App.css';
 import 'uikit/dist/css/uikit.min.css';
 import { useEffect, useState, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { LS } from './store/LS';
-import { extractFromWordList, loadFromWordJson, getShuffledArray } from './store/WordListUtils';
+import { LS } from './store/LS.ts';
+import { extractFromWordList, loadFromWordJson, getShuffledArray } from './store/WordListUtils.ts';
 import HomeScreen from './HomeScreen';
 import StudyScreen from './StudyScreen/StudyScreen';
 import ResultScreen from './ResultScreen';
-import { createQuiz4 } from './StudyScreen/CreateQuiz';
-import { LearningSession } from './models/LearningSession';
-import { updateWordStatuses } from './models/WordStatusUtils';
-import { WordSetIndexUtil } from './models/WordSetIndex';
+import { createQuiz4 } from './StudyScreen/CreateQuiz.ts';
+import { LearningSession } from './models/LearningSession.ts';
+import { updateWordStatuses } from './models/WordStatusUtils.ts';
+import { WordSetIndexUtil } from './models/WordSetIndex.ts';
 
 function App() {
   // 現在表示している画面: 'home' or 'study' or 'result' or 'loading'

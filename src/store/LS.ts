@@ -1,5 +1,5 @@
-import { LearningSession } from '../models/LearningSession';
-import { WordStatus } from '../models/WordStatus';
+import { LearningSession } from '../models/LearningSession.ts';
+import { WordStatus } from '../models/WordStatus.ts';
 import Schema from './ls.schema.json';
 
 
@@ -97,9 +97,9 @@ export const LS = {
     const result = {
       databaseVersion: json.databaseVersion,
       learningSession: json.learningSession.map(session => new LearningSession(session)),
-      wordStatus: (Object.entries(json.wordStatus) as unknown as {word: string, status: WordStatus}[])
+      wordStatus: (Object.entries(json.wordStatus) as unknown as WordStatus[])
       .reduce((reduced, kvp) => {
-        reduced[kvp.word] = new WordStatus(kvp.word, kvp.status.lastLearnedDate, kvp.status.answerHistory, kvp.status.status);
+        reduced[kvp.word] = new WordStatus(kvp.word, kvp.lastLearnedDate, kvp.answerHistory, kvp.status);
         return reduced;
       }, {}), // json.wordStatusの各要素をWordStatusに変換し、reduceでまとめる
       wordSetStatus: json.wordSetStatus || [],

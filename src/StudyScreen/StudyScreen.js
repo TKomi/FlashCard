@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 // eslint-disable-next-line no-unused-vars
-import { Word } from '../models/Word';
+import { Word } from '../models/Word.ts';
 import OptionButtons from './OptionButtons';
 
 /**

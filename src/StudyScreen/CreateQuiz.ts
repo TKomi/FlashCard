@@ -1,5 +1,5 @@
-import { Quiz } from '../models/Quiz';
-import { Word } from '../models/Word';
+import { Quiz } from '../models/Quiz.ts';
+import { Word } from '../models/Word.ts';
 
 /**
  * 単語を使って、4択クイズを作成する

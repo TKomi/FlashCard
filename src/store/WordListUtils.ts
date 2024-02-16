@@ -1,5 +1,5 @@
-import { Word } from '../models/Word';
-import { WordStatus } from '../models/WordStatus';
+import { Word } from '../models/Word.ts';
+import { WordStatus } from '../models/WordStatus.ts';
 
 /**
  * Jsonファイルから単語を取得し、Wordオブジェクトの配列として返す
