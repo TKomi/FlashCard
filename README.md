@@ -1,7 +1,7 @@
 # FlashCard(仮)
 
 FlashCardはWebブラウザ上で動作する、登録不要で軽量な単語帳アプリです。
-ReactとJavaScriptを使って開発されています。
+ReactとTypeScriptを使って開発されています。
 [別リポジトリ](https://github.com/TKomi/FlashCard-Data)で管理されている単語データを参照しながら動作します。
 
 ## インストール方法

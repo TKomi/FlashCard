@@ -1,14 +1,29 @@
-// import { useMemo } from 'react';
+import React from "react";
+import { Series } from "./models/WordSetIndex";
+import { LearningInfo } from "./store/LS";
+
+export type Props = {
+  /**
+   * 単語帳のシリーズの配列
+   */
+  seriesSet: Series[],
+
+  /**
+   * 単語帳の学習状況の配列
+   */
+  wordSetStatus: LearningInfo[],
+
+  /**
+   * 単語セットが選択されたときの処理
+   * @param filePath 選択された単語セットのファイルパス
+   */
+  onSelectedWordSet: (filePath: string) => void
+}
 
 /**
- * 
- * @param {{seriesSet: import("./models/WordSetIndex").Series[], wordSetStatus: import("./store/LS").LearningInfo[], onSelectedWordSet: (filePath: string) => void}} param0 args
- * - seriesSet: シリーズの配列
- * - wordSetStatus: 単語セット学習状況の配列
- * - onSelectedWordSet: 単語セットが選択された時の処理
- * @returns HomeScreenコンポーネント
+ * ホーム画面
  */
-function HomeScreen({seriesSet, wordSetStatus, onSelectedWordSet}) {
+export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelectedWordSet}) => {
   // seriesSetの順番、シリーズ内の単語セットの順番に対応する、単語セットの学習状況の配列
   // 将来のための実装をコメントアウト
   // const wordSetStatusOrdered = useMemo(() => {
@@ -66,5 +81,3 @@ function HomeScreen({seriesSet, wordSetStatus, onSelectedWordSet}) {
     </div>
   );
 }
-
-export default HomeScreen;

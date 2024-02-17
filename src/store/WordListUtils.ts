@@ -1,10 +1,11 @@
-import { Word } from '../models/Word';
+import { Word } from '../models/Word.ts';
+import { WordStatus } from '../models/WordStatus.ts';
 
 /**
  * Jsonファイルから単語を取得し、Wordオブジェクトの配列として返す
- * @return {Promise<Word[]>} 単語の配列
+ * @return単語の配列
  */
-export async function loadFromWordJson(jsonFilePath) {
+export async function loadFromWordJson(jsonFilePath: string): Promise<Word[]> {
     return  await fetch('data/'+jsonFilePath)
       .then(response => response.json())
       .then(data => data.map(Word.fromObject));
@@ -19,19 +20,19 @@ export async function loadFromWordJson(jsonFilePath) {
  * 
  * 規則1から3の単語はランダムに並べ替える。
  * 
- * @param {Word[]} wordList 対象の単語リスト
- * @param {number} num 抽出する単語の数
- * @param {Object.<string, import('../models/WordStatus').WordStatus>} allWordStatus 単語をキーとし、WordStatusオブジェクトを値とするオブジェクト
+ * @param wordList 対象の単語リスト
+ * @param num 抽出する単語の数
+ * @param allWordStatus 単語をキーとし、WordStatusオブジェクトを値とするオブジェクト
  * - 過去の単語の学習状況を示すオブジェクト
  * - キーは単語、値はWordStatusオブジェクト
  * - ストレージから取り出したものを渡される想定
- * @return {Word[]} 抽出された単語の配列
+ * @return 抽出された単語の配列
  */
-export function extractFromWordList(wordList, num, allWordStatus) {
-  const group0 = []; // 未学習の単語リスト
-  const group1 = []; // 苦手な単語リスト
-  const group2 = []; // うろ覚えの単語リスト
-  const group3 = []; // それ以外の単語リスト
+export function extractFromWordList(wordList: Word[], num: number, allWordStatus: Record<string, WordStatus>): Word[] {
+  const group0: Word[] = []; // 未学習の単語リスト
+  const group1: Word[] = []; // 苦手な単語リスト
+  const group2: Word[] = []; // うろ覚えの単語リスト
+  const group3: Word[] = []; // それ以外の単語リスト
 
   for(const word of wordList) {
     const status = allWordStatus[word.word];
@@ -55,7 +56,7 @@ export function extractFromWordList(wordList, num, allWordStatus) {
     }
   };
 
-  const result = [];
+  const result: Word[] = [];
 
   // 0群と1群をシャッフルして結合, 最大num個取得
   const shuffled01 = getShuffledArray([...group0, ...group1]);
@@ -78,10 +79,10 @@ export function extractFromWordList(wordList, num, allWordStatus) {
 
 /**
  * 配列をシャッフルする
- * @param {any[]} array シャッフル対象の配列 副作用はありません。
+ * @param array シャッフル対象の配列. 副作用はありません。
  * @returns シャッフルされた配列
  */
-export function getShuffledArray(array) {
+export function getShuffledArray<T>(array: T[]): T[] {
   const result = [...array];
   for (let i = result.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));

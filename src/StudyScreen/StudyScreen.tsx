@@ -1,7 +1,24 @@
 import React, { useEffect, useState, useMemo } from 'react';
-// eslint-disable-next-line no-unused-vars
-import { Word } from '../models/Word';
-import OptionButtons from './OptionButtons';
+import { OptionButtons } from './OptionButtons.tsx';
+import { Quiz, UserAnswer } from '../models/Quiz.ts';
+
+export type StudyScreenProps = {
+  /**
+   * クイズの一覧
+   */
+  quizzes: Quiz[],
+
+  /**
+   * 学習モード。"normal"か"retry"のいずれか。「通常学習」か「復習」のラベルの制御に使用
+   */
+  studyMode: string,
+
+  /**
+   * クイズが終了したときの処理
+   * @param userAnswers ユーザーの回答の一覧
+   */
+  onEndQuiz: (userAnswers: UserAnswer[]) => void
+};
 
 /**
  * 親コンポーネントから渡されたクイズを順番に画面に表示するコンポーネント
@@ -13,29 +30,19 @@ import OptionButtons from './OptionButtons';
  * 
  * このコンポーネントでやらないこと
  * - 単語に含まれる解答および選択肢を使ってクイズを作る: 正しくは親コンポーネントから受け取る
- * 
- * @param {{quizzes: Quiz[], studyMode: string, onEndQuiz: (userAnswers: {option: number, checked: boolean}[]) => void}}} wordSet 画面で扱う単語セット
- * - quizzes: クイズの一覧
- * - studyMode: 学習モード。"normal"か"retry"のいずれか。「通常学習」か「復習」のラベルの制御に使用
- * - onEndQuiz: クイズが終了したときの処理。引数はユーザーの回答の一覧
- *  - option: ユーザーの回答。Quizのインデックスに対応する選択肢のインデックス。0から始まる。-1は「スキップ」
- *  - checked: チェックボックスの状態
  */
-function StudyScreen({ quizzes, studyMode, onEndQuiz }) {
-  // ステート
+export const StudyScreen: React.FC<StudyScreenProps> = ({ quizzes, studyMode, onEndQuiz }) => {
   // 現在の問題番号: number (0から始まる)
-  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
   // ユーザーの回答: {option: number, checked: boolean}[] Quizのインデックスに対応する選択肢のインデックスとチェック状態。optionは0から始まる。-1は「スキップ」
-  const [userAnswers, setUserAnswers] = useState([]);
+  const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
 
   // NOTE: setUserAnswers -> setEnd -> onEndQuiz の順番に連鎖する
   // 完了フラグ: boolean
-  const [end, setEnd] = useState(false);
+  const [end, setEnd] = useState<boolean>(false);
 
-  // メモ化
-  // 現在の問題: Quiz
-  const currentQuiz = useMemo(() => quizzes[currentQuestionIndex], [quizzes, currentQuestionIndex]);
+  const currentQuiz = useMemo<Quiz>(() => quizzes[currentQuestionIndex], [quizzes, currentQuestionIndex]);
 
   // 次の問題
   useEffect(() => {
@@ -57,9 +64,9 @@ function StudyScreen({ quizzes, studyMode, onEndQuiz }) {
    * 
    * - 回答を記録する
    * - 次の問題があれば、次の問題に進む
-   * @param {number} userAnswer ユーザーの解答。Quizのインデックスに対応する選択肢のインデックス。0から始まる。-1は「スキップ」
+   * @param userAnswer ユーザーの回答
    */
-  const recordAndNextQuiz = (userAnswer) => {
+  const recordAndNextQuiz = (userAnswer: UserAnswer) => {
     setUserAnswers([...userAnswers, userAnswer]);
     if (currentQuestionIndex< quizzes.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
@@ -92,5 +99,3 @@ function StudyScreen({ quizzes, studyMode, onEndQuiz }) {
     </div>
   );
 }
-
-export default StudyScreen;
