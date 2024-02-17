@@ -77,7 +77,7 @@ describe('HomeScreen', () => {
     expect(screen.getByText('25 Words')).toBeInTheDocument();
   });
 
-  it('calls onSelectedWordSet when GO! button is clicked', () => {
+  it('GO!ボタンクリック時にonSelectedWordSetが呼ばれること', () => {
     fireEvent.click(screen.getAllByText('GO!')[1]);
     expect(onSelectedWordSet).toHaveBeenCalledTimes(1);
     expect(onSelectedWordSet).toHaveBeenCalledWith('/path/to/wordset2');

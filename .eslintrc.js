@@ -2,7 +2,6 @@
 module.exports = {
   env: {
     browser: true,
-    'jest/globals': true,
   },
   parser: '@typescript-eslint/parser',
   plugins: ['@typescript-eslint', 'jest', 'testing-library', 'jest-dom'],
@@ -11,11 +10,15 @@ module.exports = {
   ],
   rules: {
     'no-case-declarations': 'off',
-    'no-unused-vars': 'warn',
+    'no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
   },
   overrides: [
     {
       files: ['**/*.test.tsx'],
+      env: {
+       'jest/globals': true,
+        jest: true,
+      },
       rules: {
         'no-redeclare': 'off', // テストの際にはre-declaring variablesを許可する
       }

@@ -10,13 +10,14 @@ export type Props = {
   words: Word[],
 
   /**
-   * クイズの一覧。出題されたものに限り、「やめる」を選んだ移行の物は含まない。配列の順序はwordsと対応。
-   
+   * クイズの一覧。出題されたものに限り、「やめる」を選んだ以降の物は含まない。配列の順序はwordsと対応。
+   * quizzes.length <= words.lengthとなる
    */
   quizzes: Quiz[],
 
   /**
    * ユーザーの回答。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
+   * userAnswers.length == quizzes.lengthとなる
    */
   userAnswers: UserAnswer[],
 
@@ -44,7 +45,7 @@ export type Props = {
    * ユーザーが画面上のボタンを押したときの処理。イベント引数でクリックされたボタン名を識別。
    * @param name "next": 次のn個へ進むボタンが押された
    */
-  onUserButtonClick: (name: string) => void
+  onUserButtonClick: (_name: string) => void
 }
 
 /**
@@ -149,7 +150,7 @@ const ResultStatus: React.FC<ResultStatusProps> = ({ wordStatus }) => {
 
 type RetryButtonProps = {
   countOfRetry: number,
-  onUserButtonClick: (name: string) => void
+  onUserButtonClick: (_name: string) => void
 }
 
 const RetryButton: React.FC<RetryButtonProps> = ({countOfRetry, onUserButtonClick }) => {
@@ -161,7 +162,7 @@ const RetryButton: React.FC<RetryButtonProps> = ({countOfRetry, onUserButtonClic
 
 type NextButtonProps = {
   countOfNext: number,
-  onUserButtonClick: (name: string) => void,
+  onUserButtonClick: (_name: string) => void,
   quitted: boolean
 }
 
