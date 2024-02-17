@@ -49,7 +49,7 @@ export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelecte
   //   return wordSetStatusOrdered;
   // }, [seriesSet, wordSetStatus]);
 
-  function onClickGoButton(filePath) {
+  function onClickGoButton(filePath: string) {
     if (onSelectedWordSet) {
       console.log('wordset selected', filePath);
       onSelectedWordSet(filePath);

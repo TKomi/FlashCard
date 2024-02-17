@@ -109,7 +109,11 @@ const App: React.FC = () => {
         // Q: allWordStatusとしてstorageDataを使わないのはなぜ？
         // A: storageDataはホーム画面に戻る際に更新されるので、「次へ」を押した際には古いままになっている。
         // 「クイズ終了時処理」で更新されたものを使いたいため、更新後のwordStatusを使う。
-        const extracted = extractFromWordList(remaining, 20, wordStatus.reduce((acc, ws) => {acc[ws.word] = ws; return acc;}, {}));
+        const extracted = extractFromWordList(
+          remaining,
+          20,
+          wordStatus.reduce<Record<string, WordStatus>>((acc, ws) => {acc[ws.word] = ws; return acc;}, {})
+        );
         setStudySet(extracted);
         setQuizzes(extracted.map(createQuiz4));
         setRemaining(remaining.filter(w => !extracted.includes(w)));

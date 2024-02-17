@@ -1,20 +1,24 @@
-import React from 'react';
+import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { HomeScreen } from './HomeScreen';
-import { describe, beforeEach, expect, it, jest } from '@jest/globals';
+import { Series } from './models/WordSetIndex';
 
 describe('HomeScreen', () => {
-  const seriesSet = [
+  const seriesSet: Series[] = [
     {
+      seriesNo: 1,
+      size: 2,
       seriesName: 'Series 1',
       seriesDescription: 'Description 1',
       wordSets: [
         {
+          wordSetNo: '1',
           wordSetName: 'Word Set 1',
           size: 10,
           filePath: '/path/to/wordset1',
         },
         {
+          wordSetNo: '2',
           wordSetName: 'Word Set 2',
           size: 20,
           filePath: '/path/to/wordset2',
@@ -23,14 +27,18 @@ describe('HomeScreen', () => {
     },
     {
       seriesName: 'Series 2',
+      seriesNo: 2,
+      size: 2,
       seriesDescription: 'Description 2',
       wordSets: [
         {
+          wordSetNo: '1',
           wordSetName: 'Word Set 3',
           size: 15,
           filePath: '/path/to/wordset3',
         },
         {
+          wordSetNo: '2',
           wordSetName: 'Word Set 4',
           size: 25,
           filePath: '/path/to/wordset4',
