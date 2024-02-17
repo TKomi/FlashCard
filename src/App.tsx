@@ -75,7 +75,7 @@ const App: React.FC = () => {
   }, [currentScreen]);
 
   // クイズ終了時処理
-  const onEndQuiz = (ua) => {
+  const onEndQuiz = (ua: UserAnswer[]) => {
     // 1問も解いていない場合には保存せず、ホーム画面に戻る
     if (ua.length === 0) {
       setCurrentScreen('home');
@@ -103,7 +103,7 @@ const App: React.FC = () => {
   };
 
   // ユーザーが画面上のボタンを押したときの処理(ここで扱うボタンは画面を横断する物に限る)
-  const onUserButtonClick = (buttonName) => {
+  const onUserButtonClick = (buttonName: string) => {
     switch(buttonName) {
       case 'next':
         // Q: allWordStatusとしてstorageDataを使わないのはなぜ？
@@ -145,7 +145,7 @@ const App: React.FC = () => {
  * - 受け取った単語セットのファイルパスに該当する単語データを読み込む
  * - その単語データを元に、学習セット、クイズ、残りの単語を設定する。最後に、学習画面に遷移する
  */
-  const onSelectedWordSet = (filePath) => {
+  const onSelectedWordSet = (filePath: string) => {
     // 単語データの読み込み
     loadFromWordJson(filePath)
       .then(wordList => {

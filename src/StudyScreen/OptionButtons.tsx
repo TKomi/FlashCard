@@ -58,7 +58,7 @@ export const OptionButtons: React.FC<Props> = ({quiz, onAnswer, onNextQuiz, onQu
   }, [quiz])
 
   // ユーザーが回答した後の処理
-  const onAnswerInner = (userAnswer) => {
+  const onAnswerInner = (userAnswer: number) => {
     // 1. ボタンをロックする
     setIsLocked(true);
     if (onAnswer) {

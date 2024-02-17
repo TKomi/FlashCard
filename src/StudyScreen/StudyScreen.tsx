@@ -66,7 +66,7 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ quizzes, studyMode, on
    * - 次の問題があれば、次の問題に進む
    * @param userAnswer ユーザーの回答
    */
-  const recordAndNextQuiz = (userAnswer) => {
+  const recordAndNextQuiz = (userAnswer: UserAnswer) => {
     setUserAnswers([...userAnswers, userAnswer]);
     if (currentQuestionIndex< quizzes.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);

@@ -10,7 +10,7 @@ export class WordStatus {
    * - 正解:true, 不正解:false
    * @param status - 単語の状態 (0:未学習, 1:苦手, 2:うろ覚え, 3:覚えた)
    */
-  constructor(word: string, lastLearnedDate: string, answerHistory: boolean[], status: number) {
+  constructor(word: string, lastLearnedDate: string, answerHistory: boolean[], status: 0|1|2|3|4|5|6) {
     this.word = word;
     this.lastLearnedDate = lastLearnedDate;
     this.answerHistory = answerHistory;
