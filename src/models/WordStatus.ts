@@ -20,5 +20,5 @@ export class WordStatus {
   word: string;
   lastLearnedDate: string;
   answerHistory: boolean[];
-  status: number;
+  status: 0|1|2|3|4|5|6;
 }

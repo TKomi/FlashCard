@@ -29,3 +29,21 @@ export class Quiz {
     return new Quiz(object.question, object.answer, object.options);
   }
 }
+
+
+/**
+ * 問題に対応するユーザーの回答
+ */
+export type UserAnswer = {
+
+  /**
+   * 選択肢のインデックス。0から始まる。-1は「スキップ」
+   */
+  option: number,
+
+  /**
+   * チェックボックスの状態
+   */
+  checked: boolean
+}
+

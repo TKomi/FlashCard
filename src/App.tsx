@@ -4,9 +4,9 @@ import { useEffect, useState, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { FlashCardData, LS, getInitialState } from './store/LS.ts';
 import { extractFromWordList, loadFromWordJson, getShuffledArray } from './store/WordListUtils.ts';
-import HomeScreen from './HomeScreen.js';
-import {StudyScreen, UserAnswer} from './StudyScreen/StudyScreen.tsx';
-import ResultScreen from './ResultScreen.js';
+import { HomeScreen } from './HomeScreen.tsx';
+import { StudyScreen } from './StudyScreen/StudyScreen.tsx';
+import { ResultScreen } from './ResultScreen.tsx';
 import { createQuiz4 } from './StudyScreen/CreateQuiz.ts';
 import { LearningSession } from './models/LearningSession.ts';
 import { updateWordStatuses } from './models/WordStatusUtils.ts';
@@ -14,7 +14,7 @@ import { WordStatus } from './models/WordStatus.ts';
 import { WordSetIndexUtil } from './models/WordSetIndex.ts';
 import { Series } from './models/WordSetIndex.ts';
 import { Word } from './models/Word.ts';
-import { Quiz } from  './models/Quiz.ts';
+import { Quiz, UserAnswer } from  './models/Quiz.ts';
 import React from 'react';
 
 const App: React.FC = () => {

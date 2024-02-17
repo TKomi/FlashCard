@@ -1,4 +1,64 @@
 import React, { useEffect, useState, useMemo } from 'react';
+import { Word } from './models/Word.ts';
+import { Quiz, UserAnswer } from './models/Quiz.ts';
+import { WordStatus } from './models/WordStatus.ts';
+
+export type Props = {
+  /**
+   * 画面で扱う単語リスト。出題される予定だったものも含む。
+   */
+  words: Word[],
+
+  /**
+   * クイズの一覧。出題されたものに限り、「やめる」を選んだ移行の物は含まない。配列の順序はwordsと対応。
+   
+   */
+  quizzes: Quiz[],
+
+  /**
+   * ユーザーの回答。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
+   */
+  userAnswers: UserAnswer[],
+
+  /**
+   * 各単語の学習状況
+   */
+  wordStatus: WordStatus[],
+
+  /**
+   * 「次のn個へ進む」ボタンの表示に使用する、次のセッションで学習する単語の数
+   */
+  countOfNext: number,
+
+  /**
+   * 終了理由。"finish"か"quit"のいずれか
+   */
+  reason: string,
+
+  /**
+   * 学習モード。"normal"か"retry"のいずれか。「通常学習」か「復習」のラベルの制御に使用
+   */
+  studyMode: string,
+
+  /**
+   * ユーザーが画面上のボタンを押したときの処理。イベント引数でクリックされたボタン名を識別。
+   * @param name "next": 次のn個へ進むボタンが押された
+   */
+  onUserButtonClick: (name: string) => void
+}
+
+/**
+ * リザルト画面の1行分のデータ
+ */
+type Entry = {
+  index: number,
+  spelling: string,
+  correctAnswer: string,
+  isCorrect: boolean,
+  status: 0|1|2|3|4|5|6,
+  isSkipped: boolean,
+  isChecked: boolean,
+}
 
 /**
  * リザルト画面を表す画面コンポーネント
@@ -13,21 +73,10 @@ import React, { useEffect, useState, useMemo } from 'react';
  * - ユーザーの回答の正誤判定
  * - ユーザーの回答の記録
  * - 単語、問題のリスト、ユーザーの回答リストは受け取るだけで、自分で作成しない
- * 
- * @param {{words: Word[], quizzes: Quiz[], userAnswers: {option: number, checked: boolean}[], wordStatus: import("./models/WordStatus").WordStatus[], countOfNext: number, reason: string, studyMode: string, onUserButtonClick: (name: string) => void}} props 
- * - words: 画面で扱う単語リスト。出題される予定だったものも含む。
- * - quizzes: クイズの一覧。出題されたものに限り、「やめる」を選んだ移行の物は含まない。配列の順序はwordsと対応。
- * - userAnswers: ユーザーの回答。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
- * - wordStatus: 各単語の学習状況
- * - countOfNext: 「次のn個へ進む」ボタンの表示に使用する、次のセッションで学習する単語の数
- * - reason: 終了理由。"finish"か"quit"のいずれか
- * - studyMode: 学習モード。"normal"か"retry"のいずれか。「通常学習」か「復習」のラベルの制御に使用
- * - onUserButtonClick: ユーザーが画面上のボタンを押したときの処理。イベント引数でクリックされたボタン名を識別。
- *    - "next": 次のn個へ進むボタンが押された
  */
-function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, reason = "finish", studyMode = "normal", onUserButtonClick}) {
+export const ResultScreen: React.FC<Props> = ({ words, quizzes, userAnswers, wordStatus, countOfNext, reason = "finish", studyMode = "normal", onUserButtonClick}) => {
 
-  const [entries, setEntries] = useState([]);
+  const [entries, setEntries] = useState<Entry[]>([]);
 
   useEffect(() => {
     const newEntries = quizzes.map((quiz, index) => {
@@ -74,12 +123,14 @@ function ResultScreen({ words, quizzes, userAnswers, wordStatus, countOfNext, re
   );
 }
 
+type ResultStatusProps = {
+  wordStatus: 0|1|2|3|4|5|6
+}
+
 /**
  * 「覚えた」「うろ覚え」などの学習状況を表示するコンポーネント
- * @param {{wordStatus: 0|1|2|3|4|5|6}}
- * @returns JSX.Element
  */
-function ResultStatus({ wordStatus }) {
+const ResultStatus: React.FC<ResultStatusProps> = ({ wordStatus }) => {
   switch(wordStatus) {
     case 6:
     case 5:
@@ -96,14 +147,25 @@ function ResultStatus({ wordStatus }) {
   }
 }
 
-function RetryButton({countOfRetry, onUserButtonClick }) {
+type RetryButtonProps = {
+  countOfRetry: number,
+  onUserButtonClick: (name: string) => void
+}
+
+const RetryButton: React.FC<RetryButtonProps> = ({countOfRetry, onUserButtonClick }) => {
   if (countOfRetry === 0) return <div className='result-action-spacer'></div>;
   else return (
     <button onClick={() => onUserButtonClick("retry")} className='result-action-btn'>復習する</button>
   );
 }
 
-function NextButton({ countOfNext, onUserButtonClick, quitted }) {
+type NextButtonProps = {
+  countOfNext: number,
+  onUserButtonClick: (name: string) => void,
+  quitted: boolean
+}
+
+const NextButton: React.FC<NextButtonProps> = ({ countOfNext, onUserButtonClick, quitted }) => {
   if (countOfNext === 0 || quitted) return <div className='result-action-spacer'></div>;
   else {
     return (
@@ -111,5 +173,3 @@ function NextButton({ countOfNext, onUserButtonClick, quitted }) {
     );
   }
 }
-
-export default ResultScreen;

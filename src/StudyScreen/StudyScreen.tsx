@@ -1,22 +1,6 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { OptionButtons } from './OptionButtons.tsx';
-import { Quiz } from '../models/Quiz.ts';
-
-/**
- * 問題に対応するユーザーの回答
- */
-export type UserAnswer = {
-
-  /**
-   * 選択肢のインデックス。0から始まる。-1は「スキップ」
-   */
-  option: number,
-
-  /**
-   * チェックボックスの状態
-   */
-  checked: boolean
-}
+import { Quiz, UserAnswer } from '../models/Quiz.ts';
 
 export type StudyScreenProps = {
   /**
