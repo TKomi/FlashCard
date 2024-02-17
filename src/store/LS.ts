@@ -93,7 +93,7 @@ export const LS = {
     const key = "flashCard"; // 固定のキー
 
     const jsonString = localStorage.getItem(key);
-    const json = jsonString ? JSON.parse(jsonString) : Object.assign({}, initialState);
+    const json = jsonString ? JSON.parse(jsonString) : getInitialState()
     const result = {
       databaseVersion: json.databaseVersion,
       learningSession: json.learningSession.map(session => new LearningSession(session)),
@@ -114,10 +114,12 @@ export const LS = {
 /**
  * LocalStorageに保存されるデータの初期値
  */
-const initialState: FlashCardData = {
-  learningSession: [],
-  wordStatus: {},
-  wordSetStatus: []
+export function getInitialState(): FlashCardData {
+  return {
+    learningSession: [],
+    wordStatus: {},
+    wordSetStatus: []
+  };
 }
 
 

@@ -14,7 +14,7 @@ import React, { useEffect, useState, useMemo } from 'react';
  * - ユーザーの回答の記録
  * - 単語、問題のリスト、ユーザーの回答リストは受け取るだけで、自分で作成しない
  * 
- * @param {{words: Word[], quizzes: Quiz[], userAnswers: {option: number, checked: boolean}[], wordStatus: import("./models/WordStatus").WordStatus, countOfNext: number, reason: string, studyMode: string, onUserButtonClick: (name: string) => void}} props 
+ * @param {{words: Word[], quizzes: Quiz[], userAnswers: {option: number, checked: boolean}[], wordStatus: import("./models/WordStatus").WordStatus[], countOfNext: number, reason: string, studyMode: string, onUserButtonClick: (name: string) => void}} props 
  * - words: 画面で扱う単語リスト。出題される予定だったものも含む。
  * - quizzes: クイズの一覧。出題されたものに限り、「やめる」を選んだ移行の物は含まない。配列の順序はwordsと対応。
  * - userAnswers: ユーザーの回答。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。

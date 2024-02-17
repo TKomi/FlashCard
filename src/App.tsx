@@ -2,47 +2,51 @@ import './App.css';
 import 'uikit/dist/css/uikit.min.css';
 import { useEffect, useState, useMemo } from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { LS } from './store/LS.ts';
+import { FlashCardData, LS, getInitialState } from './store/LS.ts';
 import { extractFromWordList, loadFromWordJson, getShuffledArray } from './store/WordListUtils.ts';
-import HomeScreen from './HomeScreen';
-import StudyScreen from './StudyScreen/StudyScreen';
-import ResultScreen from './ResultScreen';
+import HomeScreen from './HomeScreen.js';
+import {StudyScreen, UserAnswer} from './StudyScreen/StudyScreen.tsx';
+import ResultScreen from './ResultScreen.js';
 import { createQuiz4 } from './StudyScreen/CreateQuiz.ts';
 import { LearningSession } from './models/LearningSession.ts';
 import { updateWordStatuses } from './models/WordStatusUtils.ts';
+import { WordStatus } from './models/WordStatus.ts';
 import { WordSetIndexUtil } from './models/WordSetIndex.ts';
+import { Series } from './models/WordSetIndex.ts';
+import { Word } from './models/Word.ts';
+import { Quiz } from  './models/Quiz.ts';
+import React from 'react';
 
-function App() {
+const App: React.FC = () => {
   // 現在表示している画面: 'home' or 'study' or 'result' or 'loading'
   const [currentScreen, setCurrentScreen] = useState('loading');
   
   // LocalStorage上のデータ
-  const [storageData, setStorageData] = useState({});
+  const [storageData, setStorageData] = useState<FlashCardData>(getInitialState);
 
   // 学習シリーズの一覧
-  const [seriesSet, setSeriesSet] = useState([]);
+  const [seriesSet, setSeriesSet] = useState<Series[]>([]);
 
   // 現在の学習セットで扱っている単語の一覧
-  const [studySet, setStudySet] = useState([]);
+  const [studySet, setStudySet] = useState<Word[]>([]);
 
   // 学習モード: 'normal' or 'retry'
-  const [studyMode, setStudyMode] = useState('normal');
+  const [studyMode, setStudyMode] = useState<string>('normal');
 
   // 現在の学習セットで扱っているクイズの一覧
-  const [quizzes, setQuizzes] = useState([]);
+  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
 
   // 現在の単語セットで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
-  const [remaining, setRemaining] = useState([]);
+  const [remaining, setRemaining] = useState<Word[]>([]);
 
   // ユーザーの回答の一覧
-  const [userAnswers, setUserAnswers] = useState([]);
+  const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
 
   // クイズの一覧の順番に対応する、単語の学習状況の一覧(更新後)
-  const [wordStatus, setWordStatus] = useState([]);
+  const [wordStatus, setWordStatus] = useState<WordStatus[]>([]);
 
-  // 終了理由
-  // string: "finish" or "quit"
-  const [endOfReason, setEndOfReason] = useState('finish');
+  // 終了理由: "finish" or "quit"
+  const [endOfReason, setEndOfReason] = useState<string>('finish');
 
   // 次のn個へ進むボタンの表示に使用する、次のセッションで学習する単語の数
   const countOfNext = useMemo(() => remaining.length <= 20 ? remaining.length : 20, [remaining]);
@@ -102,7 +106,10 @@ function App() {
   const onUserButtonClick = (buttonName) => {
     switch(buttonName) {
       case 'next':
-        const extracted = extractFromWordList(remaining, 20, wordStatus);
+        // Q: allWordStatusとしてstorageDataを使わないのはなぜ？
+        // A: storageDataはホーム画面に戻る際に更新されるので、「次へ」を押した際には古いままになっている。
+        // 「クイズ終了時処理」で更新されたものを使いたいため、更新後のwordStatusを使う。
+        const extracted = extractFromWordList(remaining, 20, wordStatus.reduce((acc, ws) => {acc[ws.word] = ws; return acc;}, {}));
         setStudySet(extracted);
         setQuizzes(extracted.map(createQuiz4));
         setRemaining(remaining.filter(w => !extracted.includes(w)));
@@ -121,7 +128,7 @@ function App() {
             acc.push(index);
           }
           return acc;
-        }, []);
+        }, [] as number[]);
         const retryWords = getShuffledArray(retryTarget.map(index => studySet[index]));
         // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
         setQuizzes(retryWords.map(createQuiz4));
@@ -167,7 +174,7 @@ function App() {
             onUserButtonClick={onUserButtonClick}
           />
           ) : currentScreen === 'home' ? (
-            <HomeScreen seriesSet={seriesSet} wordSetStatus={storageData.learningInfo} onSelectedWordSet={onSelectedWordSet}/>
+            <HomeScreen seriesSet={seriesSet} wordSetStatus={storageData.wordSetStatus} onSelectedWordSet={onSelectedWordSet}/>
           ) : (
           <div>
             <p>Loading...</p>
@@ -181,16 +188,22 @@ function App() {
 /**
  * 学習セッション1件の情報を保存(追記)する
  * 
- * @param {Word[]} wordList 出題された単語の一覧
- * @param {Quiz[]} quizzes 出題された問題の一覧。wordListと順番が同じである
- * @param {{option: number, checked: boolean}[]} userAnswers ユーザーの回答の一覧。quizzesと順番が同じ。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
- * @param {import('./store/LS').FlashCardData} oldFlashCardData LSから読み込んだ、既存の学習セッションデータ
+ * @param wordList 出題された単語の一覧
+ * @param quizzes 出題された問題の一覧。wordListと順番が同じである
+ * @param userAnswers ユーザーの回答の一覧。quizzesと順番が同じ。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
+ * @param oldFlashCardData LSから読み込んだ、既存の学習セッションデータ
  * - delete-insert方式のため、古いデータも必要となる
- * @param {WordStatus[]} updatedWordsStatuses 更新後の単語の学習状況の一覧
+ * @param updatedWordsStatuses 更新後の単語の学習状況の一覧
  * - updateWordStatusesで作成したものをわたすこと
  * - updateWordStatuses関数の結果は他の箇所でも使いたかったため関数は分離した
  */
-function save(wordList, quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses) {
+function save(
+  wordList: Word[],
+  quizzes: Quiz[],
+  userAnswers: UserAnswer[],
+  oldFlashCardData: FlashCardData,
+  updatedWordsStatuses: WordStatus[]
+): void {
 // 学習セッションの状況
   const learningSessionClone = [...oldFlashCardData.learningSession];
   learningSessionClone.push(new LearningSession({

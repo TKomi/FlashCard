@@ -2,6 +2,29 @@
 import { Quiz } from '../models/Quiz.ts';
 import React, { useEffect, useState } from 'react';
 
+export type Props = {
+  /**
+   * 表示するクイズ
+   */
+  quiz: Quiz,
+
+  /**
+   *  ユーザーが回答した後の処理。
+   * @param userAnswer ユーザーの回答。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
+   */
+  onAnswer?: (userAnswer: { option: number, checked: boolean }) => void,
+
+  /**
+   * 次の問題に進む直前に呼び出される処理。
+   * @param userAnswer ユーザーの回答。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
+   */
+  onNextQuiz: (userAnswer: {option: number, checked: boolean}) => void,
+
+  /**
+   * やめるボタンが押された時の処理
+   */
+  onQuit: () => void
+}
 
 /**
  * クイズ1問の選択肢ボタン
@@ -9,27 +32,21 @@ import React, { useEffect, useState } from 'react';
  *   正誤表示する時間は1秒とする
  *   すべての選択肢ボタンはロックされ、クリックできない状態にする
  * 正誤表示が終わったらonNextQuizを呼び出す
- * @param {{quiz: Quiz, onAnswer: (userAnswer: {option: number, checked: boolean}) => void, onNextQuiz: (userAnswer: {option: number, checked: boolean}) => void, onQuit: () => void}} param0 
- * - quiz: 表示するクイズ
- * - onAnswer: ユーザーが回答した後の処理。userAnswerのoptionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
- * - onNextQuiz: 次の問題に進む直前に呼び出される処理。userAnswerのoptionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
- * - onQuit: やめるボタンが押された時の処理
  */
-function OptionButtons({quiz, onAnswer, onNextQuiz, onQuit}) {
-  // ステート
-  // ロック状態: boolean デフォルトはfalse(ロックされていない)
-  const [isLocked, setIsLocked] = useState(false);
+export const OptionButtons: React.FC<Props> = ({quiz, onAnswer, onNextQuiz, onQuit}) => {
+  // ロック状態 デフォルトはfalse(ロックされていない)
+  const [isLocked, setIsLocked] = useState<boolean>(false);
 
-  // チェックボックスの状態: boolean デフォルトはfalse(未チェック)
-  const [checked, setChecked] = useState(false);
+  // チェックボックスの状態 デフォルトはfalse(未チェック)
+  const [checked, setChecked] = useState<boolean>(false);
 
-  // 回答ボタンのスタイル(クラス): string[]
+  // 回答ボタンのスタイル(クラス)
   // スタイルの選択肢はdefault(未回答), correct(正解), incorrect(不正解), actual(本当の正解)
-  const [buttonStyle, setButtonStyle] = useState(["default", "default", "default", "default"]);
+  const [buttonStyle, setButtonStyle] = useState<string[]>(["default", "default", "default", "default"]);
 
-  // スキップボタンのスタイル(クラス): string
+  // スキップボタンのスタイル(クラス)
   // スタイルの選択肢はdefault(未回答), incorrect(不正解)
-  const [skipButtonStyle, setSkipButtonStyle] = useState("default");
+  const [skipButtonStyle, setSkipButtonStyle] = useState<string>("default");
 
   useEffect(() => {
     // スタイルの初期化
@@ -93,13 +110,13 @@ function OptionButtons({quiz, onAnswer, onNextQuiz, onQuit}) {
         {quiz.options.map((option, index) => (
           <button key={index} onClick={() => onAnswerInner(index)} disabled={isLocked} className={`uk-width-4-5 option-btn ${buttonStyle[index]}`}>{option}</button>
         ))}
-        < div className = 'uk-flex uk-width-1-1 uk-margin-top' >
-          < div className = 'uk-width-1-2' >
-            < label className = 'study-checkbox' > < input type = "checkbox"
-            className = "uk-checkbox" checked={checked} onChange={() => setChecked(!checked)} / > チェック < /label>
+        <div className = 'uk-flex uk-width-1-1 uk-margin-top' >
+          <div className = 'uk-width-1-2' >
+            <label className = 'study-checkbox' > <input type = "checkbox"
+            className = "uk-checkbox" checked={checked} onChange={() => setChecked(!checked)} /> チェック </label>
           </div>
           <div className='uk-width-1-2'>
-            < button onClick = {
+            <button onClick = {
               () => onAnswerInner(-1)
             }
             disabled = {
@@ -115,5 +132,3 @@ function OptionButtons({quiz, onAnswer, onNextQuiz, onQuit}) {
   </div>  
   );
 }
-
-export default OptionButtons;
