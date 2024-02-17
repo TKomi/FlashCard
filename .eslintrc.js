@@ -14,13 +14,17 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['**/*.test.tsx'],
+      files: ['**/*.test.js', '**/*.test.ts', '**/*.test.tsx'],
       env: {
        'jest/globals': true,
         jest: true,
+        browser: true,
       },
       rules: {
         'no-redeclare': 'off', // テストの際にはre-declaring variablesを許可する
+      },
+      globals: {
+        global: "writable",
       }
     }
   ]
