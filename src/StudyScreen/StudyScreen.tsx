@@ -17,7 +17,7 @@ export type StudyScreenProps = {
    * クイズが終了したときの処理
    * @param userAnswers ユーザーの回答の一覧
    */
-  onEndQuiz: (userAnswers: UserAnswer[]) => void
+  onEndQuiz: (_userAnswers: UserAnswer[]) => void
 };
 
 /**
