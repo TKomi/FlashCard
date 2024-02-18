@@ -12,13 +12,13 @@ export type Props = {
    *  ユーザーが回答した後の処理。
    * @param userAnswer ユーザーの回答。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
    */
-  onAnswer?: (userAnswer: { option: number, checked: boolean }) => void,
+  onAnswer?: (_userAnswer: { option: number, checked: boolean }) => void,
 
   /**
    * 次の問題に進む直前に呼び出される処理。
    * @param userAnswer ユーザーの回答。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
    */
-  onNextQuiz: (userAnswer: {option: number, checked: boolean}) => void,
+  onNextQuiz: (_userAnswer: {option: number, checked: boolean}) => void,
 
   /**
    * やめるボタンが押された時の処理
