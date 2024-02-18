@@ -53,10 +53,10 @@ export type GroupsAndCounts = {
  * LocalStorageとのやりとりに使うデータ
  */
 export type FlashCardData = {
-  /**
-   * スキーマのバージョン
-   */
-  databaseVersion: string;
+  // /**
+  //  * スキーマのバージョン
+  //  */
+  // databaseVersion: string;
 
   /**
    * 学習セッションの配列
@@ -119,7 +119,7 @@ export const LS = {
 /**
  * LocalStorageに保存されるデータの初期値
  */
-export function getInitialState(): FlashCardData {
+export function getInitialState(): FlashCardData & { databaseVersion: string } {
   return {
     databaseVersion: Schema.description,
     learningSession: [],

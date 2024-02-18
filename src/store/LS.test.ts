@@ -31,7 +31,6 @@ describe('LS', () => {
   test('save: データがLocalStorageに保存されること', () => {
     // Arrange
     const saveTarget: FlashCardData = {
-      databaseVersion: Schema.description,
       learningSession: [],
       wordStatus: {},
       wordSetStatus: [],
@@ -41,14 +40,13 @@ describe('LS', () => {
     LS.save(saveTarget);
 
     // Assert
-    const expected = { ...saveTarget };
+    const expected = { ...saveTarget, databaseVersion: Schema.description};
     expect(localStorageMock.setItem).toHaveBeenCalledWith('flashCard', JSON.stringify(expected));
   });
 
   test('loadOrDefault: データがLocalStorageから読み込まれること', () => {
     // Arrange
     const data: FlashCardData = {
-      databaseVersion: '0.1.0',
       learningSession: [],
       wordStatus: {},
       wordSetStatus: [],
@@ -59,7 +57,7 @@ describe('LS', () => {
     const result = LS.loadOrDefault();
 
     // Assert
-    expect(result).toEqual(data);
+    expect(result).toEqual({...data, databaseVersion: Schema.description});
   });
 
   test('loadOrDefault: データがLocalStorageに存在しない場合に初期値が返されること', () => {
