@@ -1,16 +1,16 @@
 import { WordStatus } from "./WordStatus.ts";
 import { Word } from "./Word.ts";
-import { Quiz } from "./Quiz.ts";
+import { Quiz, UserAnswer } from "./Quiz.ts";
 import { FlashCardData } from "../store/LS.ts";
 /**
  * 単語の現在の状態(未回答0、苦手12、うろ覚え34、覚えた56), 今回の回答が正解かどうかとチェックボックスの状態から、更新後のステータスを返す
  * 
  * @param oldStatus 現在のステータス
  * @param ansIsCorrect 今回の回答が正解かどうか
- * @param checked チェックボックスの状態 // 未実装
+ * @param checked チェックボックスの状態
  * @returns 更新後のステータス
  */
-function getUpdatedStatus(oldStatus: number, ansIsCorrect: boolean, checked: boolean = false): 0|1|2|3|4|5|6 {
+function getUpdatedStatus(oldStatus: number, ansIsCorrect: boolean, checked: boolean): 0|1|2|3|4|5|6 {
   // 現在の状態はcheckedが反映されていない仮のもの
   switch(oldStatus) {
     case 0:
@@ -50,7 +50,7 @@ function getUpdatedStatus(oldStatus: number, ansIsCorrect: boolean, checked: boo
 export function updateWordStatuses(
   studySet: Word[],
   quizzes: Quiz[],
-  userAnswers: {option: number, checked: boolean}[],
+  userAnswers: UserAnswer[],
   saveData: FlashCardData
 ): WordStatus[] {
   const result: WordStatus[] = [];
