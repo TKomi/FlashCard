@@ -3,6 +3,13 @@ export type AnswerHistoryItem = {
   c: boolean;
 };
 
+export type LearningSessionCtorParams = {
+  sessionId: string;
+  wordSetNo: number;
+  completionDate: string;
+  answerHistory: AnswerHistoryItem[];
+}
+
 
 /**
  * 学習セッション
@@ -34,7 +41,7 @@ export class LearningSession {
   /**
    * @param sessionData - 学習セッションのデータ
    */
-  constructor(sessionData: {sessionId: string, wordSetNo: number, completionDate: string, answerHistory: AnswerHistoryItem[]}) {
+  constructor(sessionData: LearningSessionCtorParams) {
     this.sessionId = sessionData.sessionId;
     this.wordSetNo = sessionData.wordSetNo;
     this.completionDate = sessionData.completionDate;

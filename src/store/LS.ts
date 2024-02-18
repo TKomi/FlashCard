@@ -1,4 +1,4 @@
-import { LearningSession } from '../models/LearningSession.ts';
+import { LearningSession, LearningSessionCtorParams } from '../models/LearningSession.ts';
 import { WordStatus } from '../models/WordStatus.ts';
 import Schema from './ls.schema.json';
 
@@ -54,6 +54,11 @@ export type GroupsAndCounts = {
  */
 export type FlashCardData = {
   /**
+   * スキーマのバージョン
+   */
+  databaseVersion: string;
+
+  /**
    * 学習セッションの配列
    */
   learningSession: LearningSession[];
@@ -96,12 +101,12 @@ export const LS = {
     const json = jsonString ? JSON.parse(jsonString) : getInitialState()
     const result = {
       databaseVersion: json.databaseVersion,
-      learningSession: json.learningSession.map(session => new LearningSession(session)),
+      learningSession: json.learningSession.map((session: LearningSessionCtorParams) => new LearningSession(session)),
       wordStatus: (Object.entries(json.wordStatus) as unknown as WordStatus[])
       .reduce((reduced, kvp) => {
         reduced[kvp.word] = new WordStatus(kvp.word, kvp.lastLearnedDate, kvp.answerHistory, kvp.status);
         return reduced;
-      }, {}), // json.wordStatusの各要素をWordStatusに変換し、reduceでまとめる
+      }, {} as  Record<string, WordStatus>), // json.wordStatusの各要素をWordStatusに変換し、reduceでまとめる
       wordSetStatus: json.wordSetStatus || [],
     };
 
@@ -116,6 +121,7 @@ export const LS = {
  */
 export function getInitialState(): FlashCardData {
   return {
+    databaseVersion: Schema.description,
     learningSession: [],
     wordStatus: {},
     wordSetStatus: []
