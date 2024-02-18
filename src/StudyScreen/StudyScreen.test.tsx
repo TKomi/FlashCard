@@ -28,33 +28,36 @@ describe('StudyScreen', () => {
     expect(screen.getByText('Question 1')).toBeInTheDocument();
   });
 
-  it('回答が正しく記録されること', async () => {
+  it('問題の表示と回答 基本的な流れ', async () => {
+    // 1問目
     act(() => {
-      // setTimeout(() => {
-        fireEvent.click(screen.getByText('Option 1'));
-      // }, 1500);
-      jest.advanceTimersByTime(1500);
+      fireEvent.click(screen.getByText('Option 1'));
     });
     await waitFor(() => {
       expect(screen.getByText('Question 2')).toBeInTheDocument();
     }, { timeout: 1500 });
 
+    // 2問目
     act(() => {
       setTimeout(() => {
-        fireEvent.click(screen.getByText('Option 2'));
-          // Code inside setTimeout
+        act(() => {
+          fireEvent.click(screen.getByText('Option 2'));
+        });
       }, 1500);
-      jest.advanceTimersByTime(1500);
+      jest.advanceTimersByTime(1500); // タイムライン: 1500ms
     });
     await waitFor(() => {
       expect(screen.getByText('Question 3')).toBeInTheDocument();
     }, { timeout: 1500 });
     
+    // 3問目
     act(() => {
       setTimeout(() => {
-        fireEvent.click(screen.getByText('Option 3'));
+        act(() => {
+          fireEvent.click(screen.getByText('Option 3'));
+        });
       }, 3000);
-      jest.advanceTimersByTime(1500);
+      jest.advanceTimersByTime(1500); // タイムライン: 3000ms
     });
     await waitFor(() => {
       expect(onEndQuiz).toHaveBeenCalledTimes(1);
