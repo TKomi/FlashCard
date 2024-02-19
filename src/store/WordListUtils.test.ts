@@ -74,18 +74,23 @@ describe('extractFromWordList', () => {
 describe('getShuffledArray', () => {
   test('配列をシャッフルできていること', () => {
     // Arrange
-    const array = [1, 2, 3, 4, 5];
+    const array = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 
     // Act
     const result = getShuffledArray(array);
 
     // Assert
-    expect(result).not.toEqual(array);
+    expect(result).not.toEqual(array); // 確率で失敗する(同じになる) arrayのサイズを増やして確率をコントロール
     expect(result).toHaveLength(array.length);
     expect(result).toContain(1);
     expect(result).toContain(2);
     expect(result).toContain(3);
     expect(result).toContain(4);
     expect(result).toContain(5);
+    expect(result).toContain(6);
+    expect(result).toContain(7);
+    expect(result).toContain(8);
+    expect(result).toContain(9);
+    expect(result).toContain(10);
   });
 });

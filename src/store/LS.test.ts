@@ -57,7 +57,8 @@ describe('LS', () => {
     const result = LS.loadOrDefault();
 
     // Assert
-    expect(result).toEqual({...data, databaseVersion: Schema.description});
+    expect(result).toEqual(data);
+    expect(localStorageMock.getItem).toHaveBeenCalledWith('flashCard');
   });
 
   test('loadOrDefault: データがLocalStorageに存在しない場合に初期値が返されること', () => {

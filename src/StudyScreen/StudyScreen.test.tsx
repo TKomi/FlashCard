@@ -14,6 +14,7 @@ describe('StudyScreen', () => {
   afterEach(() => {
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
+    jest.resetAllMocks();
   }); 
 
   it('通常学習 問題が正しく表示されること', () => {
