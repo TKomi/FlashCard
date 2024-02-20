@@ -51,7 +51,7 @@ export type WordSetIndex = {
  */
 export const WordSetIndexUtil = {
   async loadFromIndexJson(indexFilePath: string): Promise<Series[]> {
-    return await fetch('./data/index.json')
+    return await fetch(indexFilePath)
       .then(response => response.json())
       .then(data => data.dataSet);
   },
