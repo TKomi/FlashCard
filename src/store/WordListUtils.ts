@@ -54,7 +54,7 @@ export function extractFromWordList(wordList: Word[], num: number, allWordStatus
         group0.push(word);
       break;
     }
-  };
+  }
 
   const result: Word[] = [];
 
