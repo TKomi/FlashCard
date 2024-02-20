@@ -16,6 +16,7 @@ import { Series } from './models/WordSetIndex.ts';
 import { Word } from './models/Word.ts';
 import { Quiz, UserAnswer } from  './models/Quiz.ts';
 import React from 'react';
+import { StudySet } from './StudySet.ts';
 
 const App: React.FC = () => {
   // 現在表示している画面: 'home' or 'study' or 'result' or 'loading'
@@ -27,14 +28,12 @@ const App: React.FC = () => {
   // 学習シリーズの一覧
   const [seriesSet, setSeriesSet] = useState<Series[]>([]);
 
-  // 現在の学習セットで扱っている単語の一覧
-  const [studySet, setStudySet] = useState<Word[]>([]);
-
-  // 学習モード: 'normal' or 'retry'
-  const [studyMode, setStudyMode] = useState<string>('normal');
-
-  // 現在の学習セットで扱っているクイズの一覧
-  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  // 学習セットの状況
+  const [studySet, setStudySet] = useState<StudySet>({
+    words: [],
+    quizzes: [],
+    studyMode: 'normal',
+  });
 
   // 現在の単語セットで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
   const [remaining, setRemaining] = useState<Word[]>([]);
@@ -84,19 +83,18 @@ const App: React.FC = () => {
     
     // 「やめる」を選んでいた場合には ua.length < quizzes.length となる
     // どのケースにも対応するため、studySet, quizzesはuaの長さに切り詰める
-    if (ua.length < quizzes.length) {
+    if (ua.length < studySet.quizzes.length) {
       setEndOfReason('quit');
     } else {
       setEndOfReason('finish');
     }
-    const studySetInner = studySet.slice(0, ua.length);
-    const quizzesInner = quizzes.slice(0, ua.length);
+    const studySetInner = studySet.words.slice(0, ua.length);
+    const quizzesInner = studySet.quizzes.slice(0, ua.length);
 
-    const updatedWordsStatuses = updateWordStatuses(studySet, quizzesInner, ua, storageData);
+    const updatedWordsStatuses = updateWordStatuses(studySet.words, quizzesInner, ua, storageData);
     
     setUserAnswers(ua);
     // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
-    setQuizzes(quizzesInner);
     setWordStatus(updatedWordsStatuses);
     save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
     setCurrentScreen('result');
@@ -114,30 +112,39 @@ const App: React.FC = () => {
           20,
           wordStatus.reduce<Record<string, WordStatus>>((acc, ws) => {acc[ws.word] = ws; return acc;}, {})
         );
-        setStudySet(extracted);
-        setQuizzes(extracted.map(createQuiz4));
+        setStudySet(prev => ({
+          ...prev,
+          words: extracted,
+          quizzes: extracted.map(createQuiz4),
+          studyMode: 'normal',
+        }));
         setRemaining(remaining.filter(w => !extracted.includes(w)));
-        setStudyMode('normal')
         setCurrentScreen('study');
         break;
       case 'home':
-        setStudyMode('normal'); 
+        setStudySet(prev => ({
+          ...prev,
+          studyMode: 'normal',
+        }));
         setCurrentScreen('home');
         break;
       case 'retry':
         // 間違えた問題またはチェックをつけた問題のみを再度出題する
         // retryTarget: 間違えた問題またはチェックをつけた問題のindexの一覧
-        const retryTarget = quizzes.reduce((acc, quiz, index) => {
+        const retryTarget = studySet.quizzes.reduce((acc, quiz, index) => {
           if (quiz.answerIndex !== userAnswers[index].option || userAnswers[index].checked) {
             acc.push(index);
           }
           return acc;
         }, [] as number[]);
-        const retryWords = getShuffledArray(retryTarget.map(index => studySet[index]));
-        // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
-        setQuizzes(retryWords.map(createQuiz4));
+        const retryWords = getShuffledArray(retryTarget.map(index => studySet.words[index]));
+        setStudySet(prev => ({
+          ...prev,
+          // words: retryWords, // wordsはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
+          quizzes: retryWords.map(createQuiz4),
+          studyMode: 'retry',
+        }));
         // setRemaining // そのまま
-        setStudyMode('retry');
         setCurrentScreen('study');
         break;
       default: 
@@ -154,8 +161,12 @@ const App: React.FC = () => {
     loadFromWordJson(filePath)
       .then(wordList => {
         const wl = extractFromWordList(wordList, 20, storageData.wordStatus);
-        setStudySet(wl);
-        setQuizzes(wl.map(createQuiz4));
+        setStudySet(prev => ({
+          ...prev,
+          words: wl,
+          quizzes: wl.map(createQuiz4),
+          studyMode: 'normal',
+        }));
         setRemaining(wordList.filter(w => !wl.includes(w)));
         setCurrentScreen('study');
       }).catch(console.error);
@@ -165,16 +176,16 @@ const App: React.FC = () => {
     <div>
       {
         currentScreen === 'study' ? (
-          <StudyScreen quizzes={quizzes} onEndQuiz={onEndQuiz} studyMode={studyMode}/>
+          <StudyScreen quizzes={studySet.quizzes} onEndQuiz={onEndQuiz} studyMode={studySet.studyMode}/>
         ) : currentScreen === 'result' ? (
           <ResultScreen
-            words={studySet}
-            quizzes={quizzes}
+            words={studySet.words}
+            quizzes={studySet.quizzes}
             userAnswers={userAnswers}
             wordStatus={wordStatus}
             countOfNext={countOfNext}
             reason={endOfReason}
-            studyMode={studyMode}
+            studyMode={studySet.studyMode}
             onUserButtonClick={onUserButtonClick}
           />
           ) : currentScreen === 'home' ? (
