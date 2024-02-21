@@ -17,6 +17,7 @@ import { Word } from './models/Word.ts';
 import { Quiz, UserAnswer } from  './models/Quiz.ts';
 import React from 'react';
 import { StudySet } from './StudySet.ts';
+import { StudyResult } from './StudyResult.ts';
 
 const App: React.FC = () => {
   // 現在表示している画面: 'home' or 'study' or 'result' or 'loading'
@@ -37,15 +38,15 @@ const App: React.FC = () => {
 
   // 現在の単語セットで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
   const [remaining, setRemaining] = useState<Word[]>([]);
-
-  // ユーザーの回答の一覧
-  const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
+  
+  // 学習画面の終了状況
+  const [studyResult, setStudyResult] = useState<StudyResult>({
+    userAnswers: [],
+    endOfReason: 'finish',
+  });
 
   // クイズの一覧の順番に対応する、単語の学習状況の一覧(更新後)
   const [wordStatus, setWordStatus] = useState<WordStatus[]>([]);
-
-  // 終了理由: "finish" or "quit"
-  const [endOfReason, setEndOfReason] = useState<string>('finish');
 
   // 次のn個へ進むボタンの表示に使用する、次のセッションで学習する単語の数
   const countOfNext = useMemo(() => remaining.length <= 20 ? remaining.length : 20, [remaining]);
@@ -83,17 +84,14 @@ const App: React.FC = () => {
     
     // 「やめる」を選んでいた場合には ua.length < quizzes.length となる
     // どのケースにも対応するため、studySet, quizzesはuaの長さに切り詰める
-    if (ua.length < studySet.quizzes.length) {
-      setEndOfReason('quit');
-    } else {
-      setEndOfReason('finish');
-    }
+    let endOfReason: 'quit' | 'finish' = ua.length < studySet.quizzes.length ? 'quit' : 'finish';
+
     const studySetInner = studySet.words.slice(0, ua.length);
     const quizzesInner = studySet.quizzes.slice(0, ua.length);
 
     const updatedWordsStatuses = updateWordStatuses(studySet.words, quizzesInner, ua, storageData);
     
-    setUserAnswers(ua);
+    setStudyResult(old => ({...old, userAnswers: ua, endOfReason: endOfReason}));
     // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
     setWordStatus(updatedWordsStatuses);
     save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
@@ -132,7 +130,7 @@ const App: React.FC = () => {
         // 間違えた問題またはチェックをつけた問題のみを再度出題する
         // retryTarget: 間違えた問題またはチェックをつけた問題のindexの一覧
         const retryTarget = studySet.quizzes.reduce((acc, quiz, index) => {
-          if (quiz.answerIndex !== userAnswers[index].option || userAnswers[index].checked) {
+          if (quiz.answerIndex !== studyResult.userAnswers[index].option || studyResult.userAnswers[index].checked) {
             acc.push(index);
           }
           return acc;
@@ -181,10 +179,10 @@ const App: React.FC = () => {
           <ResultScreen
             words={studySet.words}
             quizzes={studySet.quizzes}
-            userAnswers={userAnswers}
+            userAnswers={studyResult.userAnswers}
             wordStatus={wordStatus}
             countOfNext={countOfNext}
-            reason={endOfReason}
+            reason={studyResult.endOfReason}
             studyMode={studySet.studyMode}
             onUserButtonClick={onUserButtonClick}
           />
