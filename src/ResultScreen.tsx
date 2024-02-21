@@ -24,7 +24,7 @@ export type Props = {
   /**
    * 各単語の学習状況
    */
-  wordStatus: WordStatus[],
+  wordStatus: Record<string, WordStatus>,
 
   /**
    * 「次のn個へ進む」ボタンの表示に使用する、次のセッションで学習する単語の数
@@ -86,7 +86,7 @@ export const ResultScreen: React.FC<Props> = ({ words, quizzes, userAnswers, wor
       const correctAnswer = word.quiz.answer; // string
       const isCorrect = quiz.answerIndex === userAnswers[index].option;
       const isChecked = userAnswers[index].checked;
-      const status = wordStatus[index].status;
+      const status = wordStatus[quiz.question]?.status;
       const isSkipped = userAnswers[index].option === -1;
       return { index, spelling, correctAnswer, isCorrect, status, isSkipped, isChecked };
     });

@@ -18,10 +18,10 @@ describe('ResultScreen 基本項目', () => {
     { option: 1, checked: true },
     { option: 2, checked: false },
   ];
-  const wordStatus: WordStatus[] = [
-    { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-    { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-  ];
+  const wordStatus: Record<string, WordStatus> = {
+    'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+    'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+  };
   const countOfNext = 2;
   const onUserButtonClick = jest.fn();
 
@@ -93,10 +93,10 @@ describe('ResultScreen 復習関連', () => {
       { option: 1, checked: true },
       { option: 2, checked: false },
     ];
-    const wordStatus: WordStatus[] = [
-      { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-    ];
+    const wordStatus: Record<string, WordStatus> = {
+      'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+    };
     const countOfNext = 2;
     const onUserButtonClick = jest.fn();
 
@@ -137,10 +137,10 @@ describe('ResultScreen 復習関連', () => {
       { option: cn+cy > 0 ? 2: 1, checked: cy+wy > 0 },
       { option: cn+cy > 1 ? 2: 1, checked: cy+wy > 1 },
     ];
-    const wordStatus: WordStatus[] = [
-      { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-    ];
+    const wordStatus: Record<string, WordStatus> = {
+      'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+    };
     const countOfNext = 2;
     const onUserButtonClick = jest.fn();
 
@@ -178,10 +178,10 @@ describe('ResultScreen 復習関連', () => {
       { option: 2, checked: true },
       { option: 1, checked: false },
     ];
-    const wordStatus: WordStatus[] = [
-      { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-    ];
+    const wordStatus: Record<string, WordStatus> = {
+      'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+    };
     const countOfNext = 2;
     const onUserButtonClick = jest.fn();
 
@@ -253,20 +253,20 @@ describe('ResultScreen 学習結果表示関連', () => {
       { option: -1, checked: false },
       { option: -1, checked: false },
     ];
-    const wordStatus: WordStatus[] = [
-      { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 2', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 3', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 4', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 5', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 6', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 7', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 8', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 9', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 10', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 11', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 12', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-    ];
+    const wordStatus: Record<string, WordStatus> = {
+      'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 3': { word: 'Word 3', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 4': { word: 'Word 4', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 5': { word: 'Word 5', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 6': { word: 'Word 6', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 7': { word: 'Word 7', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 8': { word: 'Word 8', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 9': { word: 'Word 9', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 10': { word: 'Word 10', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 11': { word: 'Word 11', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 12': { word: 'Word 12', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+    };
     const countOfNext = 2;
     const onUserButtonClick = jest.fn();
 
@@ -300,10 +300,10 @@ describe('ResultScreen ホームへ戻る関連', () => {
     { option: 1, checked: true },
     { option: 2, checked: false },
   ];
-  const wordStatus: WordStatus[] = [
-    { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-    { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-  ];
+  const wordStatus: Record<string, WordStatus> = {
+    'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+    'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+  };
   const countOfNext = 2;
   const onUserButtonClick = jest.fn();
 
@@ -333,7 +333,7 @@ describe('ResultScreen 次へ関連', () => {
   let words: Word[];
   let quizzes: Quiz[];
   let userAnswers: UserAnswer[];
-  let wordStatus: WordStatus[];
+  let wordStatus: Record<string, WordStatus>;
   const onUserButtonClick = jest.fn();
 
   beforeEach(() => {
@@ -349,10 +349,10 @@ describe('ResultScreen 次へ関連', () => {
       { option: 1, checked: true },
       { option: 2, checked: false },
     ];
-    wordStatus = [
-      { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-      { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
-    ];
+    wordStatus = {
+      'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+      'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
+    };
   });
 
   it('次単語があり、終了理由が「完了」の場合には次のN個ボタンが表示される', () => {

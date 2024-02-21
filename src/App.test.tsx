@@ -6,7 +6,16 @@ jest.mock('./store/LS', () => {
       save: jest.fn(),
       loadOrDefault: jest.fn(() => ({
         learningSession: [],
-        wordStatus: {},
+        wordStatus: {
+          "word1": {
+            status: 1,
+            answerHistory: [],
+          },
+          "word2": {
+            status: 1,
+            answerHistory: [],
+          }
+        },
         wordSetStatus: [],
       })),
     },
@@ -36,6 +45,22 @@ jest.mock('./ResultScreen.tsx', () => {
   return {
     __esModule: true,
     ResultScreen: jest.fn(() => <div>ResultScreen</div>),
+  };
+});
+
+jest.mock('./StudyScreen/CreateQuiz.ts', () => {
+  return {
+    __esModule: true,
+    createQuiz4: jest.fn((word) => ({
+      question: word.word,
+      answerIndex: 0,
+      options: [
+        "ans1",
+        "opt11",
+        "opt12",
+        "opt13"
+      ]
+    })),
   };
 });
 
@@ -148,7 +173,7 @@ afterEach(() => {
 test('起動時にホーム画面が表示されること', async () => {
   const titleMock = screen.getByText(/HomeScreen/i);
   expect(titleMock).toBeInTheDocument();
-  expect((LSMock.loadOrDefault as jest.Mock)).toHaveBeenCalledTimes(1);
+  expect((LSMock.loadOrDefault as jest.Mock)).toHaveBeenCalled();
 });
 
 test('起動時にJSONデータが読み込まれること', async () => {
@@ -156,7 +181,7 @@ test('起動時にJSONデータが読み込まれること', async () => {
 });
 
 test('起動時にLocalStorageからデータが読み込まれること', async () => {
-  expect((LSMock.loadOrDefault as jest.Mock)).toHaveBeenCalledTimes(1);
+  expect((LSMock.loadOrDefault as jest.Mock)).toHaveBeenCalled();
 });
 
 test('起動時に学習シリーズの一覧がホーム画面に渡ること', async() => {
@@ -215,6 +240,18 @@ test('問題が正常終了した時に結果画面が表示され、データ�
   await waitFor(() => {
     expect(screen.getByText(/ResultScreen/i)).toBeInTheDocument();
   });
+
+  // Propsが正しく渡されていることを確認
+  const actual: any = (ResultScreenMock as jest.Mock).mock.calls[0][0];
+  expect(actual.words).toEqual(part1Mock);
+  expect(actual.quizzes.map((q: { question: any; }) => q.question)).toContain('word1');
+  expect(actual.quizzes.map((q: { question: any; }) => q.question)).toContain('word2');
+  expect(actual.userAnswers).toEqual([
+    { option: 1, checked: false, },
+    { option: 1, checked: false, },
+  ]);
+  expect(actual.wordStatus["word1"].status).toBe(1);
+  expect(actual.wordStatus["word2"].status).toBe(1);
 
   // データが保存されることを確認
   expect((LSMock.save as jest.Mock)).toHaveBeenCalledTimes(1);

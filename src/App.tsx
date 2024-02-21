@@ -45,9 +45,6 @@ const App: React.FC = () => {
     endOfReason: 'finish',
   });
 
-  // クイズの一覧の順番に対応する、単語の学習状況の一覧(更新後)
-  const [wordStatus, setWordStatus] = useState<WordStatus[]>([]);
-
   // 次のn個へ進むボタンの表示に使用する、次のセッションで学習する単語の数
   const countOfNext = useMemo(() => remaining.length <= 20 ? remaining.length : 20, [remaining]);
 
@@ -63,16 +60,11 @@ const App: React.FC = () => {
       setSeriesSet(seriesSet);
     }).catch(console.error);
 
-  }, []);
+    // LocalStorageからデータの読み込み
+    const data = LS.loadOrDefault();
+    setStorageData(data);
 
-  // HomeScreenに戻ってきた時の処理(初回含む)
-  useEffect(() => {
-    if (currentScreen === 'home') {
-      // LocalStorageからデータの読み込み
-      const data = LS.loadOrDefault();
-      setStorageData(data);
-    }
-  }, [currentScreen]);
+  }, []);
 
   // クイズ終了時処理
   const onEndQuiz = (ua: UserAnswer[]) => {
@@ -90,11 +82,13 @@ const App: React.FC = () => {
     const quizzesInner = studySet.quizzes.slice(0, ua.length);
 
     const updatedWordsStatuses = updateWordStatuses(studySet.words, quizzesInner, ua, storageData);
-    
+    setStudySet(old => ({...old, quizzes: quizzesInner}));
     setStudyResult(old => ({...old, userAnswers: ua, endOfReason: endOfReason}));
     // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
-    setWordStatus(updatedWordsStatuses);
-    save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
+
+    const saved = save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
+    setStorageData(saved);
+
     setCurrentScreen('result');
   };
 
@@ -102,13 +96,10 @@ const App: React.FC = () => {
   const onUserButtonClick = (buttonName: string) => {
     switch(buttonName) {
       case 'next':
-        // Q: allWordStatusとしてstorageDataを使わないのはなぜ？
-        // A: storageDataはホーム画面に戻る際に更新されるので、「次へ」を押した際には古いままになっている。
-        // 「クイズ終了時処理」で更新されたものを使いたいため、更新後のwordStatusを使う。
         const extracted = extractFromWordList(
           remaining,
           20,
-          wordStatus.reduce<Record<string, WordStatus>>((acc, ws) => {acc[ws.word] = ws; return acc;}, {})
+          storageData.wordStatus
         );
         setStudySet(prev => ({
           ...prev,
@@ -180,7 +171,7 @@ const App: React.FC = () => {
             words={studySet.words}
             quizzes={studySet.quizzes}
             userAnswers={studyResult.userAnswers}
-            wordStatus={wordStatus}
+            wordStatus={storageData.wordStatus}
             countOfNext={countOfNext}
             reason={studyResult.endOfReason}
             studyMode={studySet.studyMode}
@@ -209,6 +200,7 @@ const App: React.FC = () => {
  * @param updatedWordsStatuses 更新後の単語の学習状況の一覧
  * - updateWordStatusesで作成したものをわたすこと
  * - updateWordStatuses関数の結果は他の箇所でも使いたかったため関数は分離した
+ * @returns 保存後のデータ
  */
 function save(
   wordList: Word[],
@@ -216,7 +208,7 @@ function save(
   userAnswers: UserAnswer[],
   oldFlashCardData: FlashCardData,
   updatedWordsStatuses: WordStatus[]
-): void {
+): FlashCardData {
 // 学習セッションの状況
   const learningSessionClone = [...oldFlashCardData.learningSession];
   learningSessionClone.push(new LearningSession({
@@ -265,11 +257,13 @@ function save(
   }
 
   // LocalStorageに保存する
-  LS.save({
+  const saveTarget = {
     learningSession: learningSessionClone,
-    wordStatus: wordStatusClone,
-    wordSetStatus: wordSetStatusClone,
-  });
+      wordStatus: wordStatusClone,
+        wordSetStatus: wordSetStatusClone,
+  };
+  LS.save(saveTarget);
+  return saveTarget;
 }
 
 export default App;
