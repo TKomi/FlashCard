@@ -1,10 +1,10 @@
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { ResultScreen } from './ResultScreen';
-import { Quiz, UserAnswer } from './models/Quiz';
-import { WordStatus } from './models/WordStatus';
-import { StudySet } from './StudySet';
-import { StudyResult } from './StudyResult';
+import { Quiz, UserAnswer } from '../models/Quiz';
+import { WordStatus } from '../models/WordStatus';
+import { StudySet } from '../StudySet';
+import { StudyResult } from '../StudyResult';
 
 describe('ResultScreen 基本項目', () => {
   const studySet: StudySet = {

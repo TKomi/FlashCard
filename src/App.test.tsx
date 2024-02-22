@@ -27,7 +27,7 @@ jest.mock('./store/LS', () => {
   };
 });
 
-jest.mock('./HomeScreen.tsx', () => {
+jest.mock('./HomeScreen/HomeScreen.tsx', () => {
   return {
     __esModule: true,
     HomeScreen: jest.fn(() => <div>HomeScreen</div>),
@@ -41,7 +41,7 @@ jest.mock('./StudyScreen/StudyScreen.tsx', () => {
   };
 });
 
-jest.mock('./ResultScreen.tsx', () => {
+jest.mock('./ResultScreen/ResultScreen.tsx', () => {
   return {
     __esModule: true,
     ResultScreen: jest.fn(() => <div>ResultScreen</div>),
@@ -133,9 +133,9 @@ jest.mock('./store/WordListUtils.ts', () => {
 
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { LS as LSMock } from './store/LS.ts';
-import { HomeScreen as HomeScreenMock } from './HomeScreen.tsx';
+import { HomeScreen as HomeScreenMock } from './HomeScreen/HomeScreen.tsx';
 import { StudyScreen as StudyScreenMock } from './StudyScreen/StudyScreen.tsx';
-import { ResultScreen as ResultScreenMock } from './ResultScreen.tsx';
+import { ResultScreen as ResultScreenMock } from './ResultScreen/ResultScreen.tsx';
 import { WordSetIndexUtil as WordSetIndexUtilMock } from './models/WordSetIndex.ts';
 import { loadFromWordJson as loadFromWordJsonMock } from './store/WordListUtils.ts';
 import App from './App';

@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { UserAnswer } from './models/Quiz.ts';
-import { WordStatus } from './models/WordStatus.ts';
-import { StudySet } from './StudySet.ts';
-import { StudyResult } from './StudyResult.ts';
+import { UserAnswer } from '../models/Quiz.ts';
+import { WordStatus } from '../models/WordStatus.ts';
+import { StudySet } from '../StudySet.ts';
+import { StudyResult } from '../StudyResult.ts';
 
 export type Props = {
   /**

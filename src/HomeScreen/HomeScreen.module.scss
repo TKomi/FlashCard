@@ -1,0 +1,53 @@
+.homeScreen {
+  .title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin: 1em 0 0.4em 0;
+    text-align: center;
+  }
+
+  .series {
+    margin: 0.5em;
+
+    .series_title {
+      font-size: 1.2em;
+      margin: 0.5em 0;
+      text-decoration: underline;
+    
+    }
+
+    .series_description {
+      font-size: 0.8em;
+      margin: 0.5em 0;
+    }
+
+    .list {
+      padding-inline-start: 0;
+      margin: 0.5em auto;
+      list-style-type: none;
+
+      .item {
+        display: flex;
+        justify-content: space-between;
+        margin-left: 1em;
+
+        .name {
+          padding: 0.5em;
+        }
+
+        .size {
+          padding: 0.5em;
+        }
+
+        .button {
+          width: 20%;
+          background-color: #ddd;
+          border-color: #aaa;
+          border-radius: 0.5em;
+          height: 2.5em;
+          margin: 0.25em 0;
+        }
+      }
+    }
+  }
+}

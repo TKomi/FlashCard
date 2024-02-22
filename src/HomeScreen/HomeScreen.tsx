@@ -1,6 +1,7 @@
 import React from "react";
-import { Series } from "./models/WordSetIndex";
-import { LearningInfo } from "./store/LS";
+import { Series } from "../models/WordSetIndex";
+import { LearningInfo } from "../store/LS";
+import styles from "./HomeScreen.module.scss";
 
 export type Props = {
   /**
@@ -57,20 +58,20 @@ export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelecte
   }
 
   return (
-    <div>
-      <h1 className='homescreen-title'>単語帳</h1>
+    <div className={styles['homeScreen']}>
+      <h1 className={styles['title']}>単語帳</h1>
       {
         seriesSet.map((series, index1) => (
-          <div key={index1} className='series-box'>
-            <h2 className='homescreen-series-title'>{series.seriesName}</h2>
-            <p className='homescreen-series-description'>{series.seriesDescription}</p>
-            <ul className='ul-homescreen'>
+          <div key={index1} className={styles['series']}>
+            <h2 className={styles['series_title']}>{series.seriesName}</h2>
+            <p className={styles['series_description']}>{series.seriesDescription}</p>
+            <ul className={styles['list']}>
               {
                 series.wordSets.map((wordSet, index2) => (
-                  <li key={index2} className='li-wordset'>
-                    <div className='wordset-name'>{wordSet.wordSetName}</div>
-                    <div className='wordset-size'>{wordSet.size} Words</div>
-                    <button onClick={() => onClickGoButton(wordSet.filePath)} className='wordset-button'>GO!</button>
+                  <li key={index2} className={styles['item']}>
+                    <div className={styles['name']}>{wordSet.wordSetName}</div>
+                    <div className={styles['size']}>{wordSet.size} Words</div>
+                    <button onClick={() => onClickGoButton(wordSet.filePath)} className={styles['button']}>GO!</button>
                   </li>
                 ))
               }
