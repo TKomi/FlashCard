@@ -1,19 +1,16 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { Word } from './models/Word.ts';
-import { Quiz, UserAnswer } from './models/Quiz.ts';
+import { UserAnswer } from './models/Quiz.ts';
 import { WordStatus } from './models/WordStatus.ts';
+import { StudySet } from './StudySet.ts';
 
 export type Props = {
   /**
-   * 画面で扱う単語リスト。出題される予定だったものも含む。
+   * 取り組んでいる学習セット
+   * - words: 画面で扱った(予定も含む)単語の一覧
+   * - quizzes: 出題された問題の一覧。「やめる」を選んだ以降の物は含まない。配列の順序はwordsと対応。
+   * - userAnswers: ユーザーの回答の一覧。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
    */
-  words: Word[],
-
-  /**
-   * クイズの一覧。出題されたものに限り、「やめる」を選んだ以降の物は含まない。配列の順序はwordsと対応。
-   * quizzes.length <= words.lengthとなる
-   */
-  quizzes: Quiz[],
+  studySet: StudySet,
 
   /**
    * ユーザーの回答。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
@@ -35,11 +32,6 @@ export type Props = {
    * 終了理由。"finish"か"quit"のいずれか
    */
   reason: string,
-
-  /**
-   * 学習モード。"normal"か"retry"のいずれか。「通常学習」か「復習」のラベルの制御に使用
-   */
-  studyMode: string,
 
   /**
    * ユーザーが画面上のボタンを押したときの処理。イベント引数でクリックされたボタン名を識別。
@@ -75,13 +67,13 @@ type Entry = {
  * - ユーザーの回答の記録
  * - 単語、問題のリスト、ユーザーの回答リストは受け取るだけで、自分で作成しない
  */
-export const ResultScreen: React.FC<Props> = ({ words, quizzes, userAnswers, wordStatus, countOfNext, reason = "finish", studyMode = "normal", onUserButtonClick}) => {
+export const ResultScreen: React.FC<Props> = ({ studySet, userAnswers, wordStatus, countOfNext, reason = "finish", onUserButtonClick}) => {
 
   const [entries, setEntries] = useState<Entry[]>([]);
 
   useEffect(() => {
-    const newEntries = quizzes.map((quiz, index) => {
-      const word = words[index];
+    const newEntries = studySet.quizzes.map((quiz, index) => {
+      const word = studySet.words[index];
       const spelling = word.word;
       const correctAnswer = word.quiz.answer; // string
       const isCorrect = quiz.answerIndex === userAnswers[index].option;
@@ -91,17 +83,20 @@ export const ResultScreen: React.FC<Props> = ({ words, quizzes, userAnswers, wor
       return { index, spelling, correctAnswer, isCorrect, status, isSkipped, isChecked };
     });
     setEntries(newEntries);
-  }, [words, quizzes, userAnswers, wordStatus]);
+  }, [studySet, userAnswers, wordStatus]);
 
   const countOfCorrect = useMemo(() => entries.filter(entry => entry.isCorrect).length , [entries]);
   const countOfSkip = useMemo(() => userAnswers.filter(answer => answer.option === -1).length , [userAnswers]);
   const countOfIncorrect = useMemo(() => entries.length - countOfCorrect - countOfSkip , [entries, countOfCorrect, countOfSkip]);
-  const countOfRetry = useMemo(() => userAnswers.filter((answer, index) => answer.checked || answer.option !== quizzes[index].answerIndex).length, [quizzes, userAnswers]);
+  const countOfRetry = useMemo(() => userAnswers.filter((answer, index) => 
+    answer.checked
+    || answer.option !== studySet.quizzes[index].answerIndex).length,
+  [studySet.quizzes, userAnswers]);
 
   return (
     <div>
       <h1 className = 'result-screen-title' > TOEIC Service List - Part1 </h1>
-      <div className="result-screen-subtitle">{studyMode === 'retry' ? '復習 ': '通常学習 '} {entries.length}Words</div>
+      <div className="result-screen-subtitle">{studySet.studyMode === 'retry' ? '復習 ': '通常学習 '} {entries.length}Words</div>
       <div className='result-screen-subtitle'>○{countOfCorrect} / ×{countOfIncorrect} / -{countOfSkip}</div>
       <ul className='ul-result'>
         {entries.map(entry => (

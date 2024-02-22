@@ -4,16 +4,20 @@ import { ResultScreen } from './ResultScreen';
 import { Quiz, UserAnswer } from './models/Quiz';
 import { Word } from './models/Word';
 import { WordStatus } from './models/WordStatus';
+import { StudySet } from './StudySet';
 
 describe('ResultScreen 基本項目', () => {
-  const words: Word[] = [
-    { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
-    { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
-  ];
-  const quizzes: Quiz[] = [
-    new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
-    new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
-  ];
+  const studySet: StudySet = {
+    words: [
+      { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
+      { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
+    ],
+    quizzes: [
+      new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
+      new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
+    ],
+    studyMode: 'normal',
+  };
   const userAnswers: UserAnswer[] = [
     { option: 1, checked: true },
     { option: 2, checked: false },
@@ -28,14 +32,12 @@ describe('ResultScreen 基本項目', () => {
   beforeEach(() => {
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
         reason='finish'
-        studyMode='normal'
       />
     );
   });
@@ -81,14 +83,17 @@ describe('ResultScreen 基本項目', () => {
 
 describe('ResultScreen 復習関連', () => {
   it('復習モードの場合、サブタイトルが「復習 NWords」になること', () => {
-    const words: Word[] = [
-      { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
-      { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
-    ];
-    const quizzes: Quiz[] = [
-      new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
-      new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
-    ];
+    const studySet: StudySet = {
+      words: [
+        { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
+        { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
+      ],
+      quizzes: [
+        new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
+        new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
+      ],
+      studyMode: 'retry',
+    };
     const userAnswers: UserAnswer[] = [
       { option: 1, checked: true },
       { option: 2, checked: false },
@@ -103,14 +108,12 @@ describe('ResultScreen 復習関連', () => {
 
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
         reason='finish'
-        studyMode='retry'
       />
     );
 
@@ -125,14 +128,17 @@ describe('ResultScreen 復習関連', () => {
     [1, 1, 0, '描画される'],
     [2, 0, 0, '描画されない'],
   ])('正答チェック無%i, 正答チェック有%i, 誤答チェック有%i のときに復習ボタンが%sこと', (cn, cy, wy, description) => {
-    const words: Word[] = [
-      { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
-      { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
-    ];
-    const quizzes: Quiz[] = [
-      new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
-      new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
-    ];
+    const studySet: StudySet = {
+      words: [
+        { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
+        { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
+      ],
+      quizzes: [
+        new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
+        new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
+      ],
+      studyMode: 'retry',
+    };
     const userAnswers: UserAnswer[] = [
       { option: cn+cy > 0 ? 2: 1, checked: cy+wy > 0 },
       { option: cn+cy > 1 ? 2: 1, checked: cy+wy > 1 },
@@ -147,14 +153,12 @@ describe('ResultScreen 復習関連', () => {
 
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
         reason='finish'
-        studyMode='retry'
       />
     );
 
@@ -166,14 +170,17 @@ describe('ResultScreen 復習関連', () => {
   });
 
   it('復習するボタンがクリックされた時にonUserButtonClickが呼ばれること', () => {
-    const words: Word[] = [
-      { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
-      { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
-    ];
-    const quizzes: Quiz[] = [
-      new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
-      new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
-    ];
+    const studySet: StudySet = {
+      words: [
+        { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
+        { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
+      ],
+      quizzes: [
+        new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
+        new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
+      ],
+      studyMode: 'retry',
+    };
     const userAnswers: UserAnswer[] = [
       { option: 2, checked: true },
       { option: 1, checked: false },
@@ -188,14 +195,12 @@ describe('ResultScreen 復習関連', () => {
 
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
         reason='finish'
-        studyMode='retry'
       />
     );
 
@@ -209,34 +214,37 @@ describe('ResultScreen 復習関連', () => {
 
 describe('ResultScreen 学習結果表示関連', () => {
   it('正誤・スキップ総数が正しく描画されること', () => {
-    const words: Word[] = [
-      { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
-      { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
-      { word: 'Word 3', quiz: { answer: 'Answer 3', options: ['option1', 'option2'] } },
-      { word: 'Word 4', quiz: { answer: 'Answer 4', options: ['option1', 'option2'] } },
-      { word: 'Word 5', quiz: { answer: 'Answer 5', options: ['option1', 'option2'] } },
-      { word: 'Word 6', quiz: { answer: 'Answer 6', options: ['option1', 'option2'] } },
-      { word: 'Word 7', quiz: { answer: 'Answer 7', options: ['option1', 'option2'] } },
-      { word: 'Word 8', quiz: { answer: 'Answer 8', options: ['option1', 'option2'] } },
-      { word: 'Word 9', quiz: { answer: 'Answer 9', options: ['option1', 'option2'] } },
-      { word: 'Word 10', quiz: { answer: 'Answer 10', options: ['option1', 'option2'] } },
-      { word: 'Word 11', quiz: { answer: 'Answer 11', options: ['option1', 'option2'] } },
-      { word: 'Word 12', quiz: { answer: 'Answer 12', options: ['option1', 'option2'] } },
-    ];
-    const quizzes: Quiz[] = [
-      new Quiz('Word 1', 1, ['option1', 'option2', 'Answer 1']),
-      new Quiz('Word 2', 1, ['option1', 'option2', 'Answer 2']),
-      new Quiz('Word 3', 1, ['option1', 'option2', 'Answer 3']),
-      new Quiz('Word 4', 1, ['option1', 'option2', 'Answer 4']),
-      new Quiz('Word 5', 1, ['option1', 'option2', 'Answer 5']),
-      new Quiz('Word 6', 1, ['option1', 'option2', 'Answer 6']),
-      new Quiz('Word 7', 1, ['option1', 'option2', 'Answer 7']),
-      new Quiz('Word 8', 1, ['option1', 'option2', 'Answer 8']),
-      new Quiz('Word 9', 1, ['option1', 'option2', 'Answer 9']),
-      new Quiz('Word 10', 1, ['option1', 'option2', 'Answer 10']),
-      new Quiz('Word 11', 1, ['option1', 'option2', 'Answer 11']),
-      new Quiz('Word 12', 1, ['option1', 'option2', 'Answer 12']),
-    ];
+    const studySet: StudySet = {
+      words: [
+        { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
+        { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
+        { word: 'Word 3', quiz: { answer: 'Answer 3', options: ['option1', 'option2'] } },
+        { word: 'Word 4', quiz: { answer: 'Answer 4', options: ['option1', 'option2'] } },
+        { word: 'Word 5', quiz: { answer: 'Answer 5', options: ['option1', 'option2'] } },
+        { word: 'Word 6', quiz: { answer: 'Answer 6', options: ['option1', 'option2'] } },
+        { word: 'Word 7', quiz: { answer: 'Answer 7', options: ['option1', 'option2'] } },
+        { word: 'Word 8', quiz: { answer: 'Answer 8', options: ['option1', 'option2'] } },
+        { word: 'Word 9', quiz: { answer: 'Answer 9', options: ['option1', 'option2'] } },
+        { word: 'Word 10', quiz: { answer: 'Answer 10', options: ['option1', 'option2'] } },
+        { word: 'Word 11', quiz: { answer: 'Answer 11', options: ['option1', 'option2'] } },
+        { word: 'Word 12', quiz: { answer: 'Answer 12', options: ['option1', 'option2'] } },
+      ],
+      quizzes: [
+        new Quiz('Word 1', 1, ['option1', 'option2', 'Answer 1']),
+        new Quiz('Word 2', 1, ['option1', 'option2', 'Answer 2']),
+        new Quiz('Word 3', 1, ['option1', 'option2', 'Answer 3']),
+        new Quiz('Word 4', 1, ['option1', 'option2', 'Answer 4']),
+        new Quiz('Word 5', 1, ['option1', 'option2', 'Answer 5']),
+        new Quiz('Word 6', 1, ['option1', 'option2', 'Answer 6']),
+        new Quiz('Word 7', 1, ['option1', 'option2', 'Answer 7']),
+        new Quiz('Word 8', 1, ['option1', 'option2', 'Answer 8']),
+        new Quiz('Word 9', 1, ['option1', 'option2', 'Answer 9']),
+        new Quiz('Word 10', 1, ['option1', 'option2', 'Answer 10']),
+        new Quiz('Word 11', 1, ['option1', 'option2', 'Answer 11']),
+        new Quiz('Word 12', 1, ['option1', 'option2', 'Answer 12']),
+      ],
+      studyMode: 'normal',
+    };
     const userAnswers: UserAnswer[] = [
       { option: 1, checked: false },
       { option: 1, checked: false },
@@ -272,14 +280,12 @@ describe('ResultScreen 学習結果表示関連', () => {
 
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
         reason='finish'
-        studyMode='normal'
       />
     );
 
@@ -288,14 +294,17 @@ describe('ResultScreen 学習結果表示関連', () => {
 });
 
 describe('ResultScreen ホームへ戻る関連', () => {
-  const words: Word[] = [
-    { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
-    { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
-  ];
-  const quizzes: Quiz[] = [
-    new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
-    new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
-  ];
+  const studySet: StudySet = {
+    words: [
+      { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
+      { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
+    ],
+    quizzes: [
+      new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
+      new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
+    ],
+    studyMode: 'normal',
+  };
   const userAnswers: UserAnswer[] = [
     { option: 1, checked: true },
     { option: 2, checked: false },
@@ -310,14 +319,12 @@ describe('ResultScreen ホームへ戻る関連', () => {
   beforeEach(() => {
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
         reason='finish'
-        studyMode='normal'
       />
     );
   });
@@ -330,21 +337,22 @@ describe('ResultScreen ホームへ戻る関連', () => {
 });
 
 describe('ResultScreen 次へ関連', () => {
-  let words: Word[];
-  let quizzes: Quiz[];
+  const studySet: StudySet = {
+    words: [
+      { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
+      { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
+    ],
+    quizzes: [
+      new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
+      new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
+    ],
+    studyMode: 'normal',
+  };
   let userAnswers: UserAnswer[];
   let wordStatus: Record<string, WordStatus>;
   const onUserButtonClick = jest.fn();
 
   beforeEach(() => {
-    words = [
-      { word: 'Word 1', quiz: { answer: 'Answer 1', options: ['option1', 'option2'] } },
-      { word: 'Word 2', quiz: { answer: 'Answer 2', options: ['option1', 'option2'] } },
-    ];
-    quizzes = [
-      new Quiz('Word 1', 2, ['option1', 'option2', 'Answer 1']),
-      new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
-    ];
     userAnswers = [
       { option: 1, checked: true },
       { option: 2, checked: false },
@@ -359,14 +367,12 @@ describe('ResultScreen 次へ関連', () => {
 
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={2}
         onUserButtonClick={onUserButtonClick}
         reason='finish'
-        studyMode='normal'
       />
     );
 
@@ -378,14 +384,12 @@ describe('ResultScreen 次へ関連', () => {
 
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={2}
         onUserButtonClick={onUserButtonClick}
         reason='quit'
-        studyMode='normal'
       />
     );
 
@@ -396,14 +400,12 @@ describe('ResultScreen 次へ関連', () => {
   it('次単語がない場合には次のN語ボタンが表示されない', () => {
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={0}
         onUserButtonClick={onUserButtonClick}
         reason='finish'
-        studyMode='normal'
       />
     );
 
@@ -414,14 +416,12 @@ describe('ResultScreen 次へ関連', () => {
   it('次のN語ボタンをクリックでコールバック呼出', () => {
     render(
       <ResultScreen
-        words={words}
-        quizzes={quizzes}
+        studySet={studySet}
         userAnswers={userAnswers}
         wordStatus={wordStatus}
         countOfNext={2}
         onUserButtonClick={onUserButtonClick}
         reason='finish'
-        studyMode='normal'
       />
     );
 

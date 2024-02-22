@@ -163,16 +163,14 @@ const App: React.FC = () => {
     <div>
       {
         currentScreen === 'study' ? (
-          <StudyScreen quizzes={studySet.quizzes} onEndQuiz={onEndQuiz} studyMode={studySet.studyMode}/>
+          <StudyScreen studySet={studySet} onEndQuiz={onEndQuiz}/>
         ) : currentScreen === 'result' ? (
           <ResultScreen
-            words={studySet.words}
-            quizzes={studySet.quizzes}
+            studySet={studySet}
             userAnswers={studyResult.userAnswers}
             wordStatus={storageData.wordStatus}
             countOfNext={countOfNext}
             reason={studyResult.endOfReason}
-            studyMode={studySet.studyMode}
             onUserButtonClick={onUserButtonClick}
           />
           ) : currentScreen === 'home' ? (

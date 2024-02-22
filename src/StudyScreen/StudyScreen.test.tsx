@@ -2,6 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { StudyScreen } from './StudyScreen';
 import { Quiz } from '../models/Quiz';
+import { StudySet } from '../StudySet';
 
 
 describe('StudyScreen', () => {
@@ -18,17 +19,20 @@ describe('StudyScreen', () => {
   }); 
 
   it('通常学習 問題が正しく表示されること', () => {
-    const quizzes = [
+    const studySet: StudySet = {
+      words: [],
+      quizzes: [
       new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
       new Quiz('Question 2', 1, ['Option 20', 'Option 21', 'Option 22', 'Option 23']),
       new Quiz('Question 3', 2, ['Option 30', 'Option 31', 'Option 32', 'Option 33']),
       new Quiz('Question 4', 3, ['Option 40', 'Option 41', 'Option 42', 'Option 43']),
-    ];
+      ],
+      studyMode: 'normal',
+    };
 
     render(
       <StudyScreen
-        quizzes={quizzes}
-        studyMode="normal"
+        studySet={studySet}
         onEndQuiz={onEndQuiz}
       />
     );
@@ -37,17 +41,20 @@ describe('StudyScreen', () => {
   });
 
   it('復習 問題が正しく表示されること', () => {
-    const quizzes = [
-      new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
-      new Quiz('Question 2', 1, ['Option 20', 'Option 21', 'Option 22', 'Option 23']),
-      new Quiz('Question 3', 2, ['Option 30', 'Option 31', 'Option 32', 'Option 33']),
-      new Quiz('Question 4', 3, ['Option 40', 'Option 41', 'Option 42', 'Option 43']),
-    ];
+    const studySet: StudySet = {
+      words: [],
+      quizzes: [
+        new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
+        new Quiz('Question 2', 1, ['Option 20', 'Option 21', 'Option 22', 'Option 23']),
+        new Quiz('Question 3', 2, ['Option 30', 'Option 31', 'Option 32', 'Option 33']),
+        new Quiz('Question 4', 3, ['Option 40', 'Option 41', 'Option 42', 'Option 43']),
+      ],
+      studyMode: 'retry',
+    };
 
     render(
       <StudyScreen
-        quizzes={quizzes}
-        studyMode="retry"
+        studySet={studySet}
         onEndQuiz={onEndQuiz}
       />
     );
@@ -56,17 +63,20 @@ describe('StudyScreen', () => {
   });
 
   it('基本的な流れ 正常終了', async () => {
-    const quizzes = [
-      new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
-      new Quiz('Question 2', 1, ['Option 20', 'Option 21', 'Option 22', 'Option 23']),
-      new Quiz('Question 3', 2, ['Option 30', 'Option 31', 'Option 32', 'Option 33']),
-      new Quiz('Question 4', 3, ['Option 40', 'Option 41', 'Option 42', 'Option 43']),
-    ];
+    const studySet: StudySet = {
+      words: [],
+      quizzes: [
+        new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
+        new Quiz('Question 2', 1, ['Option 20', 'Option 21', 'Option 22', 'Option 23']),
+        new Quiz('Question 3', 2, ['Option 30', 'Option 31', 'Option 32', 'Option 33']),
+        new Quiz('Question 4', 3, ['Option 40', 'Option 41', 'Option 42', 'Option 43']),
+      ],
+      studyMode: 'normal',
+    };
 
     render(
       <StudyScreen
-        quizzes={quizzes}
-        studyMode="normal"
+        studySet={studySet}
         onEndQuiz={onEndQuiz}
       />
     );
@@ -196,15 +206,18 @@ describe('StudyScreen', () => {
   });
 
   test('基本的な流れ 「やめる」選択時 1問以上回答済み', async () => {
-    const quizzes = [
-      new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
-      new Quiz('Question 2', 1, ['Option 20', 'Option 21', 'Option 22', 'Option 23']),
-    ];
+    const studySet: StudySet = {
+      words: [],
+      quizzes: [
+        new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
+        new Quiz('Question 2', 1, ['Option 20', 'Option 21', 'Option 22', 'Option 23']),
+      ],
+      studyMode: 'normal',
+    };
 
     render(
       <StudyScreen
-        quizzes={quizzes}
-        studyMode="normal"
+        studySet={studySet}
         onEndQuiz={onEndQuiz}
       />
     );
@@ -231,14 +244,17 @@ describe('StudyScreen', () => {
 
   });
   test('基本的な流れ 「やめる」選択時 1問も解いていない', () => {
-    const quizzes = [
-      new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
-    ];
+    const studySet: StudySet = {
+      words: [],
+      quizzes: [
+        new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
+      ],
+      studyMode: 'normal',
+    };
 
     render(
       <StudyScreen
-        quizzes={quizzes}
-        studyMode="normal"
+        studySet={studySet}
         onEndQuiz={onEndQuiz}
       />
     );
