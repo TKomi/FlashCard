@@ -167,10 +167,9 @@ const App: React.FC = () => {
         ) : currentScreen === 'result' ? (
           <ResultScreen
             studySet={studySet}
-            userAnswers={studyResult.userAnswers}
             wordStatus={storageData.wordStatus}
             countOfNext={countOfNext}
-            reason={studyResult.endOfReason}
+            studyResult={studyResult}
             onUserButtonClick={onUserButtonClick}
           />
           ) : currentScreen === 'home' ? (

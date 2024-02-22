@@ -2,9 +2,9 @@ import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
 import { ResultScreen } from './ResultScreen';
 import { Quiz, UserAnswer } from './models/Quiz';
-import { Word } from './models/Word';
 import { WordStatus } from './models/WordStatus';
 import { StudySet } from './StudySet';
+import { StudyResult } from './StudyResult';
 
 describe('ResultScreen 基本項目', () => {
   const studySet: StudySet = {
@@ -18,10 +18,13 @@ describe('ResultScreen 基本項目', () => {
     ],
     studyMode: 'normal',
   };
-  const userAnswers: UserAnswer[] = [
-    { option: 1, checked: true },
-    { option: 2, checked: false },
-  ];
+  const studyResult: StudyResult = {
+    userAnswers: [
+      { option: 1, checked: true },
+      { option: 2, checked: false },
+    ],
+    endOfReason: 'finish',
+  };
   const wordStatus: Record<string, WordStatus> = {
     'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
     'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
@@ -33,11 +36,10 @@ describe('ResultScreen 基本項目', () => {
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
-        reason='finish'
       />
     );
   });
@@ -94,10 +96,13 @@ describe('ResultScreen 復習関連', () => {
       ],
       studyMode: 'retry',
     };
-    const userAnswers: UserAnswer[] = [
-      { option: 1, checked: true },
-      { option: 2, checked: false },
-    ];
+    const studyResult: StudyResult = {
+      userAnswers: [
+        { option: 1, checked: true },
+        { option: 2, checked: false },
+      ],
+      endOfReason: 'finish',
+    };
     const wordStatus: Record<string, WordStatus> = {
       'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
       'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
@@ -109,11 +114,10 @@ describe('ResultScreen 復習関連', () => {
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
-        reason='finish'
       />
     );
 
@@ -139,10 +143,14 @@ describe('ResultScreen 復習関連', () => {
       ],
       studyMode: 'retry',
     };
-    const userAnswers: UserAnswer[] = [
-      { option: cn+cy > 0 ? 2: 1, checked: cy+wy > 0 },
-      { option: cn+cy > 1 ? 2: 1, checked: cy+wy > 1 },
-    ];
+
+    const studyResult: StudyResult = {
+      userAnswers: [
+        { option: cn + cy > 0 ? 2 : 1, checked: cy + wy > 0 },
+        { option: cn + cy > 1 ? 2 : 1, checked: cy + wy > 1 },
+      ],
+      endOfReason: 'finish',
+    };
     const wordStatus: Record<string, WordStatus> = {
       'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
       'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
@@ -154,11 +162,10 @@ describe('ResultScreen 復習関連', () => {
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
-        reason='finish'
       />
     );
 
@@ -181,10 +188,13 @@ describe('ResultScreen 復習関連', () => {
       ],
       studyMode: 'retry',
     };
-    const userAnswers: UserAnswer[] = [
-      { option: 2, checked: true },
-      { option: 1, checked: false },
-    ];
+    const studyResult: StudyResult = {
+      userAnswers: [
+        { option: 2, checked: true },
+        { option: 1, checked: false },
+      ],
+      endOfReason: 'finish',
+    };
     const wordStatus: Record<string, WordStatus> = {
       'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
       'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
@@ -196,11 +206,10 @@ describe('ResultScreen 復習関連', () => {
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
-        reason='finish'
       />
     );
 
@@ -245,22 +254,25 @@ describe('ResultScreen 学習結果表示関連', () => {
       ],
       studyMode: 'normal',
     };
-    const userAnswers: UserAnswer[] = [
-      { option: 1, checked: false },
-      { option: 1, checked: false },
-      { option: 1, checked: false },
-      { option: 1, checked: false },
-      { option: 1, checked: false },
-
-      { option: 2, checked: false },
-      { option: 2, checked: false },
-      { option: 2, checked: false },
-      { option: 2, checked: false },
-      { option: -1, checked: false },
-
-      { option: -1, checked: false },
-      { option: -1, checked: false },
-    ];
+    const studyResult: StudyResult = {
+      userAnswers: [
+        { option: 1, checked: false },
+        { option: 1, checked: false },
+        { option: 1, checked: false },
+        { option: 1, checked: false },
+        { option: 1, checked: false },
+    
+        { option: 2, checked: false },
+        { option: 2, checked: false },
+        { option: 2, checked: false },
+        { option: 2, checked: false },
+        { option: -1, checked: false },
+    
+        { option: -1, checked: false },
+        { option: -1, checked: false },
+      ],
+      endOfReason: 'finish',
+    };
     const wordStatus: Record<string, WordStatus> = {
       'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
       'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
@@ -281,11 +293,10 @@ describe('ResultScreen 学習結果表示関連', () => {
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
-        reason='finish'
       />
     );
 
@@ -305,10 +316,13 @@ describe('ResultScreen ホームへ戻る関連', () => {
     ],
     studyMode: 'normal',
   };
-  const userAnswers: UserAnswer[] = [
-    { option: 1, checked: true },
-    { option: 2, checked: false },
-  ];
+  const studyResult: StudyResult = {
+    userAnswers: [
+      { option: 1, checked: true },
+      { option: 2, checked: false },
+    ],
+    endOfReason: 'finish',
+  };
   const wordStatus: Record<string, WordStatus> = {
     'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
     'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
@@ -320,11 +334,10 @@ describe('ResultScreen ホームへ戻る関連', () => {
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={countOfNext}
         onUserButtonClick={onUserButtonClick}
-        reason='finish'
       />
     );
   });
@@ -353,10 +366,6 @@ describe('ResultScreen 次へ関連', () => {
   const onUserButtonClick = jest.fn();
 
   beforeEach(() => {
-    userAnswers = [
-      { option: 1, checked: true },
-      { option: 2, checked: false },
-    ];
     wordStatus = {
       'Word 1': { word: 'Word 1', status: 1, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
       'Word 2': { word: 'Word 2', status: 6, lastLearnedDate: '2021-01-01T00:00:00', answerHistory: [] },
@@ -364,15 +373,21 @@ describe('ResultScreen 次へ関連', () => {
   });
 
   it('次単語があり、終了理由が「完了」の場合には次のN個ボタンが表示される', () => {
+    const studyResult: StudyResult = {
+      userAnswers: [
+        { option: 1, checked: true },
+        { option: 2, checked: false },
+      ],
+      endOfReason: 'finish',
+    };
 
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={2}
         onUserButtonClick={onUserButtonClick}
-        reason='finish'
       />
     );
 
@@ -381,15 +396,21 @@ describe('ResultScreen 次へ関連', () => {
   });
 
   it('次単語があり、終了理由が「やめる」の場合には次のN個ボタンが表示されない', () => {
+    const studyResult: StudyResult = {
+      userAnswers: [
+        { option: 1, checked: true },
+        { option: 2, checked: false },
+      ],
+      endOfReason: 'quit',
+    };
 
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={2}
         onUserButtonClick={onUserButtonClick}
-        reason='quit'
       />
     );
 
@@ -398,14 +419,21 @@ describe('ResultScreen 次へ関連', () => {
   });
 
   it('次単語がない場合には次のN語ボタンが表示されない', () => {
+    const studyResult: StudyResult = {
+      userAnswers: [
+        { option: 1, checked: true },
+        { option: 2, checked: false },
+      ],
+      endOfReason: 'finish',
+    };
+
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={0}
         onUserButtonClick={onUserButtonClick}
-        reason='finish'
       />
     );
 
@@ -414,14 +442,21 @@ describe('ResultScreen 次へ関連', () => {
   });
 
   it('次のN語ボタンをクリックでコールバック呼出', () => {
+    const studyResult: StudyResult = {
+      userAnswers: [
+        { option: 1, checked: true },
+        { option: 2, checked: false },
+      ],
+      endOfReason: 'finish',
+    };
+
     render(
       <ResultScreen
         studySet={studySet}
-        userAnswers={userAnswers}
+        studyResult={studyResult}
         wordStatus={wordStatus}
         countOfNext={2}
         onUserButtonClick={onUserButtonClick}
-        reason='finish'
       />
     );
 

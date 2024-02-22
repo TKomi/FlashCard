@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { UserAnswer } from './models/Quiz.ts';
 import { WordStatus } from './models/WordStatus.ts';
 import { StudySet } from './StudySet.ts';
+import { StudyResult } from './StudyResult.ts';
 
 export type Props = {
   /**
@@ -11,12 +12,6 @@ export type Props = {
    * - userAnswers: ユーザーの回答の一覧。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
    */
   studySet: StudySet,
-
-  /**
-   * ユーザーの回答。実際に回答されたもの(スキップ含む)に限る。配列の順序はquizzesと対応。
-   * userAnswers.length == quizzes.lengthとなる
-   */
-  userAnswers: UserAnswer[],
 
   /**
    * 各単語の学習状況
@@ -29,9 +24,9 @@ export type Props = {
   countOfNext: number,
 
   /**
-   * 終了理由。"finish"か"quit"のいずれか
+   * 学習結果
    */
-  reason: string,
+  studyResult: StudyResult,
 
   /**
    * ユーザーが画面上のボタンを押したときの処理。イベント引数でクリックされたボタン名を識別。
@@ -67,7 +62,7 @@ type Entry = {
  * - ユーザーの回答の記録
  * - 単語、問題のリスト、ユーザーの回答リストは受け取るだけで、自分で作成しない
  */
-export const ResultScreen: React.FC<Props> = ({ studySet, userAnswers, wordStatus, countOfNext, reason = "finish", onUserButtonClick}) => {
+export const ResultScreen: React.FC<Props> = ({ studySet, wordStatus, countOfNext, studyResult, onUserButtonClick}) => {
 
   const [entries, setEntries] = useState<Entry[]>([]);
 
@@ -76,22 +71,22 @@ export const ResultScreen: React.FC<Props> = ({ studySet, userAnswers, wordStatu
       const word = studySet.words[index];
       const spelling = word.word;
       const correctAnswer = word.quiz.answer; // string
-      const isCorrect = quiz.answerIndex === userAnswers[index].option;
-      const isChecked = userAnswers[index].checked;
+      const isCorrect = quiz.answerIndex === studyResult.userAnswers[index].option;
+      const isChecked = studyResult.userAnswers[index].checked;
       const status = wordStatus[quiz.question]?.status;
-      const isSkipped = userAnswers[index].option === -1;
+      const isSkipped = studyResult.userAnswers[index].option === -1;
       return { index, spelling, correctAnswer, isCorrect, status, isSkipped, isChecked };
     });
     setEntries(newEntries);
-  }, [studySet, userAnswers, wordStatus]);
+  }, [studySet, studyResult.userAnswers, wordStatus]);
 
   const countOfCorrect = useMemo(() => entries.filter(entry => entry.isCorrect).length , [entries]);
-  const countOfSkip = useMemo(() => userAnswers.filter(answer => answer.option === -1).length , [userAnswers]);
+  const countOfSkip = useMemo(() => studyResult.userAnswers.filter(answer => answer.option === -1).length, [studyResult.userAnswers]);
   const countOfIncorrect = useMemo(() => entries.length - countOfCorrect - countOfSkip , [entries, countOfCorrect, countOfSkip]);
-  const countOfRetry = useMemo(() => userAnswers.filter((answer, index) => 
+  const countOfRetry = useMemo(() => studyResult.userAnswers.filter((answer, index) => 
     answer.checked
     || answer.option !== studySet.quizzes[index].answerIndex).length,
-  [studySet.quizzes, userAnswers]);
+    [studySet.quizzes, studyResult.userAnswers]);
 
   return (
     <div>
@@ -113,7 +108,7 @@ export const ResultScreen: React.FC<Props> = ({ studySet, userAnswers, wordStatu
       <div className="uk-flex">
         <RetryButton countOfRetry={countOfRetry} onUserButtonClick={onUserButtonClick} />
         <button onClick={() => onUserButtonClick("home")} className='result-action-btn'>ホームへ戻る</button>
-        <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick} quitted={reason === 'quit'}/>
+        <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick} quitted={studyResult.endOfReason === 'quit'}/>
       </div>
     </div>
   );

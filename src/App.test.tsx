@@ -246,7 +246,7 @@ test('問題が正常終了した時に結果画面が表示され、データ�
   expect(actual.studySet.words).toEqual(part1Mock);
   expect(actual.studySet.quizzes.map((q: { question: any; }) => q.question)).toContain('word1');
   expect(actual.studySet.quizzes.map((q: { question: any; }) => q.question)).toContain('word2');
-  expect(actual.userAnswers).toEqual([
+  expect(actual.studyResult.userAnswers).toEqual([
     { option: 1, checked: false, },
     { option: 1, checked: false, },
   ]);
