@@ -15,7 +15,7 @@ export async function loadFromWordJson(jsonFilePath: string): Promise<Word[]> {
 }
 
 /**
- * wordListから最大num個の単語を、規則に従って抽出する
+ * 単語の一覧から最大num個の単語を、規則に従って抽出する
  * 
  * - 規則1: まだ一度も学習していない単語+苦手単語を優先的に抽出する。ランダムに最大num個。
  * - 規則2: うろ覚えの単語をその次に抽出する。ランダムに、規則1と合計で最大num個。
@@ -23,7 +23,7 @@ export async function loadFromWordJson(jsonFilePath: string): Promise<Word[]> {
  * 
  * 規則1から3の単語はランダムに並べ替える。
  * 
- * @param wordList 対象の単語リスト
+ * @param words 対象の単語の配列
  * @param num 抽出する単語の数
  * @param allWordStatus 単語をキーとし、WordStatusオブジェクトを値とするオブジェクト
  * - 過去の単語の学習状況を示すオブジェクト
@@ -31,13 +31,13 @@ export async function loadFromWordJson(jsonFilePath: string): Promise<Word[]> {
  * - ストレージから取り出したものを渡される想定
  * @return 抽出された単語の配列
  */
-export function extractFromWordList(wordList: Word[], num: number, allWordStatus: Record<string, WordStatus>): Word[] {
+export function extractFromWords(words: Word[], num: number, allWordStatus: Record<string, WordStatus>): Word[] {
   const group0: Word[] = []; // 未学習の単語リスト
   const group1: Word[] = []; // 苦手な単語リスト
   const group2: Word[] = []; // うろ覚えの単語リスト
   const group3: Word[] = []; // それ以外の単語リスト
 
-  for(const word of wordList) {
+  for(const word of words) {
     const status = allWordStatus[word.word];
     switch (status?.status) {
       case 1:

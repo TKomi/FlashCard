@@ -14,6 +14,6 @@ type RetryButtonProps = {
 export const RetryButton: React.FC<RetryButtonProps> = ({ countOfRetry, onUserButtonClick }) => {
   if (countOfRetry === 0) return <div className={styles['actionButton_spacer']} data-testid="spacer"></div>;
   else return (
-    <button onClick={() => onUserButtonClick("retry")} className={styles['actionButton_spacer']}>復習する</button>
+    <button onClick={() => onUserButtonClick("retry")} className={styles['actionButton']}>復習する</button>
   );
 }

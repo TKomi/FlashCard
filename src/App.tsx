@@ -1,7 +1,7 @@
 import 'uikit/dist/css/uikit.min.css';
 import { useEffect, useState, useMemo } from 'react';
 import { FlashCardData, LS, getInitialState } from './store/LS.ts';
-import { extractFromWordList, loadFromWordJson, getShuffledArray } from './store/WordListUtils.ts';
+import { extractFromWords, loadFromWordJson, getShuffledArray } from './store/WordSetUtils.ts';
 import { HomeScreen } from './HomeScreen/HomeScreen.tsx';
 import { StudyScreen } from './StudyScreen/StudyScreen.tsx';
 import { ResultScreen } from './ResultScreen/ResultScreen.tsx';
@@ -110,7 +110,7 @@ const App: React.FC = () => {
   const onUserButtonClick = (buttonName: string) => {
     switch(buttonName) {
       case 'next':
-        const extracted = extractFromWordList(
+        const extracted = extractFromWords(
           remaining,
           20,
           storageData.wordStatus
@@ -166,15 +166,15 @@ const App: React.FC = () => {
   const onSelectedWordSet = (filePath: string) => {
     // 単語データの読み込み
     loadFromWordJson(filePath)
-      .then(wordList => {
-        const wl = extractFromWordList(wordList, 20, storageData.wordStatus);
+      .then(wordSet => {
+        const wl = extractFromWords(wordSet, 20, storageData.wordStatus);
         setStudySet(prev => ({
           ...prev,
           words: wl,
           quizzes: wl.map(createQuiz4),
           studyMode: 'normal',
         }));
-        setRemaining(wordList.filter(w => !wl.includes(w)));
+        setRemaining(wordSet.filter(w => !wl.includes(w)));
         setCurrentScreen('study');
         console.info('単語セット選択時の処理が完了', filePath);
       }).catch(console.error);

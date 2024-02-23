@@ -121,10 +121,10 @@ jest.mock('./models/WordSetIndex.ts', () => ({
   },
 }));
 
-jest.mock('./store/WordListUtils.ts', () => {
+jest.mock('./store/WordSetUtils.ts', () => {
   return {
     __esModule: true,
-    extractFromWordList: jest.fn((arg0, _arg1, _arg2) => arg0),
+    extractFromWords: jest.fn((arg0, _arg1, _arg2) => arg0),
     loadFromWordJson: jest.fn().mockReturnValue(Promise.resolve(part1Mock)),
     getShuffledArray: jest.fn((arg) => arg),
   };
@@ -137,7 +137,7 @@ import { HomeScreen as HomeScreenMock } from './HomeScreen/HomeScreen.tsx';
 import { StudyScreen as StudyScreenMock } from './StudyScreen/StudyScreen.tsx';
 import { ResultScreen as ResultScreenMock } from './ResultScreen/ResultScreen.tsx';
 import { WordSetIndexUtil as WordSetIndexUtilMock } from './models/WordSetIndex.ts';
-import { loadFromWordJson as loadFromWordJsonMock } from './store/WordListUtils.ts';
+import { loadFromWordJson as loadFromWordJsonMock } from './store/WordSetUtils.ts';
 import App from './App';
 import { test } from '@jest/globals';
 
