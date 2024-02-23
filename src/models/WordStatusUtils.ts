@@ -1,5 +1,4 @@
 import { WordStatus } from "./WordStatus.ts";
-import { Word } from "./Word.ts";
 import { Quiz, UserAnswer } from "./Quiz.ts";
 import { FlashCardData } from "../store/LS.ts";
 /**
@@ -48,32 +47,25 @@ function getUpdatedStatus(oldStatus: number, ansIsCorrect: boolean, checked: boo
  * - 単語(クイズ, 回答)の一覧と同じ順番で、各単語の学習状況を格納した配列
  */
 export function updateWordStatuses(
-  studySet: Word[],
   quizzes: Quiz[],
   userAnswers: UserAnswer[],
   saveData: FlashCardData
 ): WordStatus[] {
   const result: WordStatus[] = [];
 
-  // FIXME: studySetじゃなくてquizzesを回せばよくない？
-  for (const word of studySet) {
-    // 対応するquizを取得
-    const quizIndex = quizzes.findIndex(quiz => quiz.question === word.word);
-    // 見つからなければこの単語は出題されていないので次のループへ
-    if (quizIndex === -1) continue;
-
+  for (const [index, quiz] of quizzes.entries()) {
     // 対応するwordStatusを取得, なければ新規作成
-    const updated = saveData.wordStatus[word.word] || new WordStatus(word.word, new Date().toISOString(), [], 0);
+    const updated = saveData.wordStatus[quiz.question] || new WordStatus(quiz.question, new Date().toISOString(), [], 0);
 
     // dateを更新
     updated.lastLearnedDate = new Date().toISOString();
 
     // answerHistoryに最後の問題の正誤を追加
-    const quizCorrectness = getQuizCorrectness(quizzes, userAnswers, quizIndex);
+    const quizCorrectness = getQuizCorrectness(quizzes, userAnswers, index);
     updated.answerHistory.push(quizCorrectness);
 
     // statusを更新
-    updated.status = getUpdatedStatus(updated.status, quizCorrectness, userAnswers[quizIndex].checked);
+    updated.status = getUpdatedStatus(updated.status, quizCorrectness, userAnswers[index].checked);
 
     // wordStatusを更新
     result.push(updated);

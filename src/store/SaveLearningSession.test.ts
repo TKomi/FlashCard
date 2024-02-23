@@ -12,11 +12,6 @@ jest.mock('./LS', () => ({
 
 describe('save', () => {
 
-  const wordList = [
-    { word: 'word1', quiz: { answer: 'ans', options: ['opt1', 'opt2', 'opt3'] } },
-    { word: 'word2', quiz: { answer: 'ans', options: ['opt1', 'opt2', 'opt3'] } },
-    { word: 'word3', quiz: { answer: 'ans', options: ['opt1', 'opt2', 'opt3'] } },
-  ];
   const quizzes = [
     new Quiz('word1', 0, ['ans', 'opt1', 'opt2', 'opt3']),
     new Quiz('word2', 0, ['ans', 'opt1', 'opt2', 'opt3']),
@@ -44,7 +39,7 @@ describe('save', () => {
 
   test('学習セッションの状況が正しく保存されること', () => {
     // Act
-    const result = save(wordList, quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
 
     // Assert
     expect(result.learningSession).toHaveLength(1);
@@ -62,7 +57,7 @@ describe('save', () => {
 
   test('wordStatusが正しく更新されること', () => {
     // Act
-    const result = save(wordList, quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
 
     // Assert
     expect(result.wordStatus).toHaveProperty('word1');
@@ -75,7 +70,7 @@ describe('save', () => {
 
   test('wordSetStatusが正しく更新されること', () => {
     // Act
-    const result = save(wordList, quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
 
     // Assert
     expect(result.wordSetStatus).toHaveLength(1);
@@ -89,7 +84,7 @@ describe('save', () => {
 
   test('LocalStorageにデータが保存されること', () => {
     // Act
-    save(wordList, quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
 
     // Assert
     expect(LS.save).toHaveBeenCalledWith({
@@ -101,7 +96,7 @@ describe('save', () => {
 
   test('保存されたデータが返されること', () => {
     // Act
-    const result = save(wordList, quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
 
     // Assert
     expect(result).toEqual({

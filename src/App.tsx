@@ -90,15 +90,13 @@ const App: React.FC = () => {
     // どのケースにも対応するため、studySet, quizzesはuaの長さに切り詰める
     let endOfReason: 'quit' | 'finish' = ua.length < studySet.quizzes.length ? 'quit' : 'finish';
 
-    const studySetInner = studySet.words.slice(0, ua.length);
     const quizzesInner = studySet.quizzes.slice(0, ua.length);
 
-    const updatedWordsStatuses = updateWordStatuses(studySet.words, quizzesInner, ua, storageData);
+    const updatedWordsStatuses = updateWordStatuses(quizzesInner, ua, storageData);
     setStudySet(old => ({...old, quizzes: quizzesInner}));
     setStudyResult(old => ({...old, userAnswers: ua, endOfReason: endOfReason}));
     // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
-
-    const saved = save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
+    const saved = save(quizzesInner, ua, storageData, updatedWordsStatuses);
     setStorageData(saved);
 
     setCurrentScreen('result');

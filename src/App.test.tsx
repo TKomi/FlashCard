@@ -255,6 +255,7 @@ test('問題が正常終了した時に結果画面が表示され、データ�
 
   // データが保存されることを確認
   expect((LSMock.save as jest.Mock)).toHaveBeenCalledTimes(1);
+  expect(Object.keys((LSMock.save as jest.Mock).mock.calls[0][0].wordStatus)).not.toContain(undefined);
 });
 
 test('問題が1問以上解いて中断された時に結果画面が表示され、データ保存すること', async () => {

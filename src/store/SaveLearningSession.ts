@@ -1,15 +1,13 @@
 import { v4 as uuidv4 } from 'uuid';
 import { LearningSession } from "../models/LearningSession";
 import { Quiz, UserAnswer } from "../models/Quiz";
-import { Word } from "../models/Word";
 import { WordStatus } from "../models/WordStatus";
 import { FlashCardData, LS } from "./LS";
 
 /**
  * 学習セッション1件の情報を保存(追記)する
  * 
- * @param wordList 出題された単語の一覧
- * @param quizzes 出題された問題の一覧。wordListと順番が同じである
+ * @param quizzes 出題された問題の一覧。
  * @param userAnswers ユーザーの回答の一覧。quizzesと順番が同じ。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
  * @param oldFlashCardData LSから読み込んだ、既存の学習セッションデータ
  * - delete-insert方式のため、古いデータも必要となる
@@ -19,7 +17,6 @@ import { FlashCardData, LS } from "./LS";
  * @returns 保存後のデータ
  */
 export function save(
-  wordList: Word[],
   quizzes: Quiz[],
   userAnswers: UserAnswer[],
   oldFlashCardData: FlashCardData,
@@ -33,8 +30,7 @@ export function save(
     completionDate: new Date().toISOString(),
     answerHistory: userAnswers.map((answer, index) => {
       return {
-        // FIXME: わざわざwordListを使っているが、quizzesの方が適切では？引数も減らせるし
-        w: wordList[index].word,
+        w: quizzes[index].question,
         c: quizzes[index].answerIndex === answer.option,
       };
     }),

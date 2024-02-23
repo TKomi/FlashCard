@@ -103,9 +103,9 @@ export const LS = {
     const result = {
       databaseVersion: json.databaseVersion,
       learningSession: json.learningSession.map((session: LearningSessionCtorParams) => new LearningSession(session)),
-      wordStatus: (Object.entries(json.wordStatus) as unknown as WordStatus[])
-      .reduce((reduced, kvp) => {
-        reduced[kvp.word] = new WordStatus(kvp.word, kvp.lastLearnedDate, kvp.answerHistory, kvp.status);
+      wordStatus: (Object.entries(json.wordStatus) as unknown as [string, WordStatus][])
+      .reduce((reduced, [word, status]) => {
+        reduced[status.word] = new WordStatus(word, status.lastLearnedDate, status.answerHistory, status.status);
         return reduced;
       }, {} as  Record<string, WordStatus>), // json.wordStatusの各要素をWordStatusに変換し、reduceでまとめる
       wordSetStatus: json.wordSetStatus || [],
