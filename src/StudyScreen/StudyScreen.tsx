@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { OptionButtons } from './OptionButtons.tsx';
 import { Quiz, UserAnswer } from '../models/Quiz.ts';
 import { StudySet } from '../StudySet.ts';
+import styles from './StudyScreen.module.scss';
 
 export type StudyScreenProps = {
   /**
@@ -77,18 +78,18 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ studySet, onEndQuiz })
   };
 
   return (
-    <div>
-      <h1 className='study-screen-title'>TOEIC Service List - Part1</h1>
+    <div className={styles['studyScreen']}>
+      <h1 className={styles['title']}>TOEIC Service List - Part1</h1>
       {
         studySet.quizzes.length > 0 && currentQuestionIndex < studySet.quizzes.length &&
         <div>
-          <div className='study-screen-subtitle'>{studySet.studyMode === 'retry' ? '復習 ': '通常学習 '}
+          <div className={styles['subTitle']}>{studySet.studyMode === 'retry' ? '復習 ': '通常学習 '}
             {currentQuestionIndex + 1} / {studySet.quizzes.length} Words
           </div>
-          <div className='study-screen-progress'>
-            <progress value={currentQuestionIndex} max={studySet.quizzes.length} className="uk-progress study-screen-progress"/>
+          <div className={styles['progress']}>
+            <progress value={currentQuestionIndex} max={studySet.quizzes.length} className="uk-progress"/>
           </div>
-          <div className='study-screen-word'>{currentQuiz.question}</div>
+          <div className={styles['word']}>{currentQuiz.question}</div>
           <OptionButtons quiz={currentQuiz} onNextQuiz={recordAndNextQuiz} onQuit={onQuitInner}/>
         </div>
       }

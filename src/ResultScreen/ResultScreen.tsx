@@ -1,8 +1,8 @@
 import React, { useEffect, useState, useMemo } from 'react';
-import { UserAnswer } from '../models/Quiz.ts';
 import { WordStatus } from '../models/WordStatus.ts';
 import { StudySet } from '../StudySet.ts';
 import { StudyResult } from '../StudyResult.ts';
+import styles from './ResultScreen.module.scss';
 
 export type Props = {
   /**
@@ -89,25 +89,25 @@ export const ResultScreen: React.FC<Props> = ({ studySet, wordStatus, countOfNex
     [studySet.quizzes, studyResult.userAnswers]);
 
   return (
-    <div>
-      <h1 className = 'result-screen-title' > TOEIC Service List - Part1 </h1>
-      <div className="result-screen-subtitle">{studySet.studyMode === 'retry' ? '復習 ': '通常学習 '} {entries.length}Words</div>
-      <div className='result-screen-subtitle'>○{countOfCorrect} / ×{countOfIncorrect} / -{countOfSkip}</div>
-      <ul className='ul-result'>
+    <div className={styles['resultScreen']}>
+      <h1 className = {styles['title']} > TOEIC Service List - Part1 </h1>
+      <div className={styles['subTitle']}>{studySet.studyMode === 'retry' ? '復習 ': '通常学習 '} {entries.length}Words</div>
+      <div className={styles['subTitle']}>○{countOfCorrect} / ×{countOfIncorrect} / -{countOfSkip}</div>
+      <ul className={styles['list']}>
         {entries.map(entry => (
-          <li key={entry.index} className="result-row">
-            <div className="result-index">{entry.index + 1}.</div>
-            <div className="result-spelling">{entry.spelling}</div>
-            <div className="result-isCorrect">{entry.isCorrect ? '○' : entry.isSkipped ? '-' : '×'}</div>
-            <div className='result-checked'>{entry.isChecked ? '✔' : ''}</div>
-            <div className="result-answer">{entry.correctAnswer}</div>
+          <li key={entry.index} className={styles['item']}>
+            <div className={styles['index']}>{entry.index + 1}.</div>
+            <div className={styles['spelling']}>{entry.spelling}</div>
+            <div className={styles['isCorrect']}>{entry.isCorrect ? '○' : entry.isSkipped ? '-' : '×'}</div>
+            <div className={styles['check']}>{entry.isChecked ? '✔' : ''}</div>
+            <div className={styles['answer']}>{entry.correctAnswer}</div>
             <ResultStatus wordStatus={entry.status} />
           </li>
         ))}
       </ul>
       <div className="uk-flex">
         <RetryButton countOfRetry={countOfRetry} onUserButtonClick={onUserButtonClick} />
-        <button onClick={() => onUserButtonClick("home")} className='result-action-btn'>ホームへ戻る</button>
+        <button onClick={() => onUserButtonClick("home")} className={styles['actionButton']}>ホームへ戻る</button>
         <NextButton countOfNext={countOfNext} onUserButtonClick={onUserButtonClick} quitted={studyResult.endOfReason === 'quit'}/>
       </div>
     </div>
@@ -125,16 +125,16 @@ const ResultStatus: React.FC<ResultStatusProps> = ({ wordStatus }) => {
   switch(wordStatus) {
     case 6:
     case 5:
-      return (<div className="result-status result-status-3">覚えた</div>);
+      return (<div className={`${styles['ResultStatus']} ${styles['group-3']}`}>覚えた</div>);
     case 4:
     case 3:
-      return (<div className="result-status result-status-2">うろ覚え</div>);
+      return (<div className={`${styles['ResultStatus']} ${styles['group-2']}`}>うろ覚え</div>);
     case 2:
     case 1:
-      return (<div className="result-status result-status-1">苦手</div>);
+      return (<div className={`${styles['ResultStatus']} ${styles['group-1']}`}>苦手</div>);
     case 0:
     default:
-      return (<div className="result-status result-status-0">未学習</div>);
+      return (<div className={`${styles['ResultStatus']} ${styles['group-0']}`}>未学習</div>);
   }
 }
 
@@ -144,9 +144,9 @@ type RetryButtonProps = {
 }
 
 const RetryButton: React.FC<RetryButtonProps> = ({countOfRetry, onUserButtonClick }) => {
-  if (countOfRetry === 0) return <div className='result-action-spacer'></div>;
+  if (countOfRetry === 0) return <div className={styles['actionButton_spacer']}></div>;
   else return (
-    <button onClick={() => onUserButtonClick("retry")} className='result-action-btn'>復習する</button>
+    <button onClick={() => onUserButtonClick("retry")} className={styles['actionButton_spacer']}>復習する</button>
   );
 }
 
@@ -157,10 +157,10 @@ type NextButtonProps = {
 }
 
 const NextButton: React.FC<NextButtonProps> = ({ countOfNext, onUserButtonClick, quitted }) => {
-  if (countOfNext === 0 || quitted) return <div className='result-action-spacer'></div>;
+  if (countOfNext === 0 || quitted) return <div className={styles['actionButton_spacer']}></div>;
   else {
     return (
-      <button onClick={() => onUserButtonClick("next")} className='result-action-btn'>次の{countOfNext}個</button>
+      <button onClick={() => onUserButtonClick("next")} className={styles['actionButton']}>次の{countOfNext}個</button>
     );
   }
 }

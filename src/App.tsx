@@ -1,4 +1,3 @@
-import './App.css';
 import 'uikit/dist/css/uikit.min.css';
 import { useEffect, useState, useMemo } from 'react';
 import { FlashCardData, LS, getInitialState } from './store/LS.ts';

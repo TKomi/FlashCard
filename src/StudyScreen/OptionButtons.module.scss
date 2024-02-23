@@ -1,0 +1,82 @@
+%default {
+  background-color: #eee;
+  border-color: #777;
+}
+
+%correct {
+  background-color: #8f8;
+  border-color: #2a2;
+}
+
+%incorrect {
+  background-color: #f88;
+  border-color: #a22;
+}
+
+%actual {
+  background-color: #88f;
+  border-color: #22a;
+}
+
+.optionButtons {
+
+  .button {
+    font-size: 12pt;
+    height: 3em;
+    width: 80%;
+    border-radius: 0.5em;
+  }
+  
+  .optionButton {
+    @extend .button;
+    margin: 0.3em auto;
+    
+    &:disabled {
+      color: #444;
+    }
+
+    &.default {
+      @extend %default;
+    }
+    
+    
+    &.correct {
+      @extend %correct;
+    }
+    
+    
+    &.incorrect {
+      @extend %incorrect;
+    }
+    
+    
+    &.actual {
+      @extend %actual;
+    }
+  }
+  
+  .skipButton {
+    @extend .button;
+    margin: 0.3em auto;
+    @extend %default;
+    position: relative;
+    right: 0;
+
+    &.incorrect {
+      @extend %incorrect;
+    }
+  }
+
+  .checkbox {
+    display: block;
+    margin: 0.75em 0;
+    text-align: center;
+  }
+  
+  .quitButton {
+    @extend .button;
+    margin: 2em auto;
+    background-color: #fee;
+    border-color: #e88;
+  }
+}
