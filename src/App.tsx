@@ -46,10 +46,12 @@ const App: React.FC = () => {
     words: [],
     quizzes: [],
     studyMode: 'normal',
+    remaining: [],
+    index: null,
   });
 
-  // 現在の単語セットで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
-  const [remaining, setRemaining] = useState<Word[]>([]);
+  // // 現在の学習セッションで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
+  // const [remaining, setRemaining] = useState<Word[]>([]);
   
   // 学習画面の終了状況
   const [studyResult, setStudyResult] = useState<StudyResult>({
@@ -58,7 +60,7 @@ const App: React.FC = () => {
   });
 
   // 次のn個へ進むボタンの表示に使用する、次のセッションで学習する単語の数
-  const countOfNext = useMemo(() => remaining.length <= 20 ? remaining.length : 20, [remaining]);
+  const countOfNext = useMemo(() => studySet.remaining.length <= 20 ? studySet.remaining.length : 20, [studySet.remaining]);
 
   // 起動時処理
   useEffect(() => {
@@ -111,7 +113,7 @@ const App: React.FC = () => {
     switch(buttonName) {
       case 'next':
         const extracted = extractFromWords(
-          remaining,
+          studySet.remaining,
           20,
           storageData.wordStatus
         );
@@ -120,8 +122,8 @@ const App: React.FC = () => {
           words: extracted,
           quizzes: extracted.map(createQuiz4),
           studyMode: 'normal',
+          remaining: studySet.remaining.filter(w => !extracted.includes(w)),
         }));
-        setRemaining(remaining.filter(w => !extracted.includes(w)));
         setCurrentScreen('study');
         console.info('次の20語に進むボタンの処理が完了');
         break;
@@ -173,8 +175,8 @@ const App: React.FC = () => {
           words: wl,
           quizzes: wl.map(createQuiz4),
           studyMode: 'normal',
+          remaining: wordSet.filter(w => !wl.includes(w)),
         }));
-        setRemaining(wordSet.filter(w => !wl.includes(w)));
         setCurrentScreen('study');
         console.info('単語セット選択時の処理が完了', filePath);
       }).catch(console.error);
