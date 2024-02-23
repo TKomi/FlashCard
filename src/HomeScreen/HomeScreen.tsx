@@ -23,6 +23,14 @@ export type Props = {
 
 /**
  * ホーム画面
+ * 
+ * @description
+ * 【このコンポーネントの責務】
+ * - 学習シリーズの一覧を表示する
+ * - 単語セットを選択したときの処理を行う
+ * @param props
+ * @returns HomeScreenコンポーネント
+ * @author TKomi
  */
 export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelectedWordSet}) => {
   // seriesSetの順番、シリーズ内の単語セットの順番に対応する、単語セットの学習状況の配列

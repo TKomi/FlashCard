@@ -49,15 +49,20 @@ type Entry = {
 }
 
 /**
- * リザルト画面を表す画面コンポーネント
+ * リザルト画面
  * 
- * (問題番号, 問題(単語), 正解(和訳), 正誤, 学習状況) の順に、問題番号の若い順に一覧表示する
+ * @description
+ * (問題番号(出題順), 問題(単語), 正誤, チェック, 正解(和訳), 学習状況) の順に、問題番号の若い順に一覧表示する
  * 
- * このコンポーネントの責務
- * - 単語および問題のリストとユーザーの回答リストを受け取り、結果を一覧表示する
- * - "次のn個へ進む"ボタンを表示する
+ * 【このコンポーネントの責務】
+ * - 単語・問題・ユーザーの回答リストと単語学習状況を受け取り、結果を一覧表示する
+ * - 今回の学習セットのサマリー表示
+ * - "復習する"ボタンを表示し、クリックされたときに親コンポーネントに通知する
+ * - "ホームへ戻る"ボタンを表示し、クリックされたときに親コンポーネントに通知する
+ * - "次のn個へ進む"ボタンを表示し、クリックされたときに親コンポーネントに通知する
+ *   - このときのnはPropsから受け取る
  * 
- * このコンポーネントでやらないこと
+ * 【このコンポーネントでやらないこと】
  * - ユーザーの回答の正誤判定
  * - ユーザーの回答の記録
  * - 単語、問題のリスト、ユーザーの回答リストは受け取るだけで、自分で作成しない
@@ -143,6 +148,11 @@ type RetryButtonProps = {
   onUserButtonClick: (_name: string) => void
 }
 
+/**
+ * 復習ボタン
+ * @param Props
+ * @returns RetryButtonコンポーネント
+ */
 const RetryButton: React.FC<RetryButtonProps> = ({countOfRetry, onUserButtonClick }) => {
   if (countOfRetry === 0) return <div className={styles['actionButton_spacer']}></div>;
   else return (
@@ -156,6 +166,11 @@ type NextButtonProps = {
   quitted: boolean
 }
 
+/**
+ * 次の○個ボタン
+ * @param Props
+ * @returns NextButtonコンポーネント
+ */
 const NextButton: React.FC<NextButtonProps> = ({ countOfNext, onUserButtonClick, quitted }) => {
   if (countOfNext === 0 || quitted) return <div className={styles['actionButton_spacer']}></div>;
   else {

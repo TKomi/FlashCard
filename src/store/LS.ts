@@ -80,6 +80,7 @@ export type FlashCardData = {
 export const LS = {
   /**
    * LocalStorageにデータを保存する
+   * @param data 保存するデータ
    */
   save(data: FlashCardData): void {
     const key = "flashCard"; // 固定のキー
@@ -117,7 +118,8 @@ export const LS = {
 };
 
 /**
- * LocalStorageに保存されるデータの初期値
+ * LocalStorageに保存されるデータの初期値を返す
+ * @returns 初期値。読み込むたびに新しいオブジェクトを返す
  */
 export function getInitialState(): FlashCardData & { databaseVersion: string } {
   return {

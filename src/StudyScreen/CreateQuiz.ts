@@ -2,10 +2,10 @@ import { Quiz } from '../models/Quiz.ts';
 import { Word } from '../models/Word.ts';
 
 /**
- * 単語を使って、4択クイズを作成する
+ * 単語を使って、4択の問題を作成する
  * 
  * @param word 単語
- * @returns 作成されたクイズ
+ * @returns 作成された問題
  */
 export function createQuiz4(word: Word): Quiz {
     // 解答の順番はOrders4の中からランダムに選ぶ

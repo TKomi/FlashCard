@@ -28,11 +28,19 @@ export type Props = {
 }
 
 /**
- * クイズ1問の選択肢ボタン
- * 正解の選択肢がクリックされたら正誤判定して表示し、onAnswerを呼び出す
- *   正誤表示する時間は1秒とする
- *   すべての選択肢ボタンはロックされ、クリックできない状態にする
- * 正誤表示が終わったらonNextQuizを呼び出す
+ * クイズ1問の選択肢ボタンユニット
+ * 
+ * @description
+ * 【このコンポーネントの責務】
+ * - 選択肢がクリックされたら正誤判定して表示し、onAnswerを呼び出す
+ *   - 正誤表示する時間は1秒とする
+ *   - この間すべての選択肢ボタンはロックされ、クリックできない状態にする
+ * - 正誤表示が終わったらonNextQuizを呼び出す
+ * - やめるボタンが押されたらonQuitを呼び出す
+ * 
+ * @param props
+ * @returns OptionButtonsコンポーネント
+ * @author TKomi
  */
 export const OptionButtons: React.FC<Props> = ({quiz, onAnswer, onNextQuiz, onQuit}) => {
   // ロック状態 デフォルトはfalse(ロックされていない)

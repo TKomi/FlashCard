@@ -16,6 +16,21 @@ import { StudySet } from './StudySet.ts';
 import { StudyResult } from './StudyResult.ts';
 import { save } from './store/SaveLearningSession.ts';
 
+/**
+ * アプリのルートコンポーネント
+ * 
+ * @description
+ * 【このコンポーネントの責務】
+ * - 学習画面、ホーム画面、結果画面の切り替え
+ *   - 画面遷移のための状態管理
+ *   - 各画面にコールバックを渡し、画面遷移時に呼び出してもらう
+ * - アプリ起動時処理
+ *   - 学習シリーズの一覧の読み込み
+ * - LocalStorageの読み書き
+ * - 学習セッション、学習セットの状況の管理
+ * @returns Appコンポーネント
+ * @author TKomi
+ */
 const App: React.FC = () => {
   // 現在表示している画面: 'home' or 'study' or 'result' or 'loading'
   const [currentScreen, setCurrentScreen] = useState('loading');
