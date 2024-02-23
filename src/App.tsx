@@ -7,9 +7,8 @@ import { StudyScreen } from './StudyScreen/StudyScreen.tsx';
 import { ResultScreen } from './ResultScreen/ResultScreen.tsx';
 import { createQuiz4 } from './StudyScreen/CreateQuiz.ts';
 import { updateWordStatuses } from './models/WordStatusUtils.ts';
-import { WordSetIndexUtil } from './models/WordSetIndex.ts';
+import { WordSetIndex, WordSetIndexUtil } from './models/WordSetIndex.ts';
 import { Series } from './models/WordSetIndex.ts';
-import { Word } from './models/Word.ts';
 import { UserAnswer } from  './models/Quiz.ts';
 import React from 'react';
 import { StudySet } from './StudySet.ts';
@@ -162,12 +161,12 @@ const App: React.FC = () => {
   };
 
 /* HomeScreenで単語セットが選択されたときの処理
- * - 受け取った単語セットのファイルパスに該当する単語データを読み込む
+ * - 受け取った単語セットに該当する単語データを読み込む
  * - その単語データを元に、学習セット、クイズ、残りの単語を設定する。最後に、学習画面に遷移する
  */
-  const onSelectedWordSet = (filePath: string) => {
+  const onSelectedWordSet = (index: WordSetIndex) => {
     // 単語データの読み込み
-    loadFromWordJson(filePath)
+    loadFromWordJson(index)
       .then(wordSet => {
         const wl = extractFromWords(wordSet, 20, storageData.wordStatus);
         setStudySet(prev => ({
@@ -176,9 +175,10 @@ const App: React.FC = () => {
           quizzes: wl.map(createQuiz4),
           studyMode: 'normal',
           remaining: wordSet.filter(w => !wl.includes(w)),
+          index: index,
         }));
         setCurrentScreen('study');
-        console.info('単語セット選択時の処理が完了', filePath);
+        console.info('単語セット選択時の処理が完了', index.filePath);
       }).catch(console.error);
   };
 
