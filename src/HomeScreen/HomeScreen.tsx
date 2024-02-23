@@ -18,7 +18,7 @@ export type Props = {
    * 単語セットが選択されたときの処理
    * @param filePath 選択された単語セットのファイルパス
    */
-  onSelectedWordSet: (_index: WordSetIndex) => void
+  onSelectedWordSet: (_series: Series, _index: WordSetIndex) => void
 }
 
 /**
@@ -58,9 +58,9 @@ export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelecte
   //   return wordSetStatusOrdered;
   // }, [seriesSet, wordSetStatus]);
 
-  function onClickGoButton(index: WordSetIndex) {
+  function onClickGoButton(series: Series, index: WordSetIndex) {
     if (onSelectedWordSet) {
-      onSelectedWordSet(index);
+      onSelectedWordSet(series, index);
     }
   }
 
@@ -78,7 +78,7 @@ export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelecte
                   <li key={index2} className={styles['item']}>
                     <div className={styles['name']}>{wordSet.wordSetName}</div>
                     <div className={styles['size']}>{wordSet.size} Words</div>
-                    <button onClick={() => onClickGoButton(wordSet)} className={styles['button']}>GO!</button>
+                    <button onClick={() => onClickGoButton(series, wordSet)} className={styles['button']}>GO!</button>
                   </li>
                 ))
               }

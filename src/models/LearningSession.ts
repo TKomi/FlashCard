@@ -5,7 +5,7 @@ export type AnswerHistoryItem = {
 
 export type LearningSessionCtorParams = {
   sessionId: string;
-  wordSetNo: number;
+  wordSetNo: string;
   completionDate: string;
   answerHistory: AnswerHistoryItem[];
 }
@@ -24,7 +24,7 @@ export class LearningSession {
   /**
    * 単語セットNo
    */
-  wordSetNo: number;
+  wordSetNo: string;
 
   /**
    * 学習完了日時 (format: ISO8601 date-time string)

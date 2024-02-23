@@ -98,7 +98,7 @@ export const ResultScreen: React.FC<Props> = ({ studySet, wordStatus, countOfNex
 
   return (
     <div className={styles['resultScreen']}>
-      <h1 className = {styles['title']} > TOEIC Service List - Part1 </h1>
+      <h1 className = {styles['title']} > {studySet.series?.seriesName} - {studySet.index?.wordSetName} </h1>
       <div className={styles['subTitle']}>{studySet.studyMode === 'retry' ? '復習 ': '通常学習 '} {entries.length}Words</div>
       <div className={styles['subTitle']}>○{countOfCorrect} / ×{countOfIncorrect} / -{countOfSkip}</div>
       <ul className={styles['list']}>

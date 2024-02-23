@@ -47,6 +47,7 @@ const App: React.FC = () => {
     studyMode: 'normal',
     remaining: [],
     index: null,
+    series: null,
   });
 
   // // 現在の学習セッションで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
@@ -100,7 +101,7 @@ const App: React.FC = () => {
     setStudySet(old => ({...old, quizzes: quizzesInner}));
     setStudyResult(old => ({...old, userAnswers: ua, endOfReason: endOfReason}));
     // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
-    const saved = save(quizzesInner, ua, storageData, updatedWordsStatuses);
+    const saved = save(quizzesInner, ua, storageData, updatedWordsStatuses, studySet.index!.wordSetNo);
     setStorageData(saved);
 
     setCurrentScreen('result');
@@ -164,7 +165,7 @@ const App: React.FC = () => {
  * - 受け取った単語セットに該当する単語データを読み込む
  * - その単語データを元に、学習セット、クイズ、残りの単語を設定する。最後に、学習画面に遷移する
  */
-  const onSelectedWordSet = (index: WordSetIndex) => {
+  const onSelectedWordSet = (series: Series, index: WordSetIndex) => {
     // 単語データの読み込み
     loadFromWordJson(index)
       .then(wordSet => {
@@ -176,6 +177,7 @@ const App: React.FC = () => {
           studyMode: 'normal',
           remaining: wordSet.filter(w => !wl.includes(w)),
           index: index,
+          series: series,
         }));
         setCurrentScreen('study');
         console.info('単語セット選択時の処理が完了', index.filePath);

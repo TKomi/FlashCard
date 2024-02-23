@@ -14,19 +14,21 @@ import { FlashCardData, LS } from "./LS";
  * @param updatedWordsStatuses 更新後の単語の学習状況の一覧
  * - updateWordStatusesで作成したものをわたすこと
  * - updateWordStatuses関数の結果は他の箇所でも使いたかったため関数は分離した
+ * @param wordSetNo 学習した単語セットの番号
  * @returns 保存後のデータ
  */
 export function save(
   quizzes: Quiz[],
   userAnswers: UserAnswer[],
   oldFlashCardData: FlashCardData,
-  updatedWordsStatuses: WordStatus[]
+  updatedWordsStatuses: WordStatus[],
+  wordSetNo: string
 ): FlashCardData {
   // 学習セッションの状況
   const learningSessionClone = [...oldFlashCardData.learningSession];
   learningSessionClone.push(new LearningSession({
     sessionId: uuidv4(),
-    wordSetNo: 1, // 仮実装
+    wordSetNo: wordSetNo,
     completionDate: new Date().toISOString(),
     answerHistory: userAnswers.map((answer, index) => {
       return {

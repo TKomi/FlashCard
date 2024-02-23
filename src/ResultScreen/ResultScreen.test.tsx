@@ -17,6 +17,20 @@ describe('ResultScreen 基本項目', () => {
       new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
     ],
     studyMode: 'normal',
+    index: {
+      wordSetNo: 'test',
+      wordSetName: 'Test',
+      filePath: '/path/to/test.json',
+      size: 20,
+    },
+    remaining: [],
+    series: {
+      seriesNo: 0,
+      seriesDescription: 'Test Series',
+      seriesName: 'TOEIC Service List - Part1',
+      size: 20,
+      wordSets: [],
+    }
   };
   const studyResult: StudyResult = {
     userAnswers: [
@@ -45,7 +59,7 @@ describe('ResultScreen 基本項目', () => {
   });
 
   it('タイトルが描画されること', () => {
-    expect(screen.getByText('TOEIC Service List - Part1')).toBeInTheDocument();
+    expect(screen.getByText(`${studySet.series?.seriesName} - ${studySet.index?.wordSetName}`)).toBeInTheDocument();
   });
 
   it('サブタイトルが描画されること', () => {
@@ -95,6 +109,14 @@ describe('ResultScreen 復習関連', () => {
         new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
       ],
       studyMode: 'retry',
+      index: {
+        wordSetNo: 'test',
+        wordSetName: 'Test',
+        filePath: '/path/to/test.json',
+        size: 20,
+      },
+      remaining: [],
+      series: null,
     };
     const studyResult: StudyResult = {
       userAnswers: [
@@ -142,6 +164,14 @@ describe('ResultScreen 復習関連', () => {
         new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
       ],
       studyMode: 'retry',
+      index: {
+        wordSetNo: 'test',
+        wordSetName: 'Test',
+        filePath: '/path/to/test.json',
+        size: 20,
+      },
+      remaining: [],
+      series: null,
     };
 
     const studyResult: StudyResult = {
@@ -187,6 +217,14 @@ describe('ResultScreen 復習関連', () => {
         new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
       ],
       studyMode: 'retry',
+      index: {
+        wordSetNo: 'test',
+        wordSetName: 'Test',
+        filePath: '/path/to/test.json',
+        size: 20,
+      },
+      remaining: [],
+      series: null,
     };
     const studyResult: StudyResult = {
       userAnswers: [
@@ -253,6 +291,14 @@ describe('ResultScreen 学習結果表示関連', () => {
         new Quiz('Word 12', 1, ['option1', 'option2', 'Answer 12']),
       ],
       studyMode: 'normal',
+      index: {
+        wordSetNo: 'test',
+        wordSetName: 'Test',
+        filePath: '/path/to/test.json',
+        size: 20,
+      },
+      remaining: [],
+      series: null,
     };
     const studyResult: StudyResult = {
       userAnswers: [
@@ -315,6 +361,14 @@ describe('ResultScreen ホームへ戻る関連', () => {
       new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
     ],
     studyMode: 'normal',
+    index: {
+      wordSetNo: 'test',
+      wordSetName: 'Test',
+      filePath: '/path/to/test.json',
+      size: 20,
+    },
+    remaining: [],
+    series: null,
   };
   const studyResult: StudyResult = {
     userAnswers: [
@@ -360,8 +414,15 @@ describe('ResultScreen 次へ関連', () => {
       new Quiz('Word 2', 2, ['option1', 'option2', 'Answer 2']),
     ],
     studyMode: 'normal',
+    index: {
+      wordSetNo: 'test',
+      wordSetName: 'Test',
+      filePath: '/path/to/test.json',
+      size: 20,
+    },
+    remaining: [],
+    series: null,
   };
-  let userAnswers: UserAnswer[];
   let wordStatus: Record<string, WordStatus>;
   const onUserButtonClick = jest.fn();
 

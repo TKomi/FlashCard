@@ -32,6 +32,7 @@ describe('save', () => {
     { word: 'word2', status: 2, lastLearnedDate: '', answerHistory: [] },
     { word: 'word3', status: 3, lastLearnedDate: '', answerHistory: [] },
   ];
+  const wordSetNo = 'TestWordSetNo';
 
   beforeEach(() => {
     (LS.save as jest.Mock).mockClear();
@@ -39,12 +40,12 @@ describe('save', () => {
 
   test('学習セッションの状況が正しく保存されること', () => {
     // Act
-    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses, wordSetNo);
 
     // Assert
     expect(result.learningSession).toHaveLength(1);
     expect(result.learningSession[0].sessionId).toBeDefined();
-    expect(result.learningSession[0].wordSetNo).toBe(1);
+    expect(result.learningSession[0].wordSetNo).toBe(wordSetNo);
     expect(result.learningSession[0].completionDate).toBeDefined();
     expect(result.learningSession[0].answerHistory).toHaveLength(3);
     expect(result.learningSession[0].answerHistory[0].w).toBe('word1');
@@ -57,7 +58,7 @@ describe('save', () => {
 
   test('wordStatusが正しく更新されること', () => {
     // Act
-    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses, wordSetNo);
 
     // Assert
     expect(result.wordStatus).toHaveProperty('word1');
@@ -70,7 +71,7 @@ describe('save', () => {
 
   test('wordSetStatusが正しく更新されること', () => {
     // Act
-    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses, wordSetNo);
 
     // Assert
     expect(result.wordSetStatus).toHaveLength(1);
@@ -84,7 +85,7 @@ describe('save', () => {
 
   test('LocalStorageにデータが保存されること', () => {
     // Act
-    save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    const actual = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses, wordSetNo);
 
     // Assert
     expect(LS.save).toHaveBeenCalledWith({
@@ -92,11 +93,13 @@ describe('save', () => {
       wordStatus: expect.any(Object),
       wordSetStatus: expect.any(Array),
     });
+
+    expect(actual.learningSession[0].wordSetNo).toBe(wordSetNo);
   });
 
   test('保存されたデータが返されること', () => {
     // Act
-    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses);
+    const result = save(quizzes, userAnswers, oldFlashCardData, updatedWordsStatuses, wordSetNo);
 
     // Assert
     expect(result).toEqual({
