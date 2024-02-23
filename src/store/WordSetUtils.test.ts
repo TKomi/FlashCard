@@ -1,11 +1,17 @@
 import { loadFromWordJson, extractFromWords, getShuffledArray } from './WordSetUtils.ts';
 import { Word } from '../models/Word.ts';
 import { WordStatus } from '../models/WordStatus.ts';
+import { WordSetIndex } from '../models/WordSetIndex.ts';
 
 describe('loadFromWordJson', () => {
   test('JSONファイルから単語データを読み込むこと', async () => {
     // Arrange
-    const jsonFilePath = 'wordlist.json';
+    const index: WordSetIndex = {
+      wordSetNo: '1',
+      wordSetName: 'WordSet1',
+      filePath: 'wordlist.json',
+      size: 3,
+    };
     const expectedWords = [
       { word: 'Word1', quiz: { answer: 'A1', options: ['Opt11', 'Opt12'] } },
       { word: 'Word2', quiz: { answer: 'A2', options: ['Opt21', 'Opt22'] } },
@@ -18,11 +24,11 @@ describe('loadFromWordJson', () => {
     });
 
     // Act
-    const result = await loadFromWordJson(jsonFilePath);
+    const result = await loadFromWordJson(index);
 
     // Assert
     expect(result).toEqual(expectedWords);
-    expect(fetch).toHaveBeenCalledWith('data/' + jsonFilePath);
+    expect(fetch).toHaveBeenCalledWith('data/' + index.filePath);
   });
 });
 

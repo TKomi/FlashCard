@@ -28,6 +28,20 @@ describe('StudyScreen', () => {
       new Quiz('Question 4', 3, ['Option 40', 'Option 41', 'Option 42', 'Option 43']),
       ],
       studyMode: 'normal',
+      index: {
+        wordSetNo: 'test',
+        wordSetName: 'Test',
+        filePath: '/path/to/test.json',
+        size: 20,
+      },
+      remaining: [],
+      series: {
+        seriesNo: 0,
+        seriesDescription: 'Test Series',
+        seriesName: 'TOEIC Service List - Part1',
+        size: 20,
+        wordSets: [],
+      }
     };
 
     render(
@@ -38,6 +52,7 @@ describe('StudyScreen', () => {
     );
     expect(screen.getByText(/^通常学習/)).toBeInTheDocument();
     expect(screen.getByText('Question 1')).toBeInTheDocument();
+    expect(screen.getByText(`${studySet.series?.seriesName} - ${studySet.index?.wordSetName}`)).toBeInTheDocument();
   });
 
   it('復習 問題が正しく表示されること', () => {
@@ -50,6 +65,14 @@ describe('StudyScreen', () => {
         new Quiz('Question 4', 3, ['Option 40', 'Option 41', 'Option 42', 'Option 43']),
       ],
       studyMode: 'retry',
+      index: {
+        wordSetNo: 'test',
+        wordSetName: 'Test',
+        filePath: '/path/to/test.json',
+        size: 20,
+      },
+      remaining: [],
+      series: null,
     };
 
     render(
@@ -72,6 +95,14 @@ describe('StudyScreen', () => {
         new Quiz('Question 4', 3, ['Option 40', 'Option 41', 'Option 42', 'Option 43']),
       ],
       studyMode: 'normal',
+      index: {
+        wordSetNo: 'test',
+        wordSetName: 'Test',
+        filePath: '/path/to/test.json',
+        size: 20,
+      },
+      remaining: [],
+      series: null,
     };
 
     render(
@@ -213,6 +244,14 @@ describe('StudyScreen', () => {
         new Quiz('Question 2', 1, ['Option 20', 'Option 21', 'Option 22', 'Option 23']),
       ],
       studyMode: 'normal',
+      index: {
+        wordSetNo: 'test',
+        wordSetName: 'Test',
+        filePath: '/path/to/test.json',
+        size: 20,
+      },
+      remaining: [],
+      series: null,
     };
 
     render(
@@ -250,6 +289,14 @@ describe('StudyScreen', () => {
         new Quiz('Question 1', 0, ['Option 10', 'Option 11', 'Option 12', 'Option 13']),
       ],
       studyMode: 'normal',
+      index: {
+        wordSetNo: 'test',
+        wordSetName: 'Test',
+        filePath: '/path/to/test.json',
+        size: 20,
+      },
+      remaining: [],
+      series: null,
     };
 
     render(

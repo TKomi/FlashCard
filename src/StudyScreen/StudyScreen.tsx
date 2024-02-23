@@ -70,7 +70,7 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ studySet, onEndQuiz })
 
   return (
     <div className={styles['studyScreen']}>
-      <h1 className={styles['title']}>TOEIC Service List - Part1</h1>
+      <h1 className={styles['title']}>{studySet.series?.seriesName} - {studySet.index?.wordSetName}</h1>
       {
         studySet.quizzes.length > 0 && currentQuestionIndex < studySet.quizzes.length &&
         <div>

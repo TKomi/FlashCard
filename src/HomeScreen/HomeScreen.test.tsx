@@ -80,6 +80,6 @@ describe('HomeScreen', () => {
   it('GO!ボタンクリック時にonSelectedWordSetが呼ばれること', () => {
     fireEvent.click(screen.getAllByText('GO!')[1]);
     expect(onSelectedWordSet).toHaveBeenCalledTimes(1);
-    expect(onSelectedWordSet).toHaveBeenCalledWith('/path/to/wordset2');
+    expect(onSelectedWordSet).toHaveBeenCalledWith(seriesSet[0], seriesSet[0].wordSets[1]);
   });
 });

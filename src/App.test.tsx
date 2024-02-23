@@ -73,13 +73,13 @@ const datasetMock = {
       "size": 100,
       "wordSets": [
         {
-          "wordSetNo": 1,
+          "wordSetNo": "1",
           "wordSetName": "Part1",
           "filePath": "sample/part1.json",
           "size": 50
         },
         {
-          "wordSetNo": 2,
+          "wordSetNo": "2",
           "wordSetName": "Part2",
           "filePath": "sample/part2.json",
           "size": 50
@@ -136,7 +136,7 @@ import { LS as LSMock } from './store/LS.ts';
 import { HomeScreen as HomeScreenMock } from './HomeScreen/HomeScreen.tsx';
 import { StudyScreen as StudyScreenMock } from './StudyScreen/StudyScreen.tsx';
 import { ResultScreen as ResultScreenMock } from './ResultScreen/ResultScreen.tsx';
-import { WordSetIndexUtil as WordSetIndexUtilMock } from './models/WordSetIndex.ts';
+import { Series, WordSetIndexUtil as WordSetIndexUtilMock } from './models/WordSetIndex.ts';
 import { loadFromWordJson as loadFromWordJsonMock } from './store/WordSetUtils.ts';
 import App from './App';
 import { test } from '@jest/globals';
@@ -222,9 +222,9 @@ test('ホーム画面で単語セットを選択した時にJSONデータが読�
 
 test('問題が正常終了した時に結果画面が表示され、データ保存すること', async () => {
   // ホーム画面に渡っているコールバックを呼び出して、学習画面を表示する
-  const callback1: (_filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
+  const callback1: (_series: Series, _filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
   await act(async () => {
-    callback1('sample/part2.json');
+    callback1(datasetMock.dataSet[0], 'sample/part2.json');
   });
 
   // StudyScreenに渡っているコールバックを呼び出す
@@ -260,9 +260,9 @@ test('問題が正常終了した時に結果画面が表示され、データ�
 
 test('問題が1問以上解いて中断された時に結果画面が表示され、データ保存すること', async () => {
   // ホーム画面に渡っているコールバックを呼び出して、学習画面を表示する
-  const callback1: (_filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
+  const callback1: (_series: Series, _filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
   await act(async () => {
-    callback1('sample/part2.json');
+    callback1(datasetMock.dataSet[0], 'sample/part2.json');
   });
 
   // StudyScreenに渡っているコールバックを呼び出す
@@ -285,9 +285,9 @@ test('問題が1問以上解いて中断された時に結果画面が表示さ�
 
 test('問題が1問も解かれずに中断された時に結果画面が表示されずホームに戻ること', async () => {
   // ホーム画面に渡っているコールバックを呼び出して、学習画面を表示する
-  const callback1: (_filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
+  const callback1: (_series: Series, _filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
   await act(async () => {
-    callback1('sample/part2.json');
+    callback1(datasetMock.dataSet[0], 'sample/part2.json');
   });
 
   // StudyScreenに渡っているコールバックを呼び出す
@@ -308,9 +308,9 @@ test('問題が1問も解かれずに中断された時に結果画面が表示�
 
 test('結果画面でホーム画面に戻るを選択時にホーム画面が表示されること', async () => {
   // ホーム画面に渡っているコールバックを呼び出して、学習画面を表示する
-  const callback1: (_filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
+  const callback1: (_series: Series, _filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
   await act(async () => {
-    callback1('sample/part2.json');
+    callback1(datasetMock.dataSet[0], 'sample/part2.json');
   });
 
   // StudyScreenに渡っているコールバックを呼び出す
@@ -336,9 +336,9 @@ test('結果画面でホーム画面に戻るを選択時にホーム画面が�
 
 test('結果画面で復習ボタンを選択時に学習画面へ遷移すること', async () => {
   // ホーム画面に渡っているコールバックを呼び出して、学習画面を表示する
-  const callback1: (_filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
+  const callback1: (_series: Series, _filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
   await act(async () => {
-    callback1('sample/part2.json');
+    callback1(datasetMock.dataSet[0], 'sample/part2.json');
   });
 
   // StudyScreenに渡っているコールバックを呼び出す
@@ -365,9 +365,9 @@ test('結果画面で復習ボタンを選択時に学習画面へ遷移する�
 
 test('結果画面で次のn個へ進むボタンを選択時に学習画面へ遷移すること', async () => {
   // ホーム画面に渡っているコールバックを呼び出して、学習画面を表示する
-  const callback1: (_filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
+  const callback1: (_series: Series, _filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
   await act(async () => {
-    callback1('sample/part2.json');
+    callback1(datasetMock.dataSet[0], 'sample/part2.json');
   });
 
   // StudyScreenに渡っているコールバックを呼び出す

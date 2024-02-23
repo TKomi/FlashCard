@@ -7,9 +7,8 @@ import { StudyScreen } from './StudyScreen/StudyScreen.tsx';
 import { ResultScreen } from './ResultScreen/ResultScreen.tsx';
 import { createQuiz4 } from './StudyScreen/CreateQuiz.ts';
 import { updateWordStatuses } from './models/WordStatusUtils.ts';
-import { WordSetIndexUtil } from './models/WordSetIndex.ts';
+import { WordSetIndex, WordSetIndexUtil } from './models/WordSetIndex.ts';
 import { Series } from './models/WordSetIndex.ts';
-import { Word } from './models/Word.ts';
 import { UserAnswer } from  './models/Quiz.ts';
 import React from 'react';
 import { StudySet } from './StudySet.ts';
@@ -46,10 +45,13 @@ const App: React.FC = () => {
     words: [],
     quizzes: [],
     studyMode: 'normal',
+    remaining: [],
+    index: null,
+    series: null,
   });
 
-  // 現在の単語セットで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
-  const [remaining, setRemaining] = useState<Word[]>([]);
+  // // 現在の学習セッションで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
+  // const [remaining, setRemaining] = useState<Word[]>([]);
   
   // 学習画面の終了状況
   const [studyResult, setStudyResult] = useState<StudyResult>({
@@ -58,7 +60,7 @@ const App: React.FC = () => {
   });
 
   // 次のn個へ進むボタンの表示に使用する、次のセッションで学習する単語の数
-  const countOfNext = useMemo(() => remaining.length <= 20 ? remaining.length : 20, [remaining]);
+  const countOfNext = useMemo(() => studySet.remaining.length <= 20 ? studySet.remaining.length : 20, [studySet.remaining]);
 
   // 起動時処理
   useEffect(() => {
@@ -99,7 +101,7 @@ const App: React.FC = () => {
     setStudySet(old => ({...old, quizzes: quizzesInner}));
     setStudyResult(old => ({...old, userAnswers: ua, endOfReason: endOfReason}));
     // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
-    const saved = save(quizzesInner, ua, storageData, updatedWordsStatuses);
+    const saved = save(quizzesInner, ua, storageData, updatedWordsStatuses, studySet.index!.wordSetNo);
     setStorageData(saved);
 
     setCurrentScreen('result');
@@ -111,7 +113,7 @@ const App: React.FC = () => {
     switch(buttonName) {
       case 'next':
         const extracted = extractFromWords(
-          remaining,
+          studySet.remaining,
           20,
           storageData.wordStatus
         );
@@ -120,8 +122,8 @@ const App: React.FC = () => {
           words: extracted,
           quizzes: extracted.map(createQuiz4),
           studyMode: 'normal',
+          remaining: studySet.remaining.filter(w => !extracted.includes(w)),
         }));
-        setRemaining(remaining.filter(w => !extracted.includes(w)));
         setCurrentScreen('study');
         console.info('次の20語に進むボタンの処理が完了');
         break;
@@ -160,12 +162,12 @@ const App: React.FC = () => {
   };
 
 /* HomeScreenで単語セットが選択されたときの処理
- * - 受け取った単語セットのファイルパスに該当する単語データを読み込む
+ * - 受け取った単語セットに該当する単語データを読み込む
  * - その単語データを元に、学習セット、クイズ、残りの単語を設定する。最後に、学習画面に遷移する
  */
-  const onSelectedWordSet = (filePath: string) => {
+  const onSelectedWordSet = (series: Series, index: WordSetIndex) => {
     // 単語データの読み込み
-    loadFromWordJson(filePath)
+    loadFromWordJson(index)
       .then(wordSet => {
         const wl = extractFromWords(wordSet, 20, storageData.wordStatus);
         setStudySet(prev => ({
@@ -173,10 +175,12 @@ const App: React.FC = () => {
           words: wl,
           quizzes: wl.map(createQuiz4),
           studyMode: 'normal',
+          remaining: wordSet.filter(w => !wl.includes(w)),
+          index: index,
+          series: series,
         }));
-        setRemaining(wordSet.filter(w => !wl.includes(w)));
         setCurrentScreen('study');
-        console.info('単語セット選択時の処理が完了', filePath);
+        console.info('単語セット選択時の処理が完了', index.filePath);
       }).catch(console.error);
   };
 

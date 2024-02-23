@@ -1,12 +1,14 @@
 import { Word } from '../models/Word.ts';
+import { WordSetIndex } from '../models/WordSetIndex.ts';
 import { WordStatus } from '../models/WordStatus.ts';
 
 /**
  * Jsonファイルから単語を取得し、Wordオブジェクトの配列として返す
+ * @param index 単語セットの目次
  * @return 単語の配列
  */
-export async function loadFromWordJson(jsonFilePath: string): Promise<Word[]> {
-    return  await fetch('data/'+jsonFilePath)
+export async function loadFromWordJson(index: WordSetIndex): Promise<Word[]> {
+    return  await fetch('data/'+index.filePath)
       .then(response => response.json())
       .then(data => data.map(Word.fromObject))
       .catch(error => {
