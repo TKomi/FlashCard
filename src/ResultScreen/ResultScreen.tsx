@@ -2,6 +2,9 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { WordStatus } from '../models/WordStatus.ts';
 import { StudySet } from '../StudySet.ts';
 import { StudyResult } from '../StudyResult.ts';
+import { ResultStatus } from './ResultStatus.tsx';
+import { RetryButton } from './RetryButton.tsx';
+import { NextButton } from './NextButton.tsx';
 import styles from './ResultScreen.module.scss';
 
 export type Props = {
@@ -117,65 +120,4 @@ export const ResultScreen: React.FC<Props> = ({ studySet, wordStatus, countOfNex
       </div>
     </div>
   );
-}
-
-type ResultStatusProps = {
-  wordStatus: 0|1|2|3|4|5|6
-}
-
-/**
- * 「覚えた」「うろ覚え」などの学習状況を表示するコンポーネント
- */
-const ResultStatus: React.FC<ResultStatusProps> = ({ wordStatus }) => {
-  switch(wordStatus) {
-    case 6:
-    case 5:
-      return (<div className={`${styles['ResultStatus']} ${styles['group-3']}`}>覚えた</div>);
-    case 4:
-    case 3:
-      return (<div className={`${styles['ResultStatus']} ${styles['group-2']}`}>うろ覚え</div>);
-    case 2:
-    case 1:
-      return (<div className={`${styles['ResultStatus']} ${styles['group-1']}`}>苦手</div>);
-    case 0:
-    default:
-      return (<div className={`${styles['ResultStatus']} ${styles['group-0']}`}>未学習</div>);
-  }
-}
-
-type RetryButtonProps = {
-  countOfRetry: number,
-  onUserButtonClick: (_name: string) => void
-}
-
-/**
- * 復習ボタン
- * @param Props
- * @returns RetryButtonコンポーネント
- */
-const RetryButton: React.FC<RetryButtonProps> = ({countOfRetry, onUserButtonClick }) => {
-  if (countOfRetry === 0) return <div className={styles['actionButton_spacer']}></div>;
-  else return (
-    <button onClick={() => onUserButtonClick("retry")} className={styles['actionButton_spacer']}>復習する</button>
-  );
-}
-
-type NextButtonProps = {
-  countOfNext: number,
-  onUserButtonClick: (_name: string) => void,
-  quitted: boolean
-}
-
-/**
- * 次の○個ボタン
- * @param Props
- * @returns NextButtonコンポーネント
- */
-const NextButton: React.FC<NextButtonProps> = ({ countOfNext, onUserButtonClick, quitted }) => {
-  if (countOfNext === 0 || quitted) return <div className={styles['actionButton_spacer']}></div>;
-  else {
-    return (
-      <button onClick={() => onUserButtonClick("next")} className={styles['actionButton']}>次の{countOfNext}個</button>
-    );
-  }
 }
