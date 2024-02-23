@@ -1,24 +1,12 @@
 import { FlashCardData } from '../store/LS';
 import { Quiz } from './Quiz';
-import { Word } from './Word';
 import { updateWordStatuses } from './WordStatusUtils';
 
 describe('updateWordStatuses', () => {
-  let studySet: Word[];
   let saveData: FlashCardData;
   let quizzes: Quiz[];
 
   beforeEach(() => {
-    studySet = [
-      { word: 'Word1', quiz: { answer: 'A1', options: ['Opt11', 'Opt12'] } },
-      { word: 'Word2', quiz: { answer: 'A2', options: ['Opt21', 'Opt22'] } },
-      { word: 'Word3', quiz: { answer: 'A3', options: ['Opt31', 'Opt32'] } },
-      { word: 'Word4', quiz: { answer: 'A4', options: ['Opt41', 'Opt42'] } },
-      { word: 'Word5', quiz: { answer: 'A5', options: ['Opt51', 'Opt52'] } },
-      { word: 'Word6', quiz: { answer: 'A6', options: ['Opt61', 'Opt62'] } },
-      { word: 'Word7', quiz: { answer: 'A7', options: ['Opt71', 'Opt72'] } },
-      { word: 'Word8', quiz: { answer: 'A8', options: ['Opt81', 'Opt82'] } },
-    ];
     saveData = {
       wordStatus: {
         Word1: {
@@ -104,7 +92,7 @@ describe('updateWordStatuses', () => {
     ];
 
     // Act
-    const result = updateWordStatuses(studySet, quizzes, userAnswers, saveData);
+    const result = updateWordStatuses(quizzes, userAnswers, saveData);
     
     // Assert
     expect(result[index].status).toEqual(expectedStatus);
@@ -133,7 +121,7 @@ describe('updateWordStatuses', () => {
     ];
 
     // Act
-    const result = updateWordStatuses(studySet, quizzes, userAnswers, saveData);
+    const result = updateWordStatuses(quizzes, userAnswers, saveData);
 
     // Assert
     expect(result[index].status).toEqual(expectedStatus);
@@ -164,7 +152,7 @@ describe('updateWordStatuses', () => {
     ];
 
     // Act
-    const result = updateWordStatuses(studySet, quizzes, userAnswers, saveData);
+    const result = updateWordStatuses(quizzes, userAnswers, saveData);
 
     // Assert
     expect(result[index].status).toEqual(expectedStatus);
@@ -194,7 +182,7 @@ describe('updateWordStatuses', () => {
     ];
 
     // Act
-    const result = updateWordStatuses(studySet, quizzes, userAnswers, saveData);
+    const result = updateWordStatuses(quizzes, userAnswers, saveData);
 
     // Assert
     expect(result[index].status).toEqual(expectedStatus);

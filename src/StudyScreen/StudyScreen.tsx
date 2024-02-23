@@ -1,17 +1,14 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { OptionButtons } from './OptionButtons.tsx';
 import { Quiz, UserAnswer } from '../models/Quiz.ts';
+import { StudySet } from '../StudySet.ts';
+import styles from './StudyScreen.module.scss';
 
 export type StudyScreenProps = {
   /**
-   * クイズの一覧
+   * 取り組んでいる学習セット
    */
-  quizzes: Quiz[],
-
-  /**
-   * 学習モード。"normal"か"retry"のいずれか。「通常学習」か「復習」のラベルの制御に使用
-   */
-  studyMode: string,
+  studySet: StudySet,
 
   /**
    * クイズが終了したときの処理
@@ -21,17 +18,16 @@ export type StudyScreenProps = {
 };
 
 /**
- * 親コンポーネントから渡されたクイズを順番に画面に表示するコンポーネント
+ * 学習画面
  * 
- * このコンポーネントの責務
- * - クイズのリストを受け取って、その順番に表示する
- * - ユーザーの回答を受け取って、正解かどうかを判定し表示、次の問題に進む
+ * @description
+ * 【このコンポーネントの責務】
+ * - 問題のリストを受け取って、その順番に表示する
+ * - ユーザーの回答を受け付け、正解かどうかを判定し表示、次の問題に進む
  * - 終了時にユーザーの回答を親コンポーネントに通知する
- * 
- * このコンポーネントでやらないこと
- * - 単語に含まれる解答および選択肢を使ってクイズを作る: 正しくは親コンポーネントから受け取る
+ *   - ここで言う終了=全問題への回答、または中断
  */
-export const StudyScreen: React.FC<StudyScreenProps> = ({ quizzes, studyMode, onEndQuiz }) => {
+export const StudyScreen: React.FC<StudyScreenProps> = ({ studySet, onEndQuiz }) => {
   // 現在の問題番号: number (0から始まる)
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState<number>(0);
 
@@ -42,15 +38,7 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ quizzes, studyMode, on
   // 完了フラグ: boolean
   const [end, setEnd] = useState<boolean>(false);
 
-  const currentQuiz = useMemo<Quiz>(() => quizzes[currentQuestionIndex], [quizzes, currentQuestionIndex]);
-
-  // 次の問題
-  useEffect(() => {
-    if (currentQuestionIndex >= quizzes.length) {
-      // クイズが終わった
-      console.log('クイズ終了');
-    }
-  }, [currentQuestionIndex, quizzes.length]);
+  const currentQuiz = useMemo<Quiz>(() => studySet.quizzes[currentQuestionIndex], [studySet.quizzes, currentQuestionIndex]);
 
   // setUserAnswers -> setEnd でendが変化したら、onEndQuizを呼び出す
   useEffect(() => {
@@ -68,7 +56,7 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ quizzes, studyMode, on
    */
   const recordAndNextQuiz = (userAnswer: UserAnswer) => {
     setUserAnswers([...userAnswers, userAnswer]);
-    if (currentQuestionIndex< quizzes.length - 1) {
+    if (currentQuestionIndex< studySet.quizzes.length - 1) {
       setCurrentQuestionIndex(currentQuestionIndex + 1);
     } else {
       setEnd(true);
@@ -81,18 +69,18 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ quizzes, studyMode, on
   };
 
   return (
-    <div>
-      <h1 className='study-screen-title'>TOEIC Service List - Part1</h1>
+    <div className={styles['studyScreen']}>
+      <h1 className={styles['title']}>TOEIC Service List - Part1</h1>
       {
-        quizzes.length > 0 && currentQuestionIndex < quizzes.length &&
+        studySet.quizzes.length > 0 && currentQuestionIndex < studySet.quizzes.length &&
         <div>
-          <div className='study-screen-subtitle'>{studyMode === 'retry' ? '復習 ': '通常学習 '}
-            {currentQuestionIndex + 1} / {quizzes.length} Words
+          <div className={styles['subTitle']}>{studySet.studyMode === 'retry' ? '復習 ': '通常学習 '}
+            {currentQuestionIndex + 1} / {studySet.quizzes.length} Words
           </div>
-          <div className='study-screen-progress'>
-            <progress value={currentQuestionIndex} max={quizzes.length} className="uk-progress study-screen-progress"/>
+          <div className={styles['progress']}>
+            <progress value={currentQuestionIndex} max={studySet.quizzes.length} className="uk-progress"/>
           </div>
-          <div className='study-screen-word'>{currentQuiz.question}</div>
+          <div className={styles['word']}>{currentQuiz.question}</div>
           <OptionButtons quiz={currentQuiz} onNextQuiz={recordAndNextQuiz} onQuit={onQuitInner}/>
         </div>
       }

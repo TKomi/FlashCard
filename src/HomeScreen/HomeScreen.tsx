@@ -1,6 +1,7 @@
 import React from "react";
-import { Series } from "./models/WordSetIndex";
-import { LearningInfo } from "./store/LS";
+import { Series } from "../models/WordSetIndex";
+import { LearningInfo } from "../store/LS";
+import styles from "./HomeScreen.module.scss";
 
 export type Props = {
   /**
@@ -22,6 +23,14 @@ export type Props = {
 
 /**
  * ホーム画面
+ * 
+ * @description
+ * 【このコンポーネントの責務】
+ * - 学習シリーズの一覧を表示する
+ * - 単語セットを選択したときの処理を行う
+ * @param props
+ * @returns HomeScreenコンポーネント
+ * @author TKomi
  */
 export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelectedWordSet}) => {
   // seriesSetの順番、シリーズ内の単語セットの順番に対応する、単語セットの学習状況の配列
@@ -51,26 +60,25 @@ export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelecte
 
   function onClickGoButton(filePath: string) {
     if (onSelectedWordSet) {
-      console.log('wordset selected', filePath);
       onSelectedWordSet(filePath);
     }
   }
 
   return (
-    <div>
-      <h1 className='homescreen-title'>単語帳</h1>
+    <div className={styles['homeScreen']}>
+      <h1 className={styles['title']}>単語帳</h1>
       {
         seriesSet.map((series, index1) => (
-          <div key={index1} className='series-box'>
-            <h2 className='homescreen-series-title'>{series.seriesName}</h2>
-            <p className='homescreen-series-description'>{series.seriesDescription}</p>
-            <ul className='ul-homescreen'>
+          <div key={index1} className={styles['series']}>
+            <h2 className={styles['series_title']}>{series.seriesName}</h2>
+            <p className={styles['series_description']}>{series.seriesDescription}</p>
+            <ul className={styles['list']}>
               {
                 series.wordSets.map((wordSet, index2) => (
-                  <li key={index2} className='li-wordset'>
-                    <div className='wordset-name'>{wordSet.wordSetName}</div>
-                    <div className='wordset-size'>{wordSet.size} Words</div>
-                    <button onClick={() => onClickGoButton(wordSet.filePath)} className='wordset-button'>GO!</button>
+                  <li key={index2} className={styles['item']}>
+                    <div className={styles['name']}>{wordSet.wordSetName}</div>
+                    <div className={styles['size']}>{wordSet.size} Words</div>
+                    <button onClick={() => onClickGoButton(wordSet.filePath)} className={styles['button']}>GO!</button>
                   </li>
                 ))
               }

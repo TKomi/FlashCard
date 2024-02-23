@@ -1,0 +1,102 @@
+/* Result Screen */
+.resultScreen {
+
+  .title {
+    font-size: 1.5em;
+    font-weight: bold;
+    margin-top: 1em;
+    margin-bottom: 0;
+    text-align: center;
+  }
+  
+  .subTitle {
+    font-size: 0.8em;
+    margin: 0.5em 0;
+    text-align: center;
+  }
+
+  .list {
+    padding-inline-start: 0;
+    margin: 0.5em;
+    list-style-type: none;
+
+    .item {
+        display: flex;
+        justify-content: space-between;
+        margin: 0.5em 0;
+    
+      .index {
+        display: block;
+        width: 10%;
+        font-size: 0.8em;
+      }
+    
+      .spelling {
+        display: block;
+        font-weight: bold;
+        font-size: 0.8em;
+        width: 32%;
+      }
+    
+      .answer {
+        display: block;
+        font-weight: bold;
+        font-size: 0.8em;
+        width: 32%;
+      }
+    
+      .isCorrect {
+        display: block;
+        font-weight: bold;
+        font-size: 0.8em;
+        width: 5%;
+      }
+    
+      .check {
+        display: block;
+        font-weight: bold;
+        font-size: 0.8em;
+        width: 6%;
+      }
+    }
+  }
+  
+}
+
+.ResultStatus {
+    padding: 0.2em 0.2em;
+    border-radius: 0.25em;
+    width: 15%;
+    font-size: 0.7em;
+    text-align: center;
+  
+    &.group-0 {
+      background-color: #ccc;
+    }
+  
+    &.group-1 {
+      background-color: #fcc;
+    }
+  
+    &.group-2 {
+      background-color: #ccf;
+    }
+  
+    &.group-3 {
+      background-color: #cfc;
+    }
+}
+
+.actionButton {
+  width: 30%;
+  background-color: #ddd;
+  border-color: #777;
+  height: 3em;
+  margin: 2em auto;
+  border-radius: 0.5em;
+}
+
+.actionButton_spacer {
+  width: 30%;
+  margin: 2em auto;
+}

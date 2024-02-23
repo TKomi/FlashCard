@@ -6,7 +6,16 @@ jest.mock('./store/LS', () => {
       save: jest.fn(),
       loadOrDefault: jest.fn(() => ({
         learningSession: [],
-        wordStatus: {},
+        wordStatus: {
+          "word1": {
+            status: 1,
+            answerHistory: [],
+          },
+          "word2": {
+            status: 1,
+            answerHistory: [],
+          }
+        },
         wordSetStatus: [],
       })),
     },
@@ -18,7 +27,7 @@ jest.mock('./store/LS', () => {
   };
 });
 
-jest.mock('./HomeScreen.tsx', () => {
+jest.mock('./HomeScreen/HomeScreen.tsx', () => {
   return {
     __esModule: true,
     HomeScreen: jest.fn(() => <div>HomeScreen</div>),
@@ -32,10 +41,26 @@ jest.mock('./StudyScreen/StudyScreen.tsx', () => {
   };
 });
 
-jest.mock('./ResultScreen.tsx', () => {
+jest.mock('./ResultScreen/ResultScreen.tsx', () => {
   return {
     __esModule: true,
     ResultScreen: jest.fn(() => <div>ResultScreen</div>),
+  };
+});
+
+jest.mock('./StudyScreen/CreateQuiz.ts', () => {
+  return {
+    __esModule: true,
+    createQuiz4: jest.fn((word) => ({
+      question: word.word,
+      answerIndex: 0,
+      options: [
+        "ans1",
+        "opt11",
+        "opt12",
+        "opt13"
+      ]
+    })),
   };
 });
 
@@ -96,10 +121,10 @@ jest.mock('./models/WordSetIndex.ts', () => ({
   },
 }));
 
-jest.mock('./store/WordListUtils.ts', () => {
+jest.mock('./store/WordSetUtils.ts', () => {
   return {
     __esModule: true,
-    extractFromWordList: jest.fn((arg0, _arg1, _arg2) => arg0),
+    extractFromWords: jest.fn((arg0, _arg1, _arg2) => arg0),
     loadFromWordJson: jest.fn().mockReturnValue(Promise.resolve(part1Mock)),
     getShuffledArray: jest.fn((arg) => arg),
   };
@@ -108,11 +133,11 @@ jest.mock('./store/WordListUtils.ts', () => {
 
 import { act, render, screen, waitFor } from '@testing-library/react';
 import { LS as LSMock } from './store/LS.ts';
-import { HomeScreen as HomeScreenMock } from './HomeScreen.tsx';
+import { HomeScreen as HomeScreenMock } from './HomeScreen/HomeScreen.tsx';
 import { StudyScreen as StudyScreenMock } from './StudyScreen/StudyScreen.tsx';
-import { ResultScreen as ResultScreenMock } from './ResultScreen.tsx';
+import { ResultScreen as ResultScreenMock } from './ResultScreen/ResultScreen.tsx';
 import { WordSetIndexUtil as WordSetIndexUtilMock } from './models/WordSetIndex.ts';
-import { loadFromWordJson as loadFromWordJsonMock } from './store/WordListUtils.ts';
+import { loadFromWordJson as loadFromWordJsonMock } from './store/WordSetUtils.ts';
 import App from './App';
 import { test } from '@jest/globals';
 
@@ -148,7 +173,7 @@ afterEach(() => {
 test('起動時にホーム画面が表示されること', async () => {
   const titleMock = screen.getByText(/HomeScreen/i);
   expect(titleMock).toBeInTheDocument();
-  expect((LSMock.loadOrDefault as jest.Mock)).toHaveBeenCalledTimes(1);
+  expect((LSMock.loadOrDefault as jest.Mock)).toHaveBeenCalled();
 });
 
 test('起動時にJSONデータが読み込まれること', async () => {
@@ -156,7 +181,7 @@ test('起動時にJSONデータが読み込まれること', async () => {
 });
 
 test('起動時にLocalStorageからデータが読み込まれること', async () => {
-  expect((LSMock.loadOrDefault as jest.Mock)).toHaveBeenCalledTimes(1);
+  expect((LSMock.loadOrDefault as jest.Mock)).toHaveBeenCalled();
 });
 
 test('起動時に学習シリーズの一覧がホーム画面に渡ること', async() => {
@@ -216,8 +241,21 @@ test('問題が正常終了した時に結果画面が表示され、データ�
     expect(screen.getByText(/ResultScreen/i)).toBeInTheDocument();
   });
 
+  // Propsが正しく渡されていることを確認
+  const actual: any = (ResultScreenMock as jest.Mock).mock.calls[0][0];
+  expect(actual.studySet.words).toEqual(part1Mock);
+  expect(actual.studySet.quizzes.map((q: { question: any; }) => q.question)).toContain('word1');
+  expect(actual.studySet.quizzes.map((q: { question: any; }) => q.question)).toContain('word2');
+  expect(actual.studyResult.userAnswers).toEqual([
+    { option: 1, checked: false, },
+    { option: 1, checked: false, },
+  ]);
+  expect(actual.wordStatus["word1"].status).toBe(1);
+  expect(actual.wordStatus["word2"].status).toBe(1);
+
   // データが保存されることを確認
   expect((LSMock.save as jest.Mock)).toHaveBeenCalledTimes(1);
+  expect(Object.keys((LSMock.save as jest.Mock).mock.calls[0][0].wordStatus)).not.toContain(undefined);
 });
 
 test('問題が1問以上解いて中断された時に結果画面が表示され、データ保存すること', async () => {

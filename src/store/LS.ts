@@ -80,6 +80,7 @@ export type FlashCardData = {
 export const LS = {
   /**
    * LocalStorageにデータを保存する
+   * @param data 保存するデータ
    */
   save(data: FlashCardData): void {
     const key = "flashCard"; // 固定のキー
@@ -87,6 +88,7 @@ export const LS = {
     
     const saveTarget = {...data, databaseVersion: dbVersion};
     localStorage.setItem(key, JSON.stringify(saveTarget));
+    console.info('LocalStorageへデータ保存完了');
   },
 
   /**
@@ -102,9 +104,9 @@ export const LS = {
     const result = {
       databaseVersion: json.databaseVersion,
       learningSession: json.learningSession.map((session: LearningSessionCtorParams) => new LearningSession(session)),
-      wordStatus: (Object.entries(json.wordStatus) as unknown as WordStatus[])
-      .reduce((reduced, kvp) => {
-        reduced[kvp.word] = new WordStatus(kvp.word, kvp.lastLearnedDate, kvp.answerHistory, kvp.status);
+      wordStatus: (Object.entries(json.wordStatus) as unknown as [string, WordStatus][])
+      .reduce((reduced, [word, status]) => {
+        reduced[status.word] = new WordStatus(word, status.lastLearnedDate, status.answerHistory, status.status);
         return reduced;
       }, {} as  Record<string, WordStatus>), // json.wordStatusの各要素をWordStatusに変換し、reduceでまとめる
       wordSetStatus: json.wordSetStatus || [],
@@ -112,12 +114,14 @@ export const LS = {
 
     // スキーマのバージョンが違う場合の変換処理をここに入れる予定
 
+    console.info('LocalStorageからデータ読込完了');
     return result;
   }
 };
 
 /**
- * LocalStorageに保存されるデータの初期値
+ * LocalStorageに保存されるデータの初期値を返す
+ * @returns 初期値。読み込むたびに新しいオブジェクトを返す
  */
 export function getInitialState(): FlashCardData & { databaseVersion: string } {
   return {

@@ -1,22 +1,36 @@
-import './App.css';
 import 'uikit/dist/css/uikit.min.css';
 import { useEffect, useState, useMemo } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { FlashCardData, LS, getInitialState } from './store/LS.ts';
-import { extractFromWordList, loadFromWordJson, getShuffledArray } from './store/WordListUtils.ts';
-import { HomeScreen } from './HomeScreen.tsx';
+import { extractFromWords, loadFromWordJson, getShuffledArray } from './store/WordSetUtils.ts';
+import { HomeScreen } from './HomeScreen/HomeScreen.tsx';
 import { StudyScreen } from './StudyScreen/StudyScreen.tsx';
-import { ResultScreen } from './ResultScreen.tsx';
+import { ResultScreen } from './ResultScreen/ResultScreen.tsx';
 import { createQuiz4 } from './StudyScreen/CreateQuiz.ts';
-import { LearningSession } from './models/LearningSession.ts';
 import { updateWordStatuses } from './models/WordStatusUtils.ts';
-import { WordStatus } from './models/WordStatus.ts';
 import { WordSetIndexUtil } from './models/WordSetIndex.ts';
 import { Series } from './models/WordSetIndex.ts';
 import { Word } from './models/Word.ts';
-import { Quiz, UserAnswer } from  './models/Quiz.ts';
+import { UserAnswer } from  './models/Quiz.ts';
 import React from 'react';
+import { StudySet } from './StudySet.ts';
+import { StudyResult } from './StudyResult.ts';
+import { save } from './store/SaveLearningSession.ts';
 
+/**
+ * アプリのルートコンポーネント
+ * 
+ * @description
+ * 【このコンポーネントの責務】
+ * - 学習画面、ホーム画面、結果画面の切り替え
+ *   - 画面遷移のための状態管理
+ *   - 各画面にコールバックを渡し、画面遷移時に呼び出してもらう
+ * - アプリ起動時処理
+ *   - 学習シリーズの一覧の読み込み
+ * - LocalStorageの読み書き
+ * - 学習セッション、学習セットの状況の管理
+ * @returns Appコンポーネント
+ * @author TKomi
+ */
 const App: React.FC = () => {
   // 現在表示している画面: 'home' or 'study' or 'result' or 'loading'
   const [currentScreen, setCurrentScreen] = useState('loading');
@@ -27,26 +41,21 @@ const App: React.FC = () => {
   // 学習シリーズの一覧
   const [seriesSet, setSeriesSet] = useState<Series[]>([]);
 
-  // 現在の学習セットで扱っている単語の一覧
-  const [studySet, setStudySet] = useState<Word[]>([]);
-
-  // 学習モード: 'normal' or 'retry'
-  const [studyMode, setStudyMode] = useState<string>('normal');
-
-  // 現在の学習セットで扱っているクイズの一覧
-  const [quizzes, setQuizzes] = useState<Quiz[]>([]);
+  // 学習セットの状況
+  const [studySet, setStudySet] = useState<StudySet>({
+    words: [],
+    quizzes: [],
+    studyMode: 'normal',
+  });
 
   // 現在の単語セットで扱っている単語の一覧の中で、まだ出題されていない単語の一覧
   const [remaining, setRemaining] = useState<Word[]>([]);
-
-  // ユーザーの回答の一覧
-  const [userAnswers, setUserAnswers] = useState<UserAnswer[]>([]);
-
-  // クイズの一覧の順番に対応する、単語の学習状況の一覧(更新後)
-  const [wordStatus, setWordStatus] = useState<WordStatus[]>([]);
-
-  // 終了理由: "finish" or "quit"
-  const [endOfReason, setEndOfReason] = useState<string>('finish');
+  
+  // 学習画面の終了状況
+  const [studyResult, setStudyResult] = useState<StudyResult>({
+    userAnswers: [],
+    endOfReason: 'finish',
+  });
 
   // 次のn個へ進むボタンの表示に使用する、次のセッションで学習する単語の数
   const countOfNext = useMemo(() => remaining.length <= 20 ? remaining.length : 20, [remaining]);
@@ -61,20 +70,18 @@ const App: React.FC = () => {
     WordSetIndexUtil.loadFromIndexJson('./data/index.json')
     .then(seriesSet => {
       setSeriesSet(seriesSet);
-    }).catch(console.error);
+    }).catch(error => {
+      console.error('Jsonファイルから単語一覧取得に失敗', error);
+    });
 
+    // LocalStorageからデータの読み込み
+    const data = LS.loadOrDefault();
+    setStorageData(data);
+
+    console.info('アプリ起動処理が完了');
   }, []);
 
-  // HomeScreenに戻ってきた時の処理(初回含む)
-  useEffect(() => {
-    if (currentScreen === 'home') {
-      // LocalStorageからデータの読み込み
-      const data = LS.loadOrDefault();
-      setStorageData(data);
-    }
-  }, [currentScreen]);
-
-  // クイズ終了時処理
+  // 問題終了時処理
   const onEndQuiz = (ua: UserAnswer[]) => {
     // 1問も解いていない場合には保存せず、ホーム画面に戻る
     if (ua.length === 0) {
@@ -84,63 +91,70 @@ const App: React.FC = () => {
     
     // 「やめる」を選んでいた場合には ua.length < quizzes.length となる
     // どのケースにも対応するため、studySet, quizzesはuaの長さに切り詰める
-    if (ua.length < quizzes.length) {
-      setEndOfReason('quit');
-    } else {
-      setEndOfReason('finish');
-    }
-    const studySetInner = studySet.slice(0, ua.length);
-    const quizzesInner = quizzes.slice(0, ua.length);
+    let endOfReason: 'quit' | 'finish' = ua.length < studySet.quizzes.length ? 'quit' : 'finish';
 
-    const updatedWordsStatuses = updateWordStatuses(studySet, quizzesInner, ua, storageData);
-    
-    setUserAnswers(ua);
+    const quizzesInner = studySet.quizzes.slice(0, ua.length);
+
+    const updatedWordsStatuses = updateWordStatuses(quizzesInner, ua, storageData);
+    setStudySet(old => ({...old, quizzes: quizzesInner}));
+    setStudyResult(old => ({...old, userAnswers: ua, endOfReason: endOfReason}));
     // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
-    setQuizzes(quizzesInner);
-    setWordStatus(updatedWordsStatuses);
-    save(studySetInner, quizzesInner, ua, storageData, updatedWordsStatuses);
+    const saved = save(quizzesInner, ua, storageData, updatedWordsStatuses);
+    setStorageData(saved);
+
     setCurrentScreen('result');
+    console.info('問題終了時処理が完了');
   };
 
   // ユーザーが画面上のボタンを押したときの処理(ここで扱うボタンは画面を横断する物に限る)
   const onUserButtonClick = (buttonName: string) => {
     switch(buttonName) {
       case 'next':
-        // Q: allWordStatusとしてstorageDataを使わないのはなぜ？
-        // A: storageDataはホーム画面に戻る際に更新されるので、「次へ」を押した際には古いままになっている。
-        // 「クイズ終了時処理」で更新されたものを使いたいため、更新後のwordStatusを使う。
-        const extracted = extractFromWordList(
+        const extracted = extractFromWords(
           remaining,
           20,
-          wordStatus.reduce<Record<string, WordStatus>>((acc, ws) => {acc[ws.word] = ws; return acc;}, {})
+          storageData.wordStatus
         );
-        setStudySet(extracted);
-        setQuizzes(extracted.map(createQuiz4));
+        setStudySet(prev => ({
+          ...prev,
+          words: extracted,
+          quizzes: extracted.map(createQuiz4),
+          studyMode: 'normal',
+        }));
         setRemaining(remaining.filter(w => !extracted.includes(w)));
-        setStudyMode('normal')
         setCurrentScreen('study');
+        console.info('次の20語に進むボタンの処理が完了');
         break;
       case 'home':
-        setStudyMode('normal'); 
+        setStudySet(prev => ({
+          ...prev,
+          studyMode: 'normal',
+        }));
         setCurrentScreen('home');
+        console.info('ホームボタンの処理が完了');
         break;
       case 'retry':
         // 間違えた問題またはチェックをつけた問題のみを再度出題する
         // retryTarget: 間違えた問題またはチェックをつけた問題のindexの一覧
-        const retryTarget = quizzes.reduce((acc, quiz, index) => {
-          if (quiz.answerIndex !== userAnswers[index].option || userAnswers[index].checked) {
+        const retryTarget = studySet.quizzes.reduce((acc, quiz, index) => {
+          if (quiz.answerIndex !== studyResult.userAnswers[index].option || studyResult.userAnswers[index].checked) {
             acc.push(index);
           }
           return acc;
         }, [] as number[]);
-        const retryWords = getShuffledArray(retryTarget.map(index => studySet[index]));
-        // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
-        setQuizzes(retryWords.map(createQuiz4));
+        const retryWords = getShuffledArray(retryTarget.map(index => studySet.words[index]));
+        setStudySet(prev => ({
+          ...prev,
+          // words: retryWords, // wordsはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
+          quizzes: retryWords.map(createQuiz4),
+          studyMode: 'retry',
+        }));
         // setRemaining // そのまま
-        setStudyMode('retry');
         setCurrentScreen('study');
+        console.info('復習ボタンの処理が完了');
         break;
       default: 
+        console.error('ボタン名が不正です');
         break;
     }
   };
@@ -152,12 +166,17 @@ const App: React.FC = () => {
   const onSelectedWordSet = (filePath: string) => {
     // 単語データの読み込み
     loadFromWordJson(filePath)
-      .then(wordList => {
-        const wl = extractFromWordList(wordList, 20, storageData.wordStatus);
-        setStudySet(wl);
-        setQuizzes(wl.map(createQuiz4));
-        setRemaining(wordList.filter(w => !wl.includes(w)));
+      .then(wordSet => {
+        const wl = extractFromWords(wordSet, 20, storageData.wordStatus);
+        setStudySet(prev => ({
+          ...prev,
+          words: wl,
+          quizzes: wl.map(createQuiz4),
+          studyMode: 'normal',
+        }));
+        setRemaining(wordSet.filter(w => !wl.includes(w)));
         setCurrentScreen('study');
+        console.info('単語セット選択時の処理が完了', filePath);
       }).catch(console.error);
   };
 
@@ -165,16 +184,13 @@ const App: React.FC = () => {
     <div>
       {
         currentScreen === 'study' ? (
-          <StudyScreen quizzes={quizzes} onEndQuiz={onEndQuiz} studyMode={studyMode}/>
+          <StudyScreen studySet={studySet} onEndQuiz={onEndQuiz}/>
         ) : currentScreen === 'result' ? (
           <ResultScreen
-            words={studySet}
-            quizzes={quizzes}
-            userAnswers={userAnswers}
-            wordStatus={wordStatus}
+            studySet={studySet}
+            wordStatus={storageData.wordStatus}
             countOfNext={countOfNext}
-            reason={endOfReason}
-            studyMode={studyMode}
+            studyResult={studyResult}
             onUserButtonClick={onUserButtonClick}
           />
           ) : currentScreen === 'home' ? (
@@ -187,80 +203,6 @@ const App: React.FC = () => {
       }
     </div>
   );
-}
-
-/**
- * 学習セッション1件の情報を保存(追記)する
- * 
- * @param wordList 出題された単語の一覧
- * @param quizzes 出題された問題の一覧。wordListと順番が同じである
- * @param userAnswers ユーザーの回答の一覧。quizzesと順番が同じ。optionは回答選択肢で0から始まり、-1はスキップ。checkedはチェックボックスの状態。
- * @param oldFlashCardData LSから読み込んだ、既存の学習セッションデータ
- * - delete-insert方式のため、古いデータも必要となる
- * @param updatedWordsStatuses 更新後の単語の学習状況の一覧
- * - updateWordStatusesで作成したものをわたすこと
- * - updateWordStatuses関数の結果は他の箇所でも使いたかったため関数は分離した
- */
-function save(
-  wordList: Word[],
-  quizzes: Quiz[],
-  userAnswers: UserAnswer[],
-  oldFlashCardData: FlashCardData,
-  updatedWordsStatuses: WordStatus[]
-): void {
-// 学習セッションの状況
-  const learningSessionClone = [...oldFlashCardData.learningSession];
-  learningSessionClone.push(new LearningSession({
-    sessionId: uuidv4(),
-    wordSetNo: 1, // 仮実装
-    completionDate: new Date().toISOString(),
-    answerHistory: userAnswers.map((answer, index) => {
-      return {
-        // FIXME: わざわざwordListを使っているが、quizzesの方が適切では？引数も減らせるし
-        w: wordList[index].word,
-        c: quizzes[index].answerIndex === answer.option,
-      };
-    }),
-  }));
-
-  // updatedWordStatusesを詰め直す
-  const wordStatusClone = { ...oldFlashCardData.wordStatus };
-  for(const st of updatedWordsStatuses){
-    wordStatusClone[st.word] = st;
-  }
-
-  // WordSetStatus更新処理
-  const wordSetStatusClone = [ ...oldFlashCardData.wordSetStatus];
-  {
-    let target = wordSetStatusClone.find(wss => wss.wordSetNo === 1);
-    if(!target){
-      target = target || {
-          wordSetNo: 1, // 仮実装
-          groupsAndCounts: {
-              group0: 0,
-              group1: 0,
-              group2: 0,
-              group3: 0,
-          },
-          learningCount: 0,
-      }; // 初期化
-      wordSetStatusClone.push(target);
-  } 
-    target.groupsAndCounts = {
-      group0: Object.values(wordStatusClone).filter(st => st.status === 0).length,
-      group1: Object.values(wordStatusClone).filter(st => st.status === 1 || st.status === 2).length,
-      group2: Object.values(wordStatusClone).filter(st => st.status === 3 || st.status === 4).length,
-      group3: Object.values(wordStatusClone).filter(st => st.status === 5 || st.status === 6).length,
-    };
-    target.learningCount = target.learningCount + 1;
-  }
-
-  // LocalStorageに保存する
-  LS.save({
-    learningSession: learningSessionClone,
-    wordStatus: wordStatusClone,
-    wordSetStatus: wordSetStatusClone,
-  });
 }
 
 export default App;

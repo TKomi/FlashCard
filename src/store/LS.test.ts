@@ -73,6 +73,29 @@ describe('LS', () => {
       wordSetStatus: [],
     });
   });
+
+  test('loadOrDefault: wordStatusにデータが存在する場合に戻り値のwordStatusが正しく設定されていること', () => {
+    // Arrange
+    const data: FlashCardData = {
+      learningSession: [],
+      wordStatus: {
+        word1: {
+          word: 'word1',
+          status: 1,
+          lastLearnedDate: '',
+          answerHistory: [],
+        },
+      },
+      wordSetStatus: [],
+    };
+    localStorageMock.setItem('flashCard', JSON.stringify(data));
+
+    // Act
+    const result = LS.loadOrDefault();
+
+    // Assert
+    expect(result.wordStatus).toEqual(data.wordStatus);
+  })
 });
 
 describe('getInitialState', () => {

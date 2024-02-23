@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { HomeScreen } from './HomeScreen';
-import { Series } from './models/WordSetIndex';
+import { Series } from '../models/WordSetIndex';
 
 describe('HomeScreen', () => {
   const seriesSet: Series[] = [

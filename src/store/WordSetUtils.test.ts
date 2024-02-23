@@ -1,4 +1,4 @@
-import { loadFromWordJson, extractFromWordList, getShuffledArray } from './WordListUtils';
+import { loadFromWordJson, extractFromWords, getShuffledArray } from './WordSetUtils.ts';
 import { Word } from '../models/Word.ts';
 import { WordStatus } from '../models/WordStatus.ts';
 
@@ -26,13 +26,13 @@ describe('loadFromWordJson', () => {
   });
 });
 
-describe('extractFromWordList', () => {
+describe('extractFromsList', () => {
   test.each([
     // ランダム要素が絡むので全ての数字ではテストしない
     0, 3, 5, 7
-  ])('規則に従ってWordListから単語を抽出し返すこと: num=%i', (num: number) => {
+  ])('規則に従ってWordsから単語を抽出し返すこと: num=%i', (num: number) => {
     // Arrange
-    const wordList: Word[] = [
+    const words: Word[] = [
       { word: 'Word4', quiz: { answer: 'A4', options: ['Opt41', 'Opt42'] } },
       { word: 'Word2', quiz: { answer: 'A2', options: ['Opt21', 'Opt22'] } },
       { word: 'Word0', quiz: { answer: 'A0', options: ['Opt01', 'Opt02'] } },
@@ -60,7 +60,7 @@ describe('extractFromWordList', () => {
     ];
 
     // Act
-    const result = extractFromWordList(wordList, num, allWordStatus);
+    const result = extractFromWords(words, num, allWordStatus);
 
     // Assert
     expect(result).toHaveLength(num);
