@@ -40,14 +40,6 @@ export const StudyScreen: React.FC<StudyScreenProps> = ({ studySet, onEndQuiz })
 
   const currentQuiz = useMemo<Quiz>(() => studySet.quizzes[currentQuestionIndex], [studySet.quizzes, currentQuestionIndex]);
 
-  // 次の問題
-  useEffect(() => {
-    if (currentQuestionIndex >= studySet.quizzes.length) {
-      // クイズが終わった
-      console.log('クイズ終了');
-    }
-  }, [currentQuestionIndex, studySet.quizzes.length]);
-
   // setUserAnswers -> setEnd でendが変化したら、onEndQuizを呼び出す
   useEffect(() => {
     if (end && onEndQuiz) {

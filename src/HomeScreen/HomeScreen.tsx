@@ -60,7 +60,6 @@ export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelecte
 
   function onClickGoButton(filePath: string) {
     if (onSelectedWordSet) {
-      console.log('wordset selected', filePath);
       onSelectedWordSet(filePath);
     }
   }

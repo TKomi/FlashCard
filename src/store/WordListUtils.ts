@@ -3,12 +3,15 @@ import { WordStatus } from '../models/WordStatus.ts';
 
 /**
  * Jsonファイルから単語を取得し、Wordオブジェクトの配列として返す
- * @return単語の配列
+ * @return 単語の配列
  */
 export async function loadFromWordJson(jsonFilePath: string): Promise<Word[]> {
     return  await fetch('data/'+jsonFilePath)
       .then(response => response.json())
-      .then(data => data.map(Word.fromObject));
+      .then(data => data.map(Word.fromObject))
+      .catch(error => {
+        console.error('Jsonファイルから単語取得に失敗', error);
+      });
 }
 
 /**

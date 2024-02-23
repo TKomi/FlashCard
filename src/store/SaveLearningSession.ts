@@ -75,5 +75,6 @@ export function save(
     wordSetStatus: wordSetStatusClone,
   };
   LS.save(saveTarget);
+  console.info('学習セッションの保存が完了');
   return saveTarget;
 }

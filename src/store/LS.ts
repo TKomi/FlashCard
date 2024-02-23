@@ -88,6 +88,7 @@ export const LS = {
     
     const saveTarget = {...data, databaseVersion: dbVersion};
     localStorage.setItem(key, JSON.stringify(saveTarget));
+    console.info('LocalStorageへデータ保存完了');
   },
 
   /**
@@ -113,6 +114,7 @@ export const LS = {
 
     // スキーマのバージョンが違う場合の変換処理をここに入れる予定
 
+    console.info('LocalStorageからデータ読込完了');
     return result;
   }
 };

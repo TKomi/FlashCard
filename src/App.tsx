@@ -70,15 +70,18 @@ const App: React.FC = () => {
     WordSetIndexUtil.loadFromIndexJson('./data/index.json')
     .then(seriesSet => {
       setSeriesSet(seriesSet);
-    }).catch(console.error);
+    }).catch(error => {
+      console.error('Jsonファイルから単語一覧取得に失敗', error);
+    });
 
     // LocalStorageからデータの読み込み
     const data = LS.loadOrDefault();
     setStorageData(data);
 
+    console.info('アプリ起動処理が完了');
   }, []);
 
-  // クイズ終了時処理
+  // 問題終了時処理
   const onEndQuiz = (ua: UserAnswer[]) => {
     // 1問も解いていない場合には保存せず、ホーム画面に戻る
     if (ua.length === 0) {
@@ -100,6 +103,7 @@ const App: React.FC = () => {
     setStorageData(saved);
 
     setCurrentScreen('result');
+    console.info('問題終了時処理が完了');
   };
 
   // ユーザーが画面上のボタンを押したときの処理(ここで扱うボタンは画面を横断する物に限る)
@@ -119,6 +123,7 @@ const App: React.FC = () => {
         }));
         setRemaining(remaining.filter(w => !extracted.includes(w)));
         setCurrentScreen('study');
+        console.info('次の20語に進むボタンの処理が完了');
         break;
       case 'home':
         setStudySet(prev => ({
@@ -126,6 +131,7 @@ const App: React.FC = () => {
           studyMode: 'normal',
         }));
         setCurrentScreen('home');
+        console.info('ホームボタンの処理が完了');
         break;
       case 'retry':
         // 間違えた問題またはチェックをつけた問題のみを再度出題する
@@ -145,8 +151,10 @@ const App: React.FC = () => {
         }));
         // setRemaining // そのまま
         setCurrentScreen('study');
+        console.info('復習ボタンの処理が完了');
         break;
       default: 
+        console.error('ボタン名が不正です');
         break;
     }
   };
@@ -168,6 +176,7 @@ const App: React.FC = () => {
         }));
         setRemaining(wordList.filter(w => !wl.includes(w)));
         setCurrentScreen('study');
+        console.info('単語セット選択時の処理が完了', filePath);
       }).catch(console.error);
   };
 
