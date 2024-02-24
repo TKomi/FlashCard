@@ -76,9 +76,9 @@ export const ResultScreen: React.FC<Props> = ({ studySet, wordStatus, countOfNex
 
   useEffect(() => {
     const newEntries = studySet.quizzes.map((quiz, index) => {
-      const word = studySet.words[index];
-      const spelling = word.word;
-      const correctAnswer = word.quiz.answer; // string
+      const word = studySet.words.find(w => w.word === quiz.question);
+      const spelling = word ? word.word : '';
+      const correctAnswer = quiz.options[quiz.answerIndex]; // string
       const isCorrect = quiz.answerIndex === studyResult.userAnswers[index].option;
       const isChecked = studyResult.userAnswers[index].checked;
       const status = wordStatus[quiz.question]?.status;
