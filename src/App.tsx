@@ -9,11 +9,12 @@ import { createQuiz4 } from './StudyScreen/CreateQuiz.ts';
 import { updateWordStatuses } from './models/WordStatusUtils.ts';
 import { WordSetIndex, WordSetIndexUtil } from './models/WordSetIndex.ts';
 import { Series } from './models/WordSetIndex.ts';
-import { UserAnswer } from  './models/Quiz.ts';
+import { Quiz, UserAnswer } from  './models/Quiz.ts';
 import React from 'react';
 import { StudySet } from './StudySet.ts';
 import { StudyResult } from './StudyResult.ts';
 import { save } from './store/SaveLearningSession.ts';
+import { Word } from './models/Word.ts';
 
 /**
  * アプリのルートコンポーネント
@@ -137,14 +138,18 @@ const App: React.FC = () => {
         break;
       case 'retry':
         // 間違えた問題またはチェックをつけた問題のみを再度出題する
-        // retryTarget: 間違えた問題またはチェックをつけた問題のindexの一覧
-        const retryTarget = studySet.quizzes.reduce((acc, quiz, index) => {
+        // retryTarget: 間違えた問題またはチェックをつけた問題の一覧
+        const retryTarget: Quiz[] = studySet.quizzes.reduce((acc, quiz, index) => {
           if (quiz.answerIndex !== studyResult.userAnswers[index].option || studyResult.userAnswers[index].checked) {
-            acc.push(index);
+            acc.push(quiz);
           }
           return acc;
-        }, [] as number[]);
-        const retryWords = getShuffledArray(retryTarget.map(index => studySet.words[index]));
+        }, [] as Quiz[]);
+        const retryWords = getShuffledArray(
+          retryTarget
+            .map(quiz => studySet.words.find(w => w.word === quiz.question))
+            .filter(w => w !== undefined) as Word[]
+        );
         setStudySet(prev => ({
           ...prev,
           // words: retryWords, // wordsはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
