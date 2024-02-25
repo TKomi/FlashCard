@@ -26,6 +26,12 @@ module.exports = {
       globals: {
         global: "writable",
       }
+    },
+    {
+      files: ['*.js'],
+      env: {
+        node: true,
+      }
     }
   ]
 };
