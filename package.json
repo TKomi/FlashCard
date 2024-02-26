@@ -51,6 +51,5 @@
   },
   "jest": {
     "resetMocks": false
-  },
-  "homepage": "https://flash-card.sumomo.ne.jp/stg/"
+  }
 }
