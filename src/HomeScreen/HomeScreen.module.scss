@@ -50,4 +50,33 @@
       }
     }
   }
+
+  .footer {
+    margin-top: 1em;
+    padding: 1em;
+    background-color: #777;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    
+    .copyright {
+      font-size: 0.8em;
+      text-align: center;
+    }
+
+    .links {
+      font-size: 0.8em;
+      margin: 0 0.4em;
+      .github {
+        width: 1.4em;
+        margin: 0 0.4em;
+      }
+  
+      .notion {
+        width: 1.5em;
+        margin: 0 0.4em;
+      }
+    }
+
+  }
 }
