@@ -32,7 +32,7 @@ export type Props = {
  * @returns HomeScreenコンポーネント
  * @author TKomi
  */
-export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus, onSelectedWordSet}) => {
+export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus: _wordSetStatus, onSelectedWordSet}) => {
   // seriesSetの順番、シリーズ内の単語セットの順番に対応する、単語セットの学習状況の配列
   // 将来のための実装をコメントアウト
   // const wordSetStatusOrdered = useMemo(() => {

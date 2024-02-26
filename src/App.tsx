@@ -98,12 +98,13 @@ const App: React.FC = () => {
 
     const quizzesInner = studySet.quizzes.slice(0, ua.length);
 
-    const updatedWordsStatuses = updateWordStatuses(quizzesInner, ua, storageData);
+    if (studySet.studyMode === 'normal') {
+      const updatedWordsStatuses = updateWordStatuses(quizzesInner, ua, storageData);
+      const saved = save(quizzesInner, ua, storageData, updatedWordsStatuses, studySet.index!.wordSetNo);
+      setStorageData(saved);
+    } // retryの場合はステータスの更新をしない
     setStudySet(old => ({...old, quizzes: quizzesInner}));
     setStudyResult(old => ({...old, userAnswers: ua, endOfReason: endOfReason}));
-    // setStudySet(studySetInner); // StudySetはそのセットで出題される可能性のあるすべての語。次の20語に進むまで変更しない
-    const saved = save(quizzesInner, ua, storageData, updatedWordsStatuses, studySet.index!.wordSetNo);
-    setStorageData(saved);
 
     setCurrentScreen('result');
     console.info('問題終了時処理が完了');

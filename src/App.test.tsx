@@ -390,3 +390,38 @@ test('結果画面で次のn個へ進むボタンを選択時に学習画面へ�
     expect(screen.getByText(/StudyScreen/i)).toBeInTheDocument();
   });
 });
+
+test('復習モード完了時にLSに保存されないこと', async () => {
+  // ホーム画面に渡っているコールバックを呼び出して、学習画面を表示する
+  const callback1: (_series: Series, _filePath: string) => void = (HomeScreenMock as jest.Mock).mock.calls[0][0].onSelectedWordSet;
+  await act(async () => {
+    callback1(datasetMock.dataSet[0], 'sample/part2.json');
+  });
+
+  // StudyScreenに渡っているコールバックを呼び出す
+  const callback2: (_ua: any) => void = (StudyScreenMock as jest.Mock).mock.calls[0][0].onEndQuiz;
+  await act(async () => {
+    callback2([
+      { option: 1, checked: false, },
+      { option: 1, checked: false, },
+    ]);
+  });
+
+  // ResultScreenに渡っているコールバックを呼び出す
+  const callback3: (_name: string) => void = (ResultScreenMock as jest.Mock).mock.calls[0][0].onUserButtonClick;
+  await act(async () => {
+    callback3('retry');
+  });
+
+  // StudyScreenに渡っているコールバックを呼び出す
+  const callback4: (_ua: any) => void = (StudyScreenMock as jest.Mock).mock.calls[1][0].onEndQuiz;
+  await act(async () => {
+    callback4([
+      { option: 1, checked: false, },
+      { option: 1, checked: false, },
+    ]);
+  });
+
+  // データが保存されていないことを確認 通常学習完了時の1回の保存のみ呼び出されることを確認
+  expect((LSMock.save as jest.Mock)).toHaveBeenCalledTimes(1);
+});
