@@ -15,7 +15,6 @@ document.write(`<script async src="https://www.googletagmanager.com/gtag/js?id=$
 window.dataLayer = window.dataLayer || [];
 function gtag() { window.dataLayer.push(arguments); }
 gtag('js', new Date());
-
 gtag('config', googleAnalyticsId);
 
 // render
