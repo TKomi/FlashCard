@@ -12,7 +12,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "prebuild": "node preBuild.js && git stash push -m 'Temporary stash for build'",
+    "prebuild": "git stash push -m 'Temporary stash for build' && node preBuild.js",
     "build": "react-scripts build",
     "postbuild": "git reset --hard HEAD && git stash pop || true",
     "test": "react-scripts test",
