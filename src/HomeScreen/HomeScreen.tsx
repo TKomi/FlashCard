@@ -92,10 +92,10 @@ export const HomeScreen: React.FC<Props> = ({seriesSet, wordSetStatus: _wordSetS
         </div>
         <div className={styles['links']}>
           <a href={process.env.REACT_APP_GITHUB_URL}>
-            <img src="/github.svg" alt="GitHub" className={styles['github']} />
+            <img src={`${process.env.PUBLIC_URL}/github.svg`} alt="GitHub" className={styles['github']} />
           </a>
           <a href={process.env.REACT_APP_NOTION_URL}>
-            <img src="/notion.svg" alt="Notion" className={styles['notion']} />
+            <img src={`${process.env.PUBLIC_URL}/notion.svg`} alt="Notion" className={styles['notion']} />
           </a>
         </div>
       </div>
