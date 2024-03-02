@@ -11,7 +11,11 @@ if(process.env.REACT_APP_COMMIT_SHA) {
 
 // Google Analytics
 const googleAnalyticsId = process.env.REACT_APP_GOOGLE_ANALYTICS_ID;
-document.write(`<script async src="https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}"></script>`);
+const script = document.createElement('script');
+script.src = `https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`;
+script.async = true;
+const head = document.getElementsByTagName('head')[0];
+head.appendChild(script);
 window.dataLayer = window.dataLayer || [];
 function gtag() { window.dataLayer.push(arguments); }
 gtag('js', new Date());
