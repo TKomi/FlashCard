@@ -4,6 +4,8 @@ FlashCardはWebブラウザ上で動作する、登録不要で軽量な単語�
 ReactとTypeScriptを使って開発されています。
 [別リポジトリ](https://github.com/TKomi/FlashCard-Data)で管理されている単語データを参照しながら動作します。
 
+Notionのプロジェクトページは[こちら](https://royal-lifter-ad9.notion.site/FlashCard-085a4d2bec714be69aa161dc9bd4e183)です。
+
 ## インストール方法
 
 FlashCardをセットアップするには、以下のステップに従ってください。
